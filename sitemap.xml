@@ -7,4 +7,26 @@
         <loc>https://changki123.github.io/blog/first-post/</loc>
         <lastmod>2026-01-01</lastmod>
     </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/blog/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/github-pages/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/rust/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/tutorial/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/zola/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/zola-blog-setup/</loc>
+        <lastmod>2026-01-02</lastmod>
+    </url>
 </urlset>
