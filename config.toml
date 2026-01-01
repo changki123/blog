@@ -1,0 +1,15 @@
+base_url = "https://changki123.github.io/blog"
+title = "changki123's blog"
+description = "Infrastructure Engineer's Tech Blog"
+compile_sass = true
+build_search_index = true
+
+theme = "terminimal"
+
+[markdown]
+highlight_code = true
+
+[extra]
+# terminimal 테마 설정
+accent_color = "green"
+logo_text = "changki123"
