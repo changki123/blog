@@ -11,5 +11,5 @@ highlight_code = true
 
 [extra]
 # terminimal 테마 설정
-accent_color = "green"
+accent_color = "orange"
 logo_text = "changki123"
