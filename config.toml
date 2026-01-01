@@ -6,6 +6,10 @@ build_search_index = true
 
 theme = "terminimal"
 
+taxonomies = [
+    {name = "tags", feed = true},
+]
+
 [markdown]
 highlight_code = true
 
