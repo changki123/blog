@@ -1,0 +1,16 @@
+/* static/custom.css */
+* {
+  cursor: url('/blog/cursors/Normal.cur'), auto !important;
+}
+
+a, a:hover, button, .clickable {
+  cursor: url('/blog/cursors/Link.cur'), pointer !important;
+}
+
+input, textarea {
+  cursor: url('/blog/cursors/Text.cur'), text !important;
+}
+
+body.loading, .loading * {
+  cursor: url('/blog/cursors/Busy.cur'), wait !important;
+}
