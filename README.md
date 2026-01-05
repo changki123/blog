@@ -22,3 +22,4 @@ C:\\zola\\zola.exe build
 
 C:\\zola\\zola.exe serve
 
+https://changki123.github.io/blog/
