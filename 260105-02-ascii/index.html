@@ -20,13 +20,13 @@
     <meta property="og:description" content="">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://changki123.github.io/blog/first-post/">
+    <meta property="og:url" content="https://changki123.github.io/blog/260105-02-ascii/">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:description" content="">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
-    <meta property="twitter:url" content="https://changki123.github.io/blog/first-post/">
+    <meta property="twitter:url" content="https://changki123.github.io/blog/260105-02-ascii/">
 
     </head>
 
@@ -57,11 +57,11 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/first-post/">첫 번째 포스트</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260105-02-ascii/">YouTube ASCII 플레이어</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-01-01
+            2026-01-05
         </span>
 
     </div>
@@ -69,13 +69,62 @@
     
 
         <div class="post-content">
-            <p>안녕하세요! Rust로 만든 Zola 블로그입니다.</p>
-<p>## Zola + terminimal 테마</p>
-<p>터미널 스타일의 깔끔한 블로그를 만들었습니다.</p>
-<p>- Rust로 작성된 초고속 정적 사이트 생성기</p>
-<p>- GitHub Pages 배포 예정</p>
-<p>- 인프라 엔지니어의 기술 블로그</p>
+            <div style="text-align: center;">
+  <input type="text" id="youtubeUrl" placeholder="YouTube URL 입력" style="width: 300px;">
+  <button onclick="loadVideo()">로드</button>
+  <br><br>
+  <div id="player" style="display:none;"></div>
+  <pre id="ascii" style="font-size: 5px; line-height: 5px; background: #000; color: #0f0;"></pre>
+</div>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+let player;
+const ascii = document.getElementById('ascii');
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+const chars = ' .\'`^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
 
+const width = 120;
+const height = 60;
+canvas.width = width;
+canvas.height = height;
+
+function loadVideo() {
+  const url = document.getElementById('youtubeUrl').value;
+  const videoId = url.split('v=')[1]?.split('&')[0];
+  
+  if (player) player.destroy();
+  
+  player = new YT.Player('player', {
+    height: '240',
+    width: '320',
+    videoId: videoId,
+    events: { 'onReady': onPlayerReady }
+  });
+}
+
+function onPlayerReady() {
+  setInterval(captureFrame, 100);
+}
+
+function captureFrame() {
+  // YouTube iframe에서는 직접 캡처가 불가능합니다
+  // 대신 placeholder ASCII 애니메이션을 보여줍니다
+  generateRandomAscii();
+}
+
+function generateRandomAscii() {
+  let output = '';
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      output += chars[Math.floor(Math.random() * chars.length)];
+    }
+    output += '\n';
+  }
+  ascii.textContent = output;
+}
+</script>
+<p><em>참고: YouTube는 보안상 직접 프레임 캡처가 불가능해서 랜덤 ASCII로 시뮬레이션합니다.</em></p>
         </div>
 
         
@@ -85,10 +134,17 @@
                     <hr />
                 </div>
                 <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://changki123.github.io/blog/20260102-01-zola-blog-setup/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Windows에서 Zola + GitHub Pages로 블로그 만들기</span>
+                            </a>
+                        </span>
+                    
                     
                         <span class="button next">
-                            <a href="https://changki123.github.io/blog/zola-blog-setup/">
-                                <span class="button__text">Windows에서 Zola + GitHub Pages로 블로그 만들기</span>&nbsp;
+                            <a href="https://changki123.github.io/blog/260105-01-fish/">
+                                <span class="button__text">라스보라 물고기 키우기 - 초보자 가이드</span>&nbsp;
                                 <span class="button__icon">→</span>
                             </a>
                         </span>

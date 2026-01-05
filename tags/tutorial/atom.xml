@@ -20,10 +20,10 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/zola-blog-setup/"/>
-        <id>https://changki123.github.io/blog/zola-blog-setup/</id>
+        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/20260102-01-zola-blog-setup/"/>
+        <id>https://changki123.github.io/blog/20260102-01-zola-blog-setup/</id>
         
-        <content type="html" xml:base="https://changki123.github.io/blog/zola-blog-setup/">&lt;p&gt;Rust로 만든 정적 사이트 생성기 Zola를 사용해서 GitHub Pages 블로그를 만들어봤다.&lt;&#x2F;p&gt;
+        <content type="html" xml:base="https://changki123.github.io/blog/20260102-01-zola-blog-setup/">&lt;p&gt;Rust로 만든 정적 사이트 생성기 Zola를 사용해서 GitHub Pages 블로그를 만들어봤다.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;wae-zolainga&quot;&gt;왜 Zola인가?&lt;&#x2F;h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;빠름&lt;&#x2F;strong&gt;: Rust로 작성되어 빌드 속도가 매우 빠르다&lt;&#x2F;li&gt;

@@ -4,16 +4,20 @@
         <loc>https://changki123.github.io/blog/</loc>
     </url>
     <url>
-        <loc>https://changki123.github.io/blog/260105-fish/</loc>
-        <lastmod>2026-01-05</lastmod>
-    </url>
-    <url>
-        <loc>https://changki123.github.io/blog/260105-youtube/</loc>
-        <lastmod>2026-01-05</lastmod>
-    </url>
-    <url>
-        <loc>https://changki123.github.io/blog/first-post/</loc>
+        <loc>https://changki123.github.io/blog/20260101-01-first-post/</loc>
         <lastmod>2026-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/20260102-01-zola-blog-setup/</loc>
+        <lastmod>2026-01-02</lastmod>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/260105-01-fish/</loc>
+        <lastmod>2026-01-05</lastmod>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/260105-02-ascii/</loc>
+        <lastmod>2026-01-05</lastmod>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/page/1/</loc>
@@ -47,9 +51,5 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/zola/</loc>
-    </url>
-    <url>
-        <loc>https://changki123.github.io/blog/zola-blog-setup/</loc>
-        <lastmod>2026-01-02</lastmod>
     </url>
 </urlset>
