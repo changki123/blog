@@ -30,8 +30,8 @@
     padding: 20px;
   }
   #ascii-output {
-    font-size: 6px;
-    line-height: 3px;
+    font-size: 5px;
+    line-height: 2.5px;
     background: #000;
     color: #0f0;
     font-family: monospace;
@@ -54,8 +54,8 @@
   const canvas = document.createElement(&#x27;canvas&#x27;);
   const ctx = canvas.getContext(&#x27;2d&#x27;);
   
-  canvas.width = 160;
-  canvas.height = 90;
+  canvas.width = 240;
+  canvas.height = 135;
   
   const chars = &#x27; .:-=+*#%@&#x27;;
   
