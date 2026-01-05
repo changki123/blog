@@ -69,66 +69,65 @@
     
         <span class="post-tags-inline">
                 :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/animation/">#animation</a>&nbsp;
                 <a class="post-tag" href="https://changki123.github.io/blog/tags/ascii/">#ascii</a>&nbsp;
                 <a class="post-tag" href="https://changki123.github.io/blog/tags/video/">#video</a></span>
     
 
         <div class="post-content">
-            <div style="text-align: center; background: #000; padding: 0; margin: 0;">
-  <video id="video" autoplay loop muted style="display:none;">
+            <style>
+  .video-wrapper {
+    background: #000;
+    text-align: center;
+    padding: 20px;
+  }
+  #ascii-output {
+    font-size: 8px;
+    line-height: 8px;
+    background: #000;
+    color: #0f0;
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+  }
+</style>
+<div class="video-wrapper">
+  <video id="sourceVideo" width="320" height="240" autoplay loop muted>
     <source src="/blog/video/sample.mp4" type="video/mp4">
   </video>
-  <pre id="ascii" style="
-    font-size: 8px; 
-    line-height: 8px; 
-    background: #000; 
-    color: #0f0; 
-    padding: 0;
-    margin: 0;
-    font-family: 'Courier New', monospace;
-  "></pre>
+  <div id="ascii-output"></div>
 </div>
 <script>
-const video = document.getElementById('video');
-const ascii = document.getElementById('ascii');
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
-
-const chars = ' .:-=+*#%@';
-const width = 100;
-const height = 75;
-
-canvas.width = width;
-canvas.height = height;
-
-video.addEventListener('loadeddata', () => {
-  requestAnimationFrame(draw);
-});
-
-function draw() {
-  if (video.paused || video.ended) return;
+(function() {
+  const video = document.getElementById('sourceVideo');
+  const output = document.getElementById('ascii-output');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
   
-  ctx.drawImage(video, 0, 0, width, height);
-  const imageData = ctx.getImageData(0, 0, width, height);
+  canvas.width = 80;
+  canvas.height = 60;
   
-  let asciiImage = '';
-  for (let i = 0; i < imageData.data.length; i += 4) {
-    const r = imageData.data[i];
-    const g = imageData.data[i + 1];
-    const b = imageData.data[i + 2];
-    const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-    const charIndex = Math.floor((brightness / 255) * (chars.length - 1));
-    asciiImage += chars[charIndex];
-    
-    if ((i / 4 + 1) % width === 0) {
-      asciiImage += '\n';
+  const chars = ' .:-=+*#%@';
+  
+  function convert() {
+    if (!video.paused && !video.ended) {
+      ctx.drawImage(video, 0, 0, 80, 60);
+      const imgData = ctx.getImageData(0, 0, 80, 60);
+      let ascii = '';
+      
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
+        const charIdx = Math.floor(avg / 255 * (chars.length - 1));
+        ascii += chars[charIdx];
+        if ((i/4 + 1) % 80 === 0) ascii += '\n';
+      }
+      
+      output.textContent = ascii;
+      requestAnimationFrame(convert);
     }
   }
   
-  ascii.textContent = asciiImage;
-  requestAnimationFrame(draw);
-}
+  video.addEventListener('playing', convert);
+})();
 </script>
         </div>
 
