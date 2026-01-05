@@ -15,15 +15,15 @@
     
     <link rel="stylesheet" href="https://changki123.github.io/blog/font-hack-subset.css">
 
-    <meta name="description" content="동영상을 ASCII 아트로 실시간 변환">
+    <meta name="description" content="">
 
-    <meta property="og:description" content="동영상을 ASCII 아트로 실시간 변환">
+    <meta property="og:description" content="">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://changki123.github.io/blog/260105-02-ascii/">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:description" content="동영상을 ASCII 아트로 실시간 변환">
+    <meta name="twitter:description" content="">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
     <meta property="twitter:url" content="https://changki123.github.io/blog/260105-02-ascii/">
@@ -75,25 +75,8 @@
     
 
         <div class="post-content">
-            <h1 id="ascii-dongyeongsang-peulreieo">ASCII 동영상 플레이어</h1>
-<div style="text-align: center; background: #1a1a1a; padding: 20px; border-radius: 8px;">
-  <div style="margin: 20px 0;">
-    <label>해상도: </label>
-    <select id="resolution">
-      <option value="low">낮음 (60x45)</option>
-      <option value="medium" selected>중간 (100x75)</option>
-      <option value="high">높음 (140x105)</option>
-    </select>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>&lt;label style=&quot;margin-left: 20px;&quot;&gt;스타일: &lt;/label&gt;
-</span><span>&lt;select id=&quot;style&quot;&gt;
-</span><span>  &lt;option value=&quot;classic&quot;&gt;클래식&lt;/option&gt;
-</span><span>  &lt;option value=&quot;block&quot;&gt;블록&lt;/option&gt;
-</span><span>  &lt;option value=&quot;detailed&quot;&gt;상세&lt;/option&gt;
-</span><span>  &lt;option value=&quot;matrix&quot;&gt;매트릭스&lt;/option&gt;
-</span><span>&lt;/select&gt;
-</span></code></pre>
-  </div>
-  <video id="video" controls autoplay loop muted style="display:none;">
+            <div style="text-align: center; background: #000; padding: 0; margin: 0;">
+  <video id="video" autoplay loop muted style="display:none;">
     <source src="/blog/video/sample.mp4" type="video/mp4">
   </video>
   <pre id="ascii" style="
@@ -101,73 +84,24 @@
     line-height: 8px; 
     background: #000; 
     color: #0f0; 
-    padding: 10px;
-    margin: 20px auto;
-    max-width: 100%;
-    overflow-x: auto;
+    padding: 0;
+    margin: 0;
     font-family: 'Courier New', monospace;
   "></pre>
-  <div style="color: #888; margin-top: 10px;">
-    <small>FPS: <span id="fps">0</span></small>
-  </div>
 </div>
 <script>
 const video = document.getElementById('video');
 const ascii = document.getElementById('ascii');
-const resolutionSelect = document.getElementById('resolution');
-const styleSelect = document.getElementById('style');
-const fpsDisplay = document.getElementById('fps');
-
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
-// 다양한 ASCII 문자 세트
-const charSets = {
-  classic: ' .:-=+*#%@',
-  block: ' ░▒▓█',
-  detailed: ' .\'`^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$',
-  matrix: ' .::••●',
-};
+const chars = ' .:-=+*#%@';
+const width = 100;
+const height = 75;
 
-// 해상도 설정
-const resolutions = {
-  low: { width: 60, height: 45 },
-  medium: { width: 100, height: 75 },
-  high: { width: 140, height: 105 },
-};
+canvas.width = width;
+canvas.height = height;
 
-let currentResolution = resolutions.medium;
-let currentCharSet = charSets.classic;
-let frameCount = 0;
-let lastTime = performance.now();
-
-// 초기 캔버스 크기 설정
-canvas.width = currentResolution.width;
-canvas.height = currentResolution.height;
-
-resolutionSelect.addEventListener('change', (e) => {
-  currentResolution = resolutions[e.target.value];
-  canvas.width = currentResolution.width;
-  canvas.height = currentResolution.height;
-  
-  const fontSize = e.target.value === 'high' ? 6 : e.target.value === 'medium' ? 8 : 10;
-  ascii.style.fontSize = fontSize + 'px';
-  ascii.style.lineHeight = fontSize + 'px';
-});
-
-styleSelect.addEventListener('change', (e) => {
-  currentCharSet = charSets[e.target.value];
-  
-  if (e.target.value === 'matrix') {
-    ascii.style.color = '#0f0';
-    ascii.style.textShadow = '0 0 5px #0f0';
-  } else {
-    ascii.style.color = '#0f0';
-    ascii.style.textShadow = 'none';
-  }
-});
-
-// 비디오 로드되면 자동 시작
 video.addEventListener('loadeddata', () => {
   requestAnimationFrame(draw);
 });
@@ -175,17 +109,8 @@ video.addEventListener('loadeddata', () => {
 function draw() {
   if (video.paused || video.ended) return;
   
-  // FPS 계산
-  frameCount++;
-  const now = performance.now();
-  if (now - lastTime >= 1000) {
-    fpsDisplay.textContent = frameCount;
-    frameCount = 0;
-    lastTime = now;
-  }
-  
-  ctx.drawImage(video, 0, 0, currentResolution.width, currentResolution.height);
-  const imageData = ctx.getImageData(0, 0, currentResolution.width, currentResolution.height);
+  ctx.drawImage(video, 0, 0, width, height);
+  const imageData = ctx.getImageData(0, 0, width, height);
   
   let asciiImage = '';
   for (let i = 0; i < imageData.data.length; i += 4) {
@@ -193,10 +118,10 @@ function draw() {
     const g = imageData.data[i + 1];
     const b = imageData.data[i + 2];
     const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-    const charIndex = Math.floor((brightness / 255) * (currentCharSet.length - 1));
-    asciiImage += currentCharSet[charIndex];
+    const charIndex = Math.floor((brightness / 255) * (chars.length - 1));
+    asciiImage += chars[charIndex];
     
-    if ((i / 4 + 1) % currentResolution.width === 0) {
+    if ((i / 4 + 1) % width === 0) {
       asciiImage += '\n';
     }
   }
@@ -205,25 +130,6 @@ function draw() {
   requestAnimationFrame(draw);
 }
 </script>
-<h2 id="seolmyeong">설명</h2>
-<p>이 페이지는 GitHub에 업로드된 동영상을 자동으로 ASCII 아트로 변환하여 재생합니다.</p>
-<ul>
-<li><strong>자동 재생</strong>: 페이지 로드 시 자동 시작</li>
-<li><strong>무한 반복</strong>: 영상이 끝나면 처음부터 다시 재생</li>
-<li><strong>음소거</strong>: 기본적으로 소리 없음</li>
-</ul>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>
-</span><span>---
-</span><span>
-</span><span>## 파일 구조
-</span></code></pre>
-<p>myblog/
-├── static/
-│   └── video/
-│       └── sample.mp4      ← 여기에 동영상
-└── content/
-└── 260105-02-ascii.md  ← 이 파일 수정</p>
-
         </div>
 
         
