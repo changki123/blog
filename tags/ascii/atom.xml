@@ -38,6 +38,7 @@
     white-space: pre;
     overflow-x: auto;
     letter-spacing: 0;
+    padding: 30px 50px;
   }
 &lt;&#x2F;style&gt;
 &lt;div class=&quot;video-wrapper&quot;&gt;
@@ -53,7 +54,6 @@
   const canvas = document.createElement(&#x27;canvas&#x27;);
   const ctx = canvas.getContext(&#x27;2d&#x27;);
   
-  &#x2F;&#x2F; 16:9 비율
   canvas.width = 160;
   canvas.height = 90;
   
@@ -79,7 +79,10 @@
   
   video.addEventListener(&#x27;playing&#x27;, convert);
 })();
-&lt;&#x2F;script&gt;</content>
+&lt;&#x2F;script&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;&lt;strong&gt;원본 영상:&lt;&#x2F;strong&gt; &lt;a href=&quot;https:&#x2F;&#x2F;youtu.be&#x2F;jy2aZHUI-6A?si=EdLWyIsgQw3kib5r&quot;&gt;YouTube에서 보기&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+</content>
         
     </entry>
 </feed>
