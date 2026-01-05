@@ -166,7 +166,7 @@
             
                 <div class="post on-list">
                     
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260105-02-ascii/">YouTube ASCII 플레이어</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260105-02-ascii/">ASCII 동영상</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
@@ -176,65 +176,164 @@
     </div>
 
     
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/animation/">#animation</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/ascii/">#ascii</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/video/">#video</a></span>
+    
 
 
                     <div class="post-content">
-            <div style="text-align: center;">
-  <input type="text" id="youtubeUrl" placeholder="YouTube URL 입력" style="width: 300px;">
-  <button onclick="loadVideo()">로드</button>
-  <br><br>
-  <div id="player" style="display:none;"></div>
-  <pre id="ascii" style="font-size: 5px; line-height: 5px; background: #000; color: #0f0;"></pre>
+            <h1 id="ascii-dongyeongsang-peulreieo">ASCII 동영상 플레이어</h1>
+<div style="text-align: center; background: #1a1a1a; padding: 20px; border-radius: 8px;">
+  <div style="margin: 20px 0;">
+    <label>해상도: </label>
+    <select id="resolution">
+      <option value="low">낮음 (60x45)</option>
+      <option value="medium" selected>중간 (100x75)</option>
+      <option value="high">높음 (140x105)</option>
+    </select>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>&lt;label style=&quot;margin-left: 20px;&quot;&gt;스타일: &lt;/label&gt;
+</span><span>&lt;select id=&quot;style&quot;&gt;
+</span><span>  &lt;option value=&quot;classic&quot;&gt;클래식&lt;/option&gt;
+</span><span>  &lt;option value=&quot;block&quot;&gt;블록&lt;/option&gt;
+</span><span>  &lt;option value=&quot;detailed&quot;&gt;상세&lt;/option&gt;
+</span><span>  &lt;option value=&quot;matrix&quot;&gt;매트릭스&lt;/option&gt;
+</span><span>&lt;/select&gt;
+</span></code></pre>
+  </div>
+  <video id="video" controls autoplay loop muted style="display:none;">
+    <source src="/blog/video/sample.mp4" type="video/mp4">
+  </video>
+  <pre id="ascii" style="
+    font-size: 8px; 
+    line-height: 8px; 
+    background: #000; 
+    color: #0f0; 
+    padding: 10px;
+    margin: 20px auto;
+    max-width: 100%;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+  "></pre>
+  <div style="color: #888; margin-top: 10px;">
+    <small>FPS: <span id="fps">0</span></small>
+  </div>
 </div>
-<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-let player;
+const video = document.getElementById('video');
 const ascii = document.getElementById('ascii');
+const resolutionSelect = document.getElementById('resolution');
+const styleSelect = document.getElementById('style');
+const fpsDisplay = document.getElementById('fps');
+
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
-const chars = ' .\'`^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
 
-const width = 120;
-const height = 60;
-canvas.width = width;
-canvas.height = height;
+// 다양한 ASCII 문자 세트
+const charSets = {
+  classic: ' .:-=+*#%@',
+  block: ' ░▒▓█',
+  detailed: ' .\'`^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$',
+  matrix: ' .::••●',
+};
 
-function loadVideo() {
-  const url = document.getElementById('youtubeUrl').value;
-  const videoId = url.split('v=')[1]?.split('&')[0];
+// 해상도 설정
+const resolutions = {
+  low: { width: 60, height: 45 },
+  medium: { width: 100, height: 75 },
+  high: { width: 140, height: 105 },
+};
+
+let currentResolution = resolutions.medium;
+let currentCharSet = charSets.classic;
+let frameCount = 0;
+let lastTime = performance.now();
+
+// 초기 캔버스 크기 설정
+canvas.width = currentResolution.width;
+canvas.height = currentResolution.height;
+
+resolutionSelect.addEventListener('change', (e) => {
+  currentResolution = resolutions[e.target.value];
+  canvas.width = currentResolution.width;
+  canvas.height = currentResolution.height;
   
-  if (player) player.destroy();
+  const fontSize = e.target.value === 'high' ? 6 : e.target.value === 'medium' ? 8 : 10;
+  ascii.style.fontSize = fontSize + 'px';
+  ascii.style.lineHeight = fontSize + 'px';
+});
+
+styleSelect.addEventListener('change', (e) => {
+  currentCharSet = charSets[e.target.value];
   
-  player = new YT.Player('player', {
-    height: '240',
-    width: '320',
-    videoId: videoId,
-    events: { 'onReady': onPlayerReady }
-  });
-}
-
-function onPlayerReady() {
-  setInterval(captureFrame, 100);
-}
-
-function captureFrame() {
-  // YouTube iframe에서는 직접 캡처가 불가능합니다
-  // 대신 placeholder ASCII 애니메이션을 보여줍니다
-  generateRandomAscii();
-}
-
-function generateRandomAscii() {
-  let output = '';
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      output += chars[Math.floor(Math.random() * chars.length)];
-    }
-    output += '\n';
+  if (e.target.value === 'matrix') {
+    ascii.style.color = '#0f0';
+    ascii.style.textShadow = '0 0 5px #0f0';
+  } else {
+    ascii.style.color = '#0f0';
+    ascii.style.textShadow = 'none';
   }
-  ascii.textContent = output;
+});
+
+// 비디오 로드되면 자동 시작
+video.addEventListener('loadeddata', () => {
+  requestAnimationFrame(draw);
+});
+
+function draw() {
+  if (video.paused || video.ended) return;
+  
+  // FPS 계산
+  frameCount++;
+  const now = performance.now();
+  if (now - lastTime >= 1000) {
+    fpsDisplay.textContent = frameCount;
+    frameCount = 0;
+    lastTime = now;
+  }
+  
+  ctx.drawImage(video, 0, 0, currentResolution.width, currentResolution.height);
+  const imageData = ctx.getImageData(0, 0, currentResolution.width, currentResolution.height);
+  
+  let asciiImage = '';
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    const r = imageData.data[i];
+    const g = imageData.data[i + 1];
+    const b = imageData.data[i + 2];
+    const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+    const charIndex = Math.floor((brightness / 255) * (currentCharSet.length - 1));
+    asciiImage += currentCharSet[charIndex];
+    
+    if ((i / 4 + 1) % currentResolution.width === 0) {
+      asciiImage += '\n';
+    }
+  }
+  
+  ascii.textContent = asciiImage;
+  requestAnimationFrame(draw);
 }
 </script>
-<p><em>참고: YouTube는 보안상 직접 프레임 캡처가 불가능해서 랜덤 ASCII로 시뮬레이션합니다.</em></p>
+<h2 id="seolmyeong">설명</h2>
+<p>이 페이지는 GitHub에 업로드된 동영상을 자동으로 ASCII 아트로 변환하여 재생합니다.</p>
+<ul>
+<li><strong>자동 재생</strong>: 페이지 로드 시 자동 시작</li>
+<li><strong>무한 반복</strong>: 영상이 끝나면 처음부터 다시 재생</li>
+<li><strong>음소거</strong>: 기본적으로 소리 없음</li>
+</ul>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>
+</span><span>---
+</span><span>
+</span><span>## 파일 구조
+</span></code></pre>
+<p>myblog/
+├── static/
+│   └── video/
+│       └── sample.mp4      ← 여기에 동영상
+└── content/
+└── 260105-02-ascii.md  ← 이 파일 수정</p>
+
         </div>
 
                 </div>

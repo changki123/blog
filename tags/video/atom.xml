@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>changki123&#x27;s blog - video</title>
+    <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/video/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-01-05T00:00:00+00:00</updated>
+    <id>https://changki123.github.io/blog/tags/video/atom.xml</id>
+    <entry xml:lang="en">
+        <title>ASCII 동영상</title>
+        <published>2026-01-05T00:00:00+00:00</published>
+        <updated>2026-01-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260105-02-ascii/"/>
+        <id>https://changki123.github.io/blog/260105-02-ascii/</id>
+        
+        <content type="html" xml:base="https://changki123.github.io/blog/260105-02-ascii/">&lt;h1 id=&quot;ascii-dongyeongsang-peulreieo&quot;&gt;ASCII 동영상 플레이어&lt;&#x2F;h1&gt;
+&lt;div style=&quot;text-align: center; background: #1a1a1a; padding: 20px; border-radius: 8px;&quot;&gt;
+  &lt;div style=&quot;margin: 20px 0;&quot;&gt;
+    &lt;label&gt;해상도: &lt;&#x2F;label&gt;
+    &lt;select id=&quot;resolution&quot;&gt;
+      &lt;option value=&quot;low&quot;&gt;낮음 (60x45)&lt;&#x2F;option&gt;
+      &lt;option value=&quot;medium&quot; selected&gt;중간 (100x75)&lt;&#x2F;option&gt;
+      &lt;option value=&quot;high&quot;&gt;높음 (140x105)&lt;&#x2F;option&gt;
+    &lt;&#x2F;select&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;&amp;lt;label style=&amp;quot;margin-left: 20px;&amp;quot;&amp;gt;스타일: &amp;lt;&#x2F;label&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;select id=&amp;quot;style&amp;quot;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;option value=&amp;quot;classic&amp;quot;&amp;gt;클래식&amp;lt;&#x2F;option&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;option value=&amp;quot;block&amp;quot;&amp;gt;블록&amp;lt;&#x2F;option&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;option value=&amp;quot;detailed&amp;quot;&amp;gt;상세&amp;lt;&#x2F;option&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &amp;lt;option value=&amp;quot;matrix&amp;quot;&amp;gt;매트릭스&amp;lt;&#x2F;option&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;lt;&#x2F;select&amp;gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+  &lt;&#x2F;div&gt;
+  &lt;video id=&quot;video&quot; controls autoplay loop muted style=&quot;display:none;&quot;&gt;
+    &lt;source src=&quot;&#x2F;blog&#x2F;video&#x2F;sample.mp4&quot; type=&quot;video&#x2F;mp4&quot;&gt;
+  &lt;&#x2F;video&gt;
+  &lt;pre id=&quot;ascii&quot; style=&quot;
+    font-size: 8px; 
+    line-height: 8px; 
+    background: #000; 
+    color: #0f0; 
+    padding: 10px;
+    margin: 20px auto;
+    max-width: 100%;
+    overflow-x: auto;
+    font-family: &#x27;Courier New&#x27;, monospace;
+  &quot;&gt;&lt;&#x2F;pre&gt;
+  &lt;div style=&quot;color: #888; margin-top: 10px;&quot;&gt;
+    &lt;small&gt;FPS: &lt;span id=&quot;fps&quot;&gt;0&lt;&#x2F;span&gt;&lt;&#x2F;small&gt;
+  &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;
+&lt;script&gt;
+const video = document.getElementById(&#x27;video&#x27;);
+const ascii = document.getElementById(&#x27;ascii&#x27;);
+const resolutionSelect = document.getElementById(&#x27;resolution&#x27;);
+const styleSelect = document.getElementById(&#x27;style&#x27;);
+const fpsDisplay = document.getElementById(&#x27;fps&#x27;);
+
+const canvas = document.createElement(&#x27;canvas&#x27;);
+const ctx = canvas.getContext(&#x27;2d&#x27;);
+
+&#x2F;&#x2F; 다양한 ASCII 문자 세트
+const charSets = {
+  classic: &#x27; .:-=+*#%@&#x27;,
+  block: &#x27; ░▒▓█&#x27;,
+  detailed: &#x27; .\&#x27;`^&quot;,:;Il!i&gt;&lt;~+_-?][}{1)(|\\&#x2F;tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&amp;8%B@$&#x27;,
+  matrix: &#x27; .::••●&#x27;,
+};
+
+&#x2F;&#x2F; 해상도 설정
+const resolutions = {
+  low: { width: 60, height: 45 },
+  medium: { width: 100, height: 75 },
+  high: { width: 140, height: 105 },
+};
+
+let currentResolution = resolutions.medium;
+let currentCharSet = charSets.classic;
+let frameCount = 0;
+let lastTime = performance.now();
+
+&#x2F;&#x2F; 초기 캔버스 크기 설정
+canvas.width = currentResolution.width;
+canvas.height = currentResolution.height;
+
+resolutionSelect.addEventListener(&#x27;change&#x27;, (e) =&gt; {
+  currentResolution = resolutions[e.target.value];
+  canvas.width = currentResolution.width;
+  canvas.height = currentResolution.height;
+  
+  const fontSize = e.target.value === &#x27;high&#x27; ? 6 : e.target.value === &#x27;medium&#x27; ? 8 : 10;
+  ascii.style.fontSize = fontSize + &#x27;px&#x27;;
+  ascii.style.lineHeight = fontSize + &#x27;px&#x27;;
+});
+
+styleSelect.addEventListener(&#x27;change&#x27;, (e) =&gt; {
+  currentCharSet = charSets[e.target.value];
+  
+  if (e.target.value === &#x27;matrix&#x27;) {
+    ascii.style.color = &#x27;#0f0&#x27;;
+    ascii.style.textShadow = &#x27;0 0 5px #0f0&#x27;;
+  } else {
+    ascii.style.color = &#x27;#0f0&#x27;;
+    ascii.style.textShadow = &#x27;none&#x27;;
+  }
+});
+
+&#x2F;&#x2F; 비디오 로드되면 자동 시작
+video.addEventListener(&#x27;loadeddata&#x27;, () =&gt; {
+  requestAnimationFrame(draw);
+});
+
+function draw() {
+  if (video.paused || video.ended) return;
+  
+  &#x2F;&#x2F; FPS 계산
+  frameCount++;
+  const now = performance.now();
+  if (now - lastTime &gt;= 1000) {
+    fpsDisplay.textContent = frameCount;
+    frameCount = 0;
+    lastTime = now;
+  }
+  
+  ctx.drawImage(video, 0, 0, currentResolution.width, currentResolution.height);
+  const imageData = ctx.getImageData(0, 0, currentResolution.width, currentResolution.height);
+  
+  let asciiImage = &#x27;&#x27;;
+  for (let i = 0; i &lt; imageData.data.length; i += 4) {
+    const r = imageData.data[i];
+    const g = imageData.data[i + 1];
+    const b = imageData.data[i + 2];
+    const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+    const charIndex = Math.floor((brightness &#x2F; 255) * (currentCharSet.length - 1));
+    asciiImage += currentCharSet[charIndex];
+    
+    if ((i &#x2F; 4 + 1) % currentResolution.width === 0) {
+      asciiImage += &#x27;\n&#x27;;
+    }
+  }
+  
+  ascii.textContent = asciiImage;
+  requestAnimationFrame(draw);
+}
+&lt;&#x2F;script&gt;
+&lt;h2 id=&quot;seolmyeong&quot;&gt;설명&lt;&#x2F;h2&gt;
+&lt;p&gt;이 페이지는 GitHub에 업로드된 동영상을 자동으로 ASCII 아트로 변환하여 재생합니다.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;자동 재생&lt;&#x2F;strong&gt;: 페이지 로드 시 자동 시작&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;무한 반복&lt;&#x2F;strong&gt;: 영상이 끝나면 처음부터 다시 재생&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;음소거&lt;&#x2F;strong&gt;: 기본적으로 소리 없음&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;---
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;## 파일 구조
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;myblog&#x2F;
+├── static&#x2F;
+│   └── video&#x2F;
+│       └── sample.mp4      ← 여기에 동영상
+└── content&#x2F;
+└── 260105-02-ascii.md  ← 이 파일 수정&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
