@@ -1,10 +1,10 @@
 +++
 
-sort\_by = "date"
+sort_by = "date"
 
 template = "index.html"
 
-paginate\_by = 10
+paginate_by = 10
 
 +++
 
