@@ -8,6 +8,7 @@ theme = "terminimal"
 
 taxonomies = [
     {name = "tags", feed = true},
+    {name = "categories", feed = true},  # 이 줄 추가!
 ]
 
 [markdown]
