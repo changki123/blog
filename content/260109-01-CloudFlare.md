@@ -1,0 +1,74 @@
++++
+title = "ASCII 동영상"
+date = 2026-01-05
+
+[taxonomies]
+tags = ["ascii", "video"]
+
+[extra]
+author = "changki123"
++++
+
+<style>
+  .video-wrapper {
+    background: #000;
+    text-align: center;
+    padding: 20px;
+  }
+  #ascii-output {
+    font-size: 5px;
+    line-height: 2.5px;
+    background: #000;
+    color: #0f0;
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    letter-spacing: 0;
+    padding: 30px 50px;
+  }
+</style>
+
+<div class="video-wrapper">
+  <video id="sourceVideo" width="640" height="360" autoplay loop muted>
+    <source src="/blog/video/sample.mp4" type="video/mp4">
+  </video>
+  <div id="ascii-output"></div>
+</div>
+
+<script>
+(function() {
+  const video = document.getElementById('sourceVideo');
+  const output = document.getElementById('ascii-output');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  
+  canvas.width = 240;
+  canvas.height = 135;
+  
+  const chars = ' .:-=+*#%@';
+  
+  function convert() {
+    if (!video.paused && !video.ended) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let ascii = '';
+      
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
+        const charIdx = Math.floor(avg / 255 * (chars.length - 1));
+        ascii += chars[charIdx];
+        if ((i/4 + 1) % canvas.width === 0) ascii += '\n';
+      }
+      
+      output.textContent = ascii;
+      requestAnimationFrame(convert);
+    }
+  }
+  
+  video.addEventListener('playing', convert);
+})();
+</script>
+
+---
+
+**원본 영상:** [YouTube에서 보기](https://youtu.be/jy2aZHUI-6A?si=EdLWyIsgQw3kib5r)
