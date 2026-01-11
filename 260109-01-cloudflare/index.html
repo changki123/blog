@@ -58,82 +58,137 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260109-01-cloudflare/">ASCII 동영상</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260109-01-cloudflare/">AWS Route 53으로 커스텀 도메인 구매하고 GitHub 블로그 연결하기</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-01-05
+            2026-01-12
         </span>
 
     </div>
 
     
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/ascii/">#ascii</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/video/">#video</a></span>
-    
 
         <div class="post-content">
-            <style>
-  .video-wrapper {
-    background: #000;
-    text-align: center;
-    padding: 20px;
-  }
-  #ascii-output {
-    font-size: 5px;
-    line-height: 2.5px;
-    background: #000;
-    color: #0f0;
-    font-family: monospace;
-    white-space: pre;
-    overflow-x: auto;
-    letter-spacing: 0;
-    padding: 30px 50px;
-  }
-</style>
-<div class="video-wrapper">
-  <video id="sourceVideo" width="640" height="360" autoplay loop muted>
-    <source src="/blog/video/sample.mp4" type="video/mp4">
-  </video>
-  <div id="ascii-output"></div>
-</div>
-<script>
-(function() {
-  const video = document.getElementById('sourceVideo');
-  const output = document.getElementById('ascii-output');
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  
-  canvas.width = 240;
-  canvas.height = 135;
-  
-  const chars = ' .:-=+*#%@';
-  
-  function convert() {
-    if (!video.paused && !video.ended) {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      let ascii = '';
-      
-      for (let i = 0; i < imgData.data.length; i += 4) {
-        const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
-        const charIdx = Math.floor(avg / 255 * (chars.length - 1));
-        ascii += chars[charIdx];
-        if ((i/4 + 1) % canvas.width === 0) ascii += '\n';
-      }
-      
-      output.textContent = ascii;
-      requestAnimationFrame(convert);
-    }
-  }
-  
-  video.addEventListener('playing', convert);
-})();
-</script>
+            <p>기술 블로그를 위해 AWS Route 53에서 <code>.click</code> 도메인을 구매하고 GitHub Pages에 연결한 과정을 기록합니다.</p>
+<h2 id="wae-keoseuteom-domeininga">왜 커스텀 도메인인가?</h2>
+<p>GitHub Pages는 기본적으로 <code>username.github.io</code> 형태의 도메인을 제공하지만, 커스텀 도메인을 사용하면:</p>
+<ul>
+<li>전문적인 브랜딩</li>
+<li>기억하기 쉬운 URL</li>
+<li>포트폴리오 가치 상승</li>
+<li>실무 DNS 관리 경험</li>
+</ul>
+<h2 id="domein-seontaeg-gwajeong">도메인 선택 과정</h2>
+<h3 id="tld-bigyo">TLD 비교</h3>
+<p>처음엔 <code>.com</code>을 고려했지만:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>changki123.com - $15/년
+</span><span>changki123.org - $15/년
+</span><span>
+</span><span>vs
+</span><span>
+</span><span>changki123.click - $3/년 (5배 저렴!)
+</span></code></pre>
+<p><code>.click</code> 도메인을 선택한 이유:</p>
+<ul>
+<li>저렴한 비용 (연 $3)</li>
+<li>등록 제약 없음 (누구나 등록 가능)</li>
+<li>기술/블로그 용도로 적합</li>
+<li>Route 53에서 구매 가능</li>
+</ul>
+<h3 id="domein-gujo-seolgye-yesi">도메인 구조 설계 예시</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>changki123.click              → 메인 홈페이지 (향후 포트폴리오)
+</span><span>blog.changki123.click         → 기술 블로그 (현재)
+</span><span>lab.changki123.click          → 실습/테스트용 (계획)
+</span><span>monitor.changki123.click      → 모니터링 대시보드 (계획)
+</span></code></pre>
+<p>서브도메인으로 분리하면 용도별 관리가 쉽고 나중에 확장하기 좋습니다.</p>
+<h2 id="route-53-domein-gumae">Route 53 도메인 구매</h2>
+<h3 id="1dangye-domein-geomsaeg">1단계: 도메인 검색</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>AWS Console 로그인
+</span><span>→ Route 53 서비스 접속
+</span><span>→ 왼쪽 메뉴 &quot;Registered domains&quot; 클릭
+</span><span>→ &quot;Register Domain&quot; 버튼
+</span></code></pre>
+<h3 id="2dangye-domein-seontaeg">2단계: 도메인 선택</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>도메인 검색: changki123
+</span><span>→ .click 확장자 선택
+</span><span>→ Add to cart
+</span><span>→ Continue
+</span></code></pre>
+<h3 id="3dangye-yeonragceo-jeongbo-ibryeog">3단계: 연락처 정보 입력</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Contact Type: Person (개인)
+</span><span>First Name / Last Name: 영문 입력
+</span><span>Email: 본인 이메일 (중요!)
+</span><span>Phone: +82-10-xxxx-xxxx
+</span><span>Address: 영문 주소
+</span><span>
+</span><span>Privacy Protection: 기본 활성화 (개인정보 보호)
+</span><span>Auto-renew: 체크 (자동 갱신)
+</span></code></pre>
+<p><strong>주의사항:</strong></p>
+<ul>
+<li>이메일 주소는 반드시 확인 가능한 주소 사용</li>
+<li>도메인 인증 이메일을 받게 됨</li>
+</ul>
+<h3 id="4dangye-gyeolje-mic-daegi">4단계: 결제 및 대기</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Total cost: $3.00 USD
+</span><span>→ Complete Order
+</span><span>
+</span><span>상태: 진행 중 (Pending)
+</span><span>예상 시간: 10분~24시간
+</span></code></pre>
+<h2 id="domein-injeung">도메인 인증</h2>
+<h3 id="imeil-injeung-pilsu">이메일 인증 필수</h3>
+<p>도메인 등록 후 Amazon Registrar로부터 이메일이 옵니다:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>From: Amazon Registrar
+</span><span>Subject: [Action Required] Email Address Verification
+</span></code></pre>
+<p><strong>중요:</strong> 15일 내 인증하지 않으면 도메인이 정지됩니다!</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>1. 받은편지함 확인 (스팸함도 체크!)
+</span><span>2. 이메일의 인증 링크 클릭
+</span><span>3. &quot;Email address verified&quot; 확인
+</span></code></pre>
+<h3 id="deungrog-wanryo-hwagin">등록 완료 확인</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Route 53 → Registered domains
+</span><span>→ changki123.click
+</span><span>
+</span><span>상태: 진행 중 → 등록 완료
+</span><span>Hosted Zone: 자동 생성됨
+</span></code></pre>
+<h2 id="dns-seoljeong-hosted-zone">DNS 설정 (Hosted Zone)</h2>
+<p>도메인이 등록되면 Hosted Zone이 자동으로 생성됩니다.</p>
+<h3 id="hosted-zone-hwagin">Hosted Zone 확인</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Route 53 → Hosted zones
+</span><span>→ changki123.click
+</span><span>
+</span><span>기본 레코드:
+</span><span>- NS (Name Server) 레코드
+</span><span>- SOA (Start of Authority) 레코드
+</span></code></pre>
+<h3 id="beulrogeuyong-cname-rekodeu-cuga">블로그용 CNAME 레코드 추가</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Create record 클릭
+</span><span>
+</span><span>Record name: blog
+</span><span>Record type: CNAME
+</span><span>Value: changki123.github.io
+</span><span>TTL: 300 (5분)
+</span><span>
+</span><span>→ Create records
+</span></code></pre>
+<p><strong>중요:</strong> Value에는 경로를 포함하지 않습니다!</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>✅ changki123.github.io
+</span><span>❌ changki123.github.io/blog/
+</span></code></pre>
+<h3 id="dns-rekodeu-hwagin">DNS 레코드 확인</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 터미널에서 확인
+</span><span style="color:#bf616a;">dig</span><span> blog.changki123.click
+</span><span>
+</span><span style="color:#65737e;"># 출력 예시:
+</span><span style="color:#65737e;"># blog.changki123.click. 300 IN CNAME changki123.github.io.
+</span><span style="color:#65737e;"># changki123.github.io. 3600 IN A 185.199.108.153
+</span></code></pre>
 <hr />
-<p><strong>원본 영상:</strong> <a href="https://youtu.be/jy2aZHUI-6A?si=EdLWyIsgQw3kib5r">YouTube에서 보기</a></p>
 
         </div>
 
@@ -145,19 +200,12 @@
                 </div>
                 <div class="pagination__buttons">
                         <span class="button previous">
-                            <a href="https://changki123.github.io/blog/260102-01-zola-blog-setup/">
+                            <a href="https://changki123.github.io/blog/260105-01-fish/">
                                 <span class="button__icon">←</span>&nbsp;
-                                <span class="button__text">Windows에서 Zola + GitHub Pages로 블로그 만들기</span>
+                                <span class="button__text">라스보라 물고기 키우기 - 초보자 가이드</span>
                             </a>
                         </span>
                     
-                    
-                        <span class="button next">
-                            <a href="https://changki123.github.io/blog/260105-02-ascii/">
-                                <span class="button__text">ASCII 동영상</span>&nbsp;
-                                <span class="button__icon">→</span>
-                            </a>
-                        </span>
                     </div>
             </div>
         
