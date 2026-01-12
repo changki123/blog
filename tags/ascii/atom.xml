@@ -43,7 +43,7 @@
 &lt;&#x2F;style&gt;
 &lt;div class=&quot;video-wrapper&quot;&gt;
   &lt;video id=&quot;sourceVideo&quot; width=&quot;640&quot; height=&quot;360&quot; autoplay loop muted&gt;
-    &lt;source src=&quot;&#x2F;blog&#x2F;video&#x2F;sample.mp4&quot; type=&quot;video&#x2F;mp4&quot;&gt;
+    &lt;source src=&quot;&#x2F;video&#x2F;sample.mp4&quot; type=&quot;video&#x2F;mp4&quot;&gt;
   &lt;&#x2F;video&gt;
   &lt;div id=&quot;ascii-output&quot;&gt;&lt;&#x2F;div&gt;
 &lt;&#x2F;div&gt;
