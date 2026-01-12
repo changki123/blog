@@ -1,0 +1,20 @@
+{% extends "terminimal/templates/base.html" %}
+
+{% block extra_head %}
+<!-- Turnstile 스크립트 -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endblock %}
+
+{% block footer %}
+{{ super() }}
+
+<!-- 푸터 위에 Turnstile 추가 -->
+<div style="margin: 40px auto; padding: 20px; text-align: center; max-width: 600px;">
+  <h3 style="margin-bottom: 20px;">🤖 사람인지 확인</h3>
+  <div class="cf-turnstile" 
+       data-sitekey="0x4AAAAAACL78Sh66O7KQoJb"
+       data-theme="dark"
+       data-size="normal">
+  </div>
+</div>
+{% endblock %}
