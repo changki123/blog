@@ -21,11 +21,11 @@ body.loading, .loading * {
 /* 메인 레이아웃 */
 .content-with-sidebar {
     display: flex;
-    flex-direction: row;  /* 가로 배치 명시 */
+    flex-direction: row;
     gap: 30px;
     max-width: 1200px;
     margin: 0 auto;
-    align-items: flex-start;  /* 상단 정렬 추가 */
+    align-items: flex-start;
 }
 
 .main-content {
@@ -36,7 +36,7 @@ body.loading, .loading * {
 /* 사이드바 */
 .sidebar {
     width: 250px;
-    flex-shrink: 0;  /* 사이드바 크기 고정 */
+    flex-shrink: 0;
     position: sticky;
     top: 20px;
     height: fit-content;
@@ -55,30 +55,31 @@ body.loading, .loading * {
     color: #fff;
 }
 
-/* 태그 스타일 */
+/* 태그 스타일 - 가로 배치 */
 .tags-widget {
     display: flex;
-    flex-direction: column;  /* 세로 배치로 변경 */
+    flex-direction: row;     /* 가로로 */
+    flex-wrap: wrap;         /* 줄바꿈 */
     gap: 8px;
 }
 
 .tag-link {
-    display: flex;  /* inline-flex → flex */
-    justify-content: space-between;  /* 양쪽 정렬 */
+    display: inline-flex;    /* inline-flex로 변경 */
     align-items: center;
-    padding: 8px 12px;  /* 패딩 증가 */
+    padding: 6px 10px;       /* 패딩 살짝 줄임 */
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     text-decoration: none;
     color: #a0a0a0;
-    font-size: 13px;
+    font-size: 12px;         /* 폰트 살짝 줄임 */
     transition: all 0.2s;
+    white-space: nowrap;     /* 태그 이름 안 깨지게 */
 }
 
 .tag-link:hover {
     background: rgba(255, 255, 255, 0.2);
     color: #fff;
-    transform: translateX(2px);  /* 호버 시 살짝 이동 */
+    transform: translateY(-2px);  /* 위로 살짝 */
 }
 
 .tag-name {
@@ -90,19 +91,6 @@ body.loading, .loading * {
     opacity: 0.6;
     font-size: 11px;
 }
-
-/* 반응형 */
-@media (max-width: 768px) {
-    .content-with-sidebar {
-        flex-direction: column;
-    }
-    
-    .sidebar {
-        width: 100%;
-        position: static;
-    }
-}
-
 
 /* 더보기 버튼 */
 .toggle-button {
@@ -126,4 +114,16 @@ body.loading, .loading * {
 
 .toggle-button:active {
     transform: scale(0.98);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .content-with-sidebar {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
 }
