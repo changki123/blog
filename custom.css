@@ -14,3 +14,82 @@ input, textarea {
 body.loading, .loading * {
   cursor: url('/blog/cursors/Busy.cur'), wait !important;
 }
+
+
+/* 사이드바 추가 */
+
+/* 메인 레이아웃 */
+.content-wrapper {
+    display: flex;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 사이드바 */
+.sidebar {
+    width: 250px;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.sidebar-section {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.sidebar-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #fff;
+}
+
+/* 태그 스타일 */
+.tags-widget {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    text-decoration: none;
+    color: #a0a0a0;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.tag-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.tag-count {
+    margin-left: 4px;
+    opacity: 0.6;
+    font-size: 11px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+}
