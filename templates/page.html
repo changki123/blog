@@ -1,0 +1,11 @@
+{% extends "terminimal/templates/page.html" %}
+
+{% block content %}
+<div class="content-with-sidebar">
+    <main class="main-content">
+        {{ super() }}
+    </main>
+    
+    {% include "partials/sidebar.html" %}
+</div>
+{% endblock %}
