@@ -103,73 +103,109 @@
 
     </main>
     
-    <!-- templates/partials/sidebar.html -->
-<aside class="sidebar">
+    <aside class="sidebar">
     <div class="sidebar-section">
         <h3>📌 태그</h3>
-        <div class="tags-widget">
+        <div class="tags-widget" id="tags-widget">
             
             
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;aquarium&#x2F;" class="tag-link">
-                        #aquarium
+                        <span class="tag-name">#aquarium</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;ascii&#x2F;" class="tag-link">
-                        #ascii
+                        <span class="tag-name">#ascii</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;beginner-guide&#x2F;" class="tag-link">
-                        #beginner-guide
+                        <span class="tag-name">#beginner-guide</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;blog&#x2F;" class="tag-link">
-                        #blog
+                        <span class="tag-name">#blog</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;github-pages&#x2F;" class="tag-link">
-                        #github-pages
+                        <span class="tag-name">#github-pages</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;rasbora&#x2F;" class="tag-link">
-                        #rasbora
+                        <span class="tag-name">#rasbora</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;rust&#x2F;" class="tag-link">
-                        #rust
+                        <span class="tag-name">#rust</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;tropical-fish&#x2F;" class="tag-link">
-                        #tropical-fish
+                        <span class="tag-name">#tropical-fish</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;tutorial&#x2F;" class="tag-link">
-                        #tutorial
+                        <span class="tag-name">#tutorial</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;video&#x2F;" class="tag-link">
-                        #video
+                        <span class="tag-name">#video</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;zola&#x2F;" class="tag-link">
-                        #zola
+                        <span class="tag-name">#zola</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
             
         </div>
+        <button id="toggle-tags" class="toggle-button">더보기 ▼</button>
     </div>
 </aside>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tagsWidget = document.getElementById('tags-widget');
+    const toggleButton = document.getElementById('toggle-tags');
+    const tags = tagsWidget.querySelectorAll('.tag-link');
+    const showCount = 8; // 처음에 보여줄 태그 개수
+    
+    // 태그가 적으면 버튼 숨기기
+    if (tags.length <= showCount) {
+        toggleButton.style.display = 'none';
+        return;
+    }
+    
+    // 처음에 일부만 보이기
+    tags.forEach((tag, index) => {
+        if (index >= showCount) {
+            tag.style.display = 'none';
+        }
+    });
+    
+    // 버튼 클릭 이벤트
+    let isExpanded = false;
+    toggleButton.addEventListener('click', function() {
+        isExpanded = !isExpanded;
+        
+        tags.forEach((tag, index) => {
+            if (index >= showCount) {
+                tag.style.display = isExpanded ? 'flex' : 'none';
+            }
+        });
+        
+        toggleButton.textContent = isExpanded ? '접기 ▲' : '더보기 ▼';
+    });
+});
+</script>
 </div>
 
     </div>
