@@ -59,7 +59,7 @@
         <div class="posts">
                 <div class="post on-list">
                     
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260109-01-cloudflare/">AWS Route 53으로 커스텀 도메인 구매하고 GitHub 블로그 연결하기</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260109-01-cloudflare/">Cloudflare DNS로 커스텀 도메인 구매하고 GitHub 블로그 연결하기</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
@@ -72,7 +72,7 @@
 
 
                     <div class="post-content">
-            <p>기술 블로그를 위해 AWS Route 53에서 <code>.click</code> 도메인을 구매하고 GitHub Pages에 연결한 과정을 기록합니다.</p>
+            <p>기술 블로그를 위해 <code>.click</code> 도메인을 구매하고 Cloudflare DNS를 통해 GitHub Pages에 연결한 과정을 기록합니다.</p>
 <h2 id="wae-keoseuteom-domeininga">왜 커스텀 도메인인가?</h2>
 <p>GitHub Pages는 기본적으로 <code>username.github.io</code> 형태의 도메인을 제공하지만, 커스텀 도메인을 사용하면:</p>
 <ul>
@@ -96,7 +96,7 @@
 <li>저렴한 비용 (연 $3)</li>
 <li>등록 제약 없음 (누구나 등록 가능)</li>
 <li>기술/블로그 용도로 적합</li>
-<li>Route 53에서 구매 가능</li>
+<li>다양한 레지스트라에서 구매 가능</li>
 </ul>
 <h3 id="domein-gujo-seolgye-yesi">도메인 구조 설계 예시</h3>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>changki123.click              → 메인 홈페이지 (향후 포트폴리오)
@@ -105,92 +105,165 @@
 </span><span>monitor.changki123.click      → 모니터링 대시보드 (계획)
 </span></code></pre>
 <p>서브도메인으로 분리하면 용도별 관리가 쉽고 나중에 확장하기 좋습니다.</p>
-<h2 id="route-53-domein-gumae">Route 53 도메인 구매</h2>
-<h3 id="1dangye-domein-geomsaeg">1단계: 도메인 검색</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>AWS Console 로그인
-</span><span>→ Route 53 서비스 접속
-</span><span>→ 왼쪽 메뉴 &quot;Registered domains&quot; 클릭
-</span><span>→ &quot;Register Domain&quot; 버튼
+<h2 id="cloudflare-dns-seoljeong">Cloudflare DNS 설정</h2>
+<h3 id="1dangye-cloudflare-gyejeong-saengseong-mic-saiteu-cuga">1단계: Cloudflare 계정 생성 및 사이트 추가</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>1. cloudflare.com 접속
+</span><span>2. 계정 가입 (무료 플랜 선택)
+</span><span>3. 대시보드에서 &quot;Add a Site&quot; 클릭
+</span><span>4. 도메인 입력: changki123.click
+</span><span>5. Free 플랜 선택
 </span></code></pre>
-<h3 id="2dangye-domein-seontaeg">2단계: 도메인 선택</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>도메인 검색: changki123
-</span><span>→ .click 확장자 선택
-</span><span>→ Add to cart
-</span><span>→ Continue
-</span></code></pre>
-<h3 id="3dangye-yeonragceo-jeongbo-ibryeog">3단계: 연락처 정보 입력</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Contact Type: Person (개인)
-</span><span>First Name / Last Name: 영문 입력
-</span><span>Email: 본인 이메일 (중요!)
-</span><span>Phone: +82-10-xxxx-xxxx
-</span><span>Address: 영문 주소
+<h3 id="2dangye-dns-rekodeu-seoljeong">2단계: DNS 레코드 설정</h3>
+<p>Cloudflare가 기존 DNS 레코드를 자동 스캔한 후:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>DNS → Records 메뉴
 </span><span>
-</span><span>Privacy Protection: 기본 활성화 (개인정보 보호)
-</span><span>Auto-renew: 체크 (자동 갱신)
+</span><span>블로그용 CNAME 레코드 추가:
+</span><span>Type: CNAME
+</span><span>Name: blog
+</span><span>Target: changki123.github.io
+</span><span>Proxy status: Proxied (주황색 구름) 또는 DNS only
+</span><span>TTL: Auto
+</span><span>
+</span><span>→ Save
 </span></code></pre>
-<p><strong>주의사항:</strong></p>
+<p><strong>Proxy 설정 참고:</strong></p>
 <ul>
-<li>이메일 주소는 반드시 확인 가능한 주소 사용</li>
-<li>도메인 인증 이메일을 받게 됨</li>
+<li><strong>Proxied (주황색 구름)</strong>: Cloudflare CDN 사용, DDoS 보호, SSL 자동</li>
+<li><strong>DNS only (회색 구름)</strong>: 단순 DNS만 사용, GitHub 직접 연결</li>
 </ul>
-<h3 id="4dangye-gyeolje-mic-daegi">4단계: 결제 및 대기</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Total cost: $3.00 USD
-</span><span>→ Complete Order
-</span><span>
-</span><span>상태: 진행 중 (Pending)
-</span><span>예상 시간: 10분~24시간
+<h3 id="3dangye-neimseobeo-byeongyeong">3단계: 네임서버 변경</h3>
+<p>Cloudflare가 제공하는 네임서버 정보를 도메인 레지스트라에 등록합니다.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Cloudflare가 제공하는 네임서버 예시:
+</span><span>aldo.ns.cloudflare.com
+</span><span>raquel.ns.cloudflare.com
 </span></code></pre>
-<h2 id="domein-injeung">도메인 인증</h2>
-<h3 id="imeil-injeung-pilsu">이메일 인증 필수</h3>
-<p>도메인 등록 후 Amazon Registrar로부터 이메일이 옵니다:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>From: Amazon Registrar
-</span><span>Subject: [Action Required] Email Address Verification
+<p>도메인 구매한 레지스트라(AWS Route 53, GoDaddy 등) 관리 페이지에서:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>1. 도메인 관리 메뉴 접속
+</span><span>2. 네임서버(Name Server) 설정 찾기
+</span><span>3. Custom 네임서버로 변경
+</span><span>4. Cloudflare 네임서버 2개 입력
+</span><span>5. 저장
 </span></code></pre>
-<p><strong>중요:</strong> 15일 내 인증하지 않으면 도메인이 정지됩니다!</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>1. 받은편지함 확인 (스팸함도 체크!)
-</span><span>2. 이메일의 인증 링크 클릭
-</span><span>3. &quot;Email address verified&quot; 확인
-</span></code></pre>
-<h3 id="deungrog-wanryo-hwagin">등록 완료 확인</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Route 53 → Registered domains
-</span><span>→ changki123.click
-</span><span>
-</span><span>상태: 진행 중 → 등록 완료
-</span><span>Hosted Zone: 자동 생성됨
-</span></code></pre>
-<h2 id="dns-seoljeong-hosted-zone">DNS 설정 (Hosted Zone)</h2>
-<p>도메인이 등록되면 Hosted Zone이 자동으로 생성됩니다.</p>
-<h3 id="hosted-zone-hwagin">Hosted Zone 확인</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Route 53 → Hosted zones
-</span><span>→ changki123.click
-</span><span>
-</span><span>기본 레코드:
-</span><span>- NS (Name Server) 레코드
-</span><span>- SOA (Start of Authority) 레코드
-</span></code></pre>
-<h3 id="beulrogeuyong-cname-rekodeu-cuga">블로그용 CNAME 레코드 추가</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Create record 클릭
-</span><span>
-</span><span>Record name: blog
-</span><span>Record type: CNAME
-</span><span>Value: changki123.github.io
-</span><span>TTL: 300 (5분)
-</span><span>
-</span><span>→ Create records
-</span></code></pre>
-<p><strong>중요:</strong> Value에는 경로를 포함하지 않습니다!</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>✅ changki123.github.io
-</span><span>❌ changki123.github.io/blog/
-</span></code></pre>
-<h3 id="dns-rekodeu-hwagin">DNS 레코드 확인</h3>
+<p><strong>전파 시간:</strong> 최대 24~48시간 소요 (보통 몇 시간 내 완료)</p>
+<h3 id="4dangye-dns-jeonpa-hwagin">4단계: DNS 전파 확인</h3>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 터미널에서 확인
 </span><span style="color:#bf616a;">dig</span><span> blog.changki123.click
 </span><span>
+</span><span style="color:#65737e;"># 또는 nslookup
+</span><span style="color:#bf616a;">nslookup</span><span> blog.changki123.click
+</span><span>
 </span><span style="color:#65737e;"># 출력 예시:
 </span><span style="color:#65737e;"># blog.changki123.click. 300 IN CNAME changki123.github.io.
-</span><span style="color:#65737e;"># changki123.github.io. 3600 IN A 185.199.108.153
 </span></code></pre>
-<hr />
+<h2 id="github-pages-seoljeong">GitHub Pages 설정</h2>
+<h3 id="1dangye-custom-domain-seoljeong">1단계: Custom Domain 설정</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>GitHub 저장소 접속
+</span><span>→ Settings 탭
+</span><span>→ Pages 메뉴
+</span><span>→ Custom domain에 입력: blog.changki123.click
+</span><span>→ Save
+</span></code></pre>
+<p>GitHub이 자동으로:</p>
+<ul>
+<li>DNS 체크 수행</li>
+<li>CNAME 파일 생성 (루트 디렉토리)</li>
+<li>HTTPS 인증서 발급 시작</li>
+</ul>
+<h3 id="2dangye-cname-pail-cuga-zola-jeonyong">2단계: CNAME 파일 추가 (Zola 전용)</h3>
+<p>Zola는 빌드 시 <code>public</code> 디렉토리를 생성하므로, CNAME 파일이 포함되도록 설정해야 합니다.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 프로젝트 루트에서
+</span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">blog.changki123.click</span><span>&quot; &gt; static/CNAME
+</span></code></pre>
+<p>디렉토리 구조:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>your-blog/
+</span><span>├── config.toml
+</span><span>├── content/
+</span><span>├── static/
+</span><span>│   └── CNAME          ← 여기에 생성
+</span><span>└── templates/
+</span></code></pre>
+<p><strong>왜 static 폴더인가?</strong></p>
+<ul>
+<li>Zola는 <code>static/</code> 폴더의 내용을 빌드 시 <code>public/</code>으로 그대로 복사</li>
+<li>GitHub Pages는 루트의 CNAME 파일을 찾음</li>
+<li><code>static/CNAME</code> → 빌드 후 → <code>public/CNAME</code></li>
+</ul>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 빌드 및 배포
+</span><span style="color:#bf616a;">git</span><span> add static/CNAME
+</span><span style="color:#bf616a;">git</span><span> commit</span><span style="color:#bf616a;"> -m </span><span>&quot;</span><span style="color:#a3be8c;">Add CNAME for custom domain</span><span>&quot;
+</span><span style="color:#bf616a;">git</span><span> push origin main
+</span></code></pre>
+<h3 id="3dangye-https-hwalseonghwa">3단계: HTTPS 활성화</h3>
+<p>GitHub Pages Settings에서:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>☑ Enforce HTTPS (체크)
+</span></code></pre>
+<h2 id="seontaeg-gijon-gyeongro-byeongyeong">(선택) 기존 경로 변경</h2>
+<p>도메인 변경으로 인해 기존 콘텐츠의 경로가 바뀐 경우:</p>
+<h3 id="imiji-midieo-pail-gyeongro-sujeong">이미지/미디어 파일 경로 수정</h3>
+<pre data-lang="markdown" style="background-color:#2b303b;color:#c0c5ce;" class="language-markdown "><code class="language-markdown" data-lang="markdown"><span style="color:#8fa1b3;"># 변경 전
+</span><span>![이미지](/blog/images/sample.png)
+</span><span>&lt;</span><span style="color:#bf616a;">video </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">/blog/videos/sample.mp4</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">video</span><span>&gt;
+</span><span>
+</span><span style="color:#8fa1b3;"># 변경 후
+</span><span>![이미지](/images/sample.png)
+</span><span>&lt;</span><span style="color:#bf616a;">video </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">/videos/sample.mp4</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">video</span><span>&gt;
+</span></code></pre>
+<h3 id="ringkeu-gyeongro-hwagin">링크 경로 확인</h3>
+<pre data-lang="markdown" style="background-color:#2b303b;color:#c0c5ce;" class="language-markdown "><code class="language-markdown" data-lang="markdown"><span style="color:#8fa1b3;"># 내부 링크
+</span><span style="color:#d08770;">[다른 포스트](../other-post/)</span><span>  ← 상대 경로 권장
+</span><span>
+</span><span style="color:#8fa1b3;"># 절대 경로 사용 시
+</span><span style="color:#d08770;">[홈으로](https://blog.changki123.click/)
+</span></code></pre>
+<h2 id="coejong-hwagin">최종 확인</h2>
+<h3 id="jeobsog-teseuteu">접속 테스트</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>http://blog.changki123.click   → https로 자동 리다이렉트
+</span><span>https://blog.changki123.click  → 정상 접속
+</span></code></pre>
+<h3 id="dns-rekodeu-hwagin">DNS 레코드 확인</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">dig</span><span> blog.changki123.click
+</span><span>
+</span><span style="color:#65737e;"># Cloudflare 사용 시 출력 예시:
+</span><span style="color:#65737e;"># blog.changki123.click. 300 IN CNAME changki123.github.io.
+</span></code></pre>
+<h3 id="ssl-injeungseo-hwagin">SSL 인증서 확인</h3>
+<p>브라우저 주소창에서:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>자물쇠 아이콘 클릭
+</span><span>→ 인증서 정보 확인
+</span><span>→ &quot;Issued by: GitHub&quot; 또는 &quot;Cloudflare&quot;
+</span></code></pre>
+<h2 id="jeongri">정리</h2>
+<h3 id="jeonce-gwajeong-yoyag">전체 과정 요약</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>1. 도메인 구매 (.click, $3/년)
+</span><span>2. Cloudflare 계정 생성 및 사이트 추가 (무료 플랜)
+</span><span>3. Cloudflare DNS 레코드 설정 (CNAME: blog → changki123.github.io)
+</span><span>4. 도메인 레지스트라에서 네임서버를 Cloudflare로 변경
+</span><span>5. GitHub Settings → Pages → Custom domain 설정
+</span><span>6. static/CNAME 파일 생성 및 푸시
+</span><span>7. (선택) 기존 경로 수정
+</span></code></pre>
+<h3 id="cloudflare-sayongyi-jangjeom">Cloudflare 사용의 장점</h3>
+<ul>
+<li><strong>무료 SSL/TLS</strong>: 자동 HTTPS 적용</li>
+<li><strong>CDN</strong>: 전 세계 빠른 접속 속도</li>
+<li><strong>DDoS 보호</strong>: 기본 보안 제공</li>
+<li><strong>분석 도구</strong>: 트래픽 모니터링</li>
+<li><strong>유연한 DNS 관리</strong>: 쉬운 레코드 추가/수정</li>
+</ul>
+<h3 id="biyong-jeongri">비용 정리</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>도메인 비용: $3/년 (.click)
+</span><span>Cloudflare DNS: 무료
+</span><span>GitHub Pages: 무료
+</span><span>HTTPS 인증서: 무료
+</span><span>
+</span><span>총 비용: $3/년
+</span></code></pre>
+<h2 id="camgo-jaryo">참고 자료</h2>
+<ul>
+<li><a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site">GitHub Pages 공식 문서</a></li>
+<li><a href="https://developers.cloudflare.com/dns/">Cloudflare DNS 가이드</a></li>
+<li><a href="https://www.getzola.org/documentation/deployment/github-pages/">Zola 공식 문서</a></li>
+</ul>
 
         </div>
 
