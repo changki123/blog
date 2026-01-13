@@ -19,11 +19,13 @@ body.loading, .loading * {
 /* 사이드바 추가 */
 
 /* 메인 레이아웃 */
-.content-wrapper {
+.content-with-sidebar {
     display: flex;
+    flex-direction: row;  /* 가로 배치 명시 */
     gap: 30px;
     max-width: 1200px;
     margin: 0 auto;
+    align-items: flex-start;  /* 상단 정렬 추가 */
 }
 
 .main-content {
@@ -34,6 +36,7 @@ body.loading, .loading * {
 /* 사이드바 */
 .sidebar {
     width: 250px;
+    flex-shrink: 0;  /* 사이드바 크기 고정 */
     position: sticky;
     top: 20px;
     height: fit-content;
@@ -55,14 +58,15 @@ body.loading, .loading * {
 /* 태그 스타일 */
 .tags-widget {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;  /* 세로 배치로 변경 */
     gap: 8px;
 }
 
 .tag-link {
-    display: inline-flex;
+    display: flex;  /* inline-flex → flex */
+    justify-content: space-between;  /* 양쪽 정렬 */
     align-items: center;
-    padding: 4px 10px;
+    padding: 8px 12px;  /* 패딩 증가 */
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     text-decoration: none;
@@ -74,6 +78,11 @@ body.loading, .loading * {
 .tag-link:hover {
     background: rgba(255, 255, 255, 0.2);
     color: #fff;
+    transform: translateX(2px);  /* 호버 시 살짝 이동 */
+}
+
+.tag-name {
+    font-weight: 500;
 }
 
 .tag-count {
@@ -84,7 +93,7 @@ body.loading, .loading * {
 
 /* 반응형 */
 @media (max-width: 768px) {
-    .content-wrapper {
+    .content-with-sidebar {
         flex-direction: column;
     }
     
