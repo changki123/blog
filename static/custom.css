@@ -102,3 +102,28 @@ body.loading, .loading * {
         position: static;
     }
 }
+
+
+/* 더보기 버튼 */
+.toggle-button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #a0a0a0;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggle-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.toggle-button:active {
+    transform: scale(0.98);
+}
