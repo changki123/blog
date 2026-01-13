@@ -5,6 +5,13 @@
 {% endblock %}
 
 <!-- 사이드바 추가 -->
-{% block sidebar %}
-    {% include "partials/sidebar.html" %}
+{% block content %}
+<div class="content-with-sidebar">
+    <main class="main-content">
+        {{ super() }}
+    </main>
+    
+    {% import "macros/sidebar.html" as sidebar_macro %}
+    {{ sidebar_macro::sidebar() }}
+</div>
 {% endblock %}
