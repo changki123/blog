@@ -1,0 +1,17 @@
+<!-- templates/partials/sidebar.html -->
+<aside class="sidebar">
+    <div class="sidebar-section">
+        <h3>📌 태그</h3>
+        <div class="tags-widget">
+            {% set tags_taxonomy = get_taxonomy(kind="tags") %}
+            {% if tags_taxonomy %}
+                {% for term in tags_taxonomy.items | sort(attribute="name") %}
+                    <a href="{{ term.permalink }}" class="tag-link">
+                        #{{ term.name }}
+                        <span class="tag-count">({{ term.pages | length }})</span>
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</aside>
