@@ -4,7 +4,6 @@ date = 2025-01-15
 description = "AWS S3 Pre-signed URL의 개념부터 실무 활용까지, 안전한 파일 공유 방법을 알아봅니다"
 [taxonomies]
 tags = ["AWS", "S3", "Security", "Infrastructure"]
-categories = ["Cloud"]
 +++
 
 ## Pre-signed URL이란?
