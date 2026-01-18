@@ -302,18 +302,6 @@
 &lt;&#x2F;span&gt;&lt;span&gt;    
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;signed_url
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;mamuri&quot;&gt;마무리&lt;&#x2F;h2&gt;
-&lt;p&gt;Pre-signed URL은 S3 파일 공유의 핵심 기능입니다. 실습한 내용 요약:&lt;&#x2F;p&gt;
-&lt;p&gt;✅ &lt;strong&gt;콘솔:&lt;&#x2F;strong&gt; 빠른 일회성 공유 (최대 12시간)
-✅ &lt;strong&gt;CLI:&lt;&#x2F;strong&gt; 스크립트 활용 (최대 7일)
-✅ &lt;strong&gt;Python:&lt;&#x2F;strong&gt; 완전 자동화 + 알림 통합&lt;&#x2F;p&gt;
-&lt;p&gt;저는 매일 백업 파일 공유, Zabbix&#x2F;Grafana 리포트 배포에 사용하고 있습니다. 특히 멀티 클라우드 환경에서 AWS S3를 중앙 스토리지로 쓸 때 필수입니다.&lt;&#x2F;p&gt;
-&lt;p&gt;다음 단계:&lt;&#x2F;p&gt;
-&lt;ol&gt;
-&lt;li&gt;본인 환경에 맞는 자동화 스크립트 작성&lt;&#x2F;li&gt;
-&lt;li&gt;보안 정책과 만료 시간 설정&lt;&#x2F;li&gt;
-&lt;li&gt;모니터링 시스템과 통합&lt;&#x2F;li&gt;
-&lt;&#x2F;ol&gt;
 </content>
         
     </entry>
