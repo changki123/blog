@@ -5,12 +5,12 @@
     <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/aws/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2025-01-15T00:00:00+00:00</updated>
+    <updated>2025-01-18T00:00:00+00:00</updated>
     <id>https://changki123.github.io/blog/tags/aws/atom.xml</id>
     <entry xml:lang="en">
-        <title>S3 Pre-signed URL 완벽 가이드: 보안과 편의성을 동시에</title>
-        <published>2025-01-15T00:00:00+00:00</published>
-        <updated>2025-01-15T00:00:00+00:00</updated>
+        <title>S3 Pre-signed URL 실전 실습 가이드: 10분 만에 마스터하기</title>
+        <published>2025-01-18T00:00:00+00:00</published>
+        <updated>2025-01-18T00:00:00+00:00</updated>
         
         <author>
           <name>
@@ -24,191 +24,264 @@
         <id>https://changki123.github.io/blog/260114-01-presigned-url/</id>
         
         <content type="html" xml:base="https://changki123.github.io/blog/260114-01-presigned-url/">&lt;h2 id=&quot;pre-signed-urliran&quot;&gt;Pre-signed URL이란?&lt;&#x2F;h2&gt;
-&lt;p&gt;Pre-signed URL은 AWS S3 버킷의 객체에 대해 &lt;strong&gt;임시 접근 권한&lt;&#x2F;strong&gt;을 부여하는 URL입니다. S3 버킷을 private으로 유지하면서도 특정 사용자에게 제한된 시간 동안만 파일 접근을 허용할 수 있는 강력한 기능입니다.&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;wae-pre-signed-urleul-sayonghaeya-halgga&quot;&gt;왜 Pre-signed URL을 사용해야 할까?&lt;&#x2F;h2&gt;
-&lt;p&gt;실무에서 다음과 같은 상황에 자주 마주칩니다:&lt;&#x2F;p&gt;
+&lt;p&gt;S3 버킷을 &lt;strong&gt;private으로 유지&lt;&#x2F;strong&gt;하면서도, 특정 파일에 대해 &lt;strong&gt;임시 접근 권한&lt;&#x2F;strong&gt;을 부여하는 URL입니다.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;핵심 포인트:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
 &lt;ul&gt;
-&lt;li&gt;고객에게 대용량 로그 파일을 공유해야 하는데, S3 버킷을 public으로 열고 싶지 않을 때&lt;&#x2F;li&gt;
-&lt;li&gt;사용자가 업로드한 파일을 일정 시간 동안만 다운로드 가능하게 하고 싶을 때&lt;&#x2F;li&gt;
-&lt;li&gt;백업 파일을 외부 협력사와 안전하게 공유해야 할 때&lt;&#x2F;li&gt;
+&lt;li&gt;S3 버킷은 비공개 상태 유지&lt;&#x2F;li&gt;
+&lt;li&gt;URL을 아는 사람만 제한 시간 동안 접근 가능&lt;&#x2F;li&gt;
+&lt;li&gt;시간 지나면 자동으로 차단&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
-&lt;p&gt;저는 3,000대 이상의 서버를 관리하면서 자동 백업 파일 공유, 모니터링 리포트 배포 등에 Pre-signed URL을 활용하고 있습니다.&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;pre-signed-urlyi-dongjag-weonri&quot;&gt;Pre-signed URL의 동작 원리&lt;&#x2F;h2&gt;
-&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;1. 애플리케이션이 AWS SDK를 통해 Pre-signed URL 생성 요청
-&lt;&#x2F;span&gt;&lt;span&gt;2. AWS IAM 자격 증명으로 서명된 URL 생성
-&lt;&#x2F;span&gt;&lt;span&gt;3. 생성된 URL에는 인증 정보가 쿼리 파라미터로 포함됨
-&lt;&#x2F;span&gt;&lt;span&gt;4. 사용자는 AWS 자격 증명 없이도 해당 URL로 접근 가능
-&lt;&#x2F;span&gt;&lt;span&gt;5. 만료 시간이 지나면 URL은 자동으로 무효화됨
+&lt;h2 id=&quot;wae-pilyohanga&quot;&gt;왜 필요한가?&lt;&#x2F;h2&gt;
+&lt;p&gt;실무에서 이런 상황 자주 마주치지 않나요?&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;❌ 문제 상황:
+&lt;&#x2F;span&gt;&lt;span&gt;- 고객에게 10GB 백업 파일 전달해야 하는데 이메일 첨부 불가
+&lt;&#x2F;span&gt;&lt;span&gt;- S3 버킷을 public으로 열면 보안 위험
+&lt;&#x2F;span&gt;&lt;span&gt;- 특정 사람에게만 일시적으로 파일 공유 필요
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;✅ Pre-signed URL 해결:
+&lt;&#x2F;span&gt;&lt;span&gt;- S3는 private 유지
+&lt;&#x2F;span&gt;&lt;span&gt;- URL만 전달하면 다운로드 가능
+&lt;&#x2F;span&gt;&lt;span&gt;- 12시간 후 자동 만료
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;siljeon-kodeu-yeje&quot;&gt;실전 코드 예제&lt;&#x2F;h2&gt;
-&lt;h3 id=&quot;python-boto3-ro-pre-signed-url-saengseonghagi&quot;&gt;Python (Boto3)로 Pre-signed URL 생성하기&lt;&#x2F;h3&gt;
+&lt;h2 id=&quot;aws-konsoleseo-pre-signed-url-mandeulgi-silseub&quot;&gt;AWS 콘솔에서 Pre-signed URL 만들기 (실습)&lt;&#x2F;h2&gt;
+&lt;p&gt;오늘 직접 실습해본 내용입니다. 생각보다 정말 간단합니다!&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;silseub-gwajeong&quot;&gt;실습 과정&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;1. S3 버킷에서 파일 선택&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;AWS Console → S3 → 버킷 선택&lt;&#x2F;li&gt;
+&lt;li&gt;공유할 파일 체크박스 클릭&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;2. 객체 작업 메뉴&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;우측 상단 &lt;strong&gt;&quot;객체 작업(Object actions)&quot;&lt;&#x2F;strong&gt; 버튼 클릭&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;&quot;미리 서명된 URL로 공유&quot;&lt;&#x2F;strong&gt; 선택&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;3. 만료 시간 설정&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Minutes (분) 또는 Hours (시간) 선택&lt;&#x2F;li&gt;
+&lt;li&gt;원하는 시간 입력&lt;&#x2F;li&gt;
+&lt;li&gt;&quot;미리 서명된 URL 생성&quot; 버튼 클릭&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;4. URL 복사 및 테스트&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&quot;클립보드에 복사&quot; 버튼 클릭&lt;&#x2F;li&gt;
+&lt;li&gt;브라우저 새 탭에 붙여넣기&lt;&#x2F;li&gt;
+&lt;li&gt;Enter → 파일 다운로드 확인! ✅&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;silseub-gyeolgwa&quot;&gt;실습 결과&lt;&#x2F;h3&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;✅ 버킷은 private 상태 유지
+&lt;&#x2F;span&gt;&lt;span&gt;✅ URL로 AWS 자격증명 없이 다운로드 가능
+&lt;&#x2F;span&gt;&lt;span&gt;✅ 설정한 시간 후 자동 만료
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;konsol-sayong-si-camgosahang&quot;&gt;콘솔 사용 시 참고사항&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;만료 시간 제한:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;콘솔에서는 &lt;strong&gt;Minutes와 Hours만&lt;&#x2F;strong&gt; 선택 가능&lt;&#x2F;li&gt;
+&lt;li&gt;**최대 12시간(720분)**까지만 설정 가능&lt;&#x2F;li&gt;
+&lt;li&gt;그 이상 필요하면 AWS CLI 사용&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;언제 콘솔 사용?&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;빠른 일회성 파일 공유&lt;&#x2F;li&gt;
+&lt;li&gt;고객&#x2F;협력사에 임시 다운로드 링크 전달&lt;&#x2F;li&gt;
+&lt;li&gt;복잡한 설정 없이 간단하게 공유할 때&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;aws-cliro-mandeulgi-deo-gin-manryo-sigan-pilyohal-ddae&quot;&gt;AWS CLI로 만들기 (더 긴 만료 시간 필요할 때)&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;cloudshell-sayong-seolci-bulpilyo&quot;&gt;CloudShell 사용 (설치 불필요)&lt;&#x2F;h3&gt;
+&lt;p&gt;AWS 콘솔 우측 상단 CloudShell 아이콘 클릭:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 버킷 목록 확인
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;aws&lt;&#x2F;span&gt;&lt;span&gt; s3 ls
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 특정 버킷 내용 보기
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;aws&lt;&#x2F;span&gt;&lt;span&gt; s3 ls s3:&#x2F;&#x2F;your-bucket-name&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Pre-signed URL 생성 (1시간)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;aws&lt;&#x2F;span&gt;&lt;span&gt; s3 presign s3:&#x2F;&#x2F;your-bucket-name&#x2F;test.txt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --expires-in&lt;&#x2F;span&gt;&lt;span&gt; 3600
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 7일짜리 URL 생성
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;aws&lt;&#x2F;span&gt;&lt;span&gt; s3 presign s3:&#x2F;&#x2F;your-bucket-name&#x2F;backup.tar.gz&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --expires-in&lt;&#x2F;span&gt;&lt;span&gt; 604800
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;생성된 URL 예시:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;https:&#x2F;&#x2F;your-bucket.s3.ap-northeast-2.amazonaws.com&#x2F;test.txt?
+&lt;&#x2F;span&gt;&lt;span&gt;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;X-Amz-Credential=AKIA...&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;X-Amz-Date=20250118T120000Z&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;X-Amz-Expires=3600&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;X-Amz-SignedHeaders=host&amp;amp;
+&lt;&#x2F;span&gt;&lt;span&gt;X-Amz-Signature=abc123...
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;siljeon-hwalyong-sinario&quot;&gt;실전 활용 시나리오&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;sinario-1-baegeob-pail-slack-gongyu&quot;&gt;시나리오 1: 백업 파일 Slack 공유&lt;&#x2F;h3&gt;
 &lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;boto3
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;botocore.exceptions &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;ClientError
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;create_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bucket_name&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;object_name&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expiration&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3600&lt;&#x2F;span&gt;&lt;span&gt;):
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    S3 객체에 대한 Pre-signed URL 생성
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    Args:
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;        bucket_name: S3 버킷 이름
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;        object_name: S3 객체 키
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;        expiration: URL 만료 시간(초), 기본값 1시간
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    Returns:
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;        Pre-signed URL 문자열, 에러 발생 시 None
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    &amp;quot;&amp;quot;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;    s3_client = boto3.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;client&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
-&lt;&#x2F;span&gt;&lt;span&gt;    
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span&gt;:
-&lt;&#x2F;span&gt;&lt;span&gt;        response = s3_client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;get_object&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Params&lt;&#x2F;span&gt;&lt;span&gt;={
-&lt;&#x2F;span&gt;&lt;span&gt;                &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: bucket_name,
-&lt;&#x2F;span&gt;&lt;span&gt;                &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Key&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: object_name
-&lt;&#x2F;span&gt;&lt;span&gt;            },
-&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExpiresIn&lt;&#x2F;span&gt;&lt;span&gt;=expiration
-&lt;&#x2F;span&gt;&lt;span&gt;        )
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;except &lt;&#x2F;span&gt;&lt;span&gt;ClientError &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;e:
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Error: &lt;&#x2F;span&gt;&lt;span&gt;{e}&amp;quot;)
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None
-&lt;&#x2F;span&gt;&lt;span&gt;    
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;response
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 사용 예시
-&lt;&#x2F;span&gt;&lt;span&gt;url = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;create_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;my-backup-bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;logs&#x2F;server-20250115.tar.gz&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;7200&lt;&#x2F;span&gt;&lt;span&gt;)
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;다운로드 링크(2시간 유효): &lt;&#x2F;span&gt;&lt;span&gt;{url}&amp;quot;)
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h3 id=&quot;eobrodeuyong-pre-signed-url-saengseong&quot;&gt;업로드용 Pre-signed URL 생성&lt;&#x2F;h3&gt;
-&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;create_presigned_post&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bucket_name&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;object_name&lt;&#x2F;span&gt;&lt;span&gt;, 
-&lt;&#x2F;span&gt;&lt;span&gt;                          &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;fields&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;conditions&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expiration&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3600&lt;&#x2F;span&gt;&lt;span&gt;):
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    파일 업로드를 위한 Pre-signed POST URL 생성
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;    &amp;quot;&amp;quot;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;    s3_client = boto3.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;client&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
-&lt;&#x2F;span&gt;&lt;span&gt;    
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span&gt;:
-&lt;&#x2F;span&gt;&lt;span&gt;        response = s3_client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_presigned_post&lt;&#x2F;span&gt;&lt;span&gt;(
-&lt;&#x2F;span&gt;&lt;span&gt;            bucket_name,
-&lt;&#x2F;span&gt;&lt;span&gt;            object_name,
-&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Fields&lt;&#x2F;span&gt;&lt;span&gt;=fields,
-&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Conditions&lt;&#x2F;span&gt;&lt;span&gt;=conditions,
-&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExpiresIn&lt;&#x2F;span&gt;&lt;span&gt;=expiration
-&lt;&#x2F;span&gt;&lt;span&gt;        )
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;except &lt;&#x2F;span&gt;&lt;span&gt;ClientError &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;e:
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Error: &lt;&#x2F;span&gt;&lt;span&gt;{e}&amp;quot;)
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None
-&lt;&#x2F;span&gt;&lt;span&gt;    
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;response
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 사용 예시 - 최대 10MB 파일만 업로드 가능
-&lt;&#x2F;span&gt;&lt;span&gt;response = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;create_presigned_post&lt;&#x2F;span&gt;&lt;span&gt;(
-&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;my-upload-bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
-&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;uploads&#x2F;$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{filename}&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;conditions&lt;&#x2F;span&gt;&lt;span&gt;=[
-&lt;&#x2F;span&gt;&lt;span&gt;        [&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;content-length-range&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10485760&lt;&#x2F;span&gt;&lt;span&gt;]  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 1 byte ~ 10MB
-&lt;&#x2F;span&gt;&lt;span&gt;    ],
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expiration&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1800  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 30분
-&lt;&#x2F;span&gt;&lt;span&gt;)
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;aws-cliro-bbareuge-saengseonghagi&quot;&gt;AWS CLI로 빠르게 생성하기&lt;&#x2F;h2&gt;
-&lt;p&gt;터미널에서 간단하게 Pre-signed URL을 생성할 수 있습니다:&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 다운로드용 URL (기본 1시간 유효)
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;aws&lt;&#x2F;span&gt;&lt;span&gt; s3 presign s3:&#x2F;&#x2F;bucket-name&#x2F;path&#x2F;to&#x2F;file.zip
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 만료 시간 지정 (초 단위)
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;aws&lt;&#x2F;span&gt;&lt;span&gt; s3 presign s3:&#x2F;&#x2F;bucket-name&#x2F;backup.sql&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --expires-in&lt;&#x2F;span&gt;&lt;span&gt; 604800  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 7일
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 특정 프로파일 사용
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;aws&lt;&#x2F;span&gt;&lt;span&gt; s3 presign s3:&#x2F;&#x2F;bucket-name&#x2F;report.pdf&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --profile&lt;&#x2F;span&gt;&lt;span&gt; production&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; --expires-in&lt;&#x2F;span&gt;&lt;span&gt; 3600
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;silmu-hwalyong-sinario&quot;&gt;실무 활용 시나리오&lt;&#x2F;h2&gt;
-&lt;h3 id=&quot;1-jadong-baegeob-pail-gongyu-siseutem&quot;&gt;1. 자동 백업 파일 공유 시스템&lt;&#x2F;h3&gt;
-&lt;p&gt;Lambda 함수와 결합하여 백업 완료 시 자동으로 Pre-signed URL을 생성하고 Slack으로 전송:&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;boto3
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;json
 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;requests
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;datetime &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;datetime
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;lambda_handler&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;event&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;context&lt;&#x2F;span&gt;&lt;span&gt;):
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# S3 이벤트에서 정보 추출
-&lt;&#x2F;span&gt;&lt;span&gt;    bucket = event[&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Records&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;][&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;][&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;][&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;][&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;name&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;]
-&lt;&#x2F;span&gt;&lt;span&gt;    key = event[&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Records&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;][&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;][&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;][&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;object&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;][&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;key&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SLACK_WEBHOOK &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;hooks.slack.com&#x2F;services&#x2F;YOUR&#x2F;WEBHOOK&#x2F;URL&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;share_backup_to_slack&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bucket&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;backup_file&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;백업 완료 시 Slack으로 다운로드 링크 전송&amp;quot;&amp;quot;&amp;quot;
 &lt;&#x2F;span&gt;&lt;span&gt;    
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Pre-signed URL 생성 (24시간 유효)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 1. Pre-signed URL 생성 (24시간)
 &lt;&#x2F;span&gt;&lt;span&gt;    s3_client = boto3.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;client&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
 &lt;&#x2F;span&gt;&lt;span&gt;    url = s3_client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(
 &lt;&#x2F;span&gt;&lt;span&gt;        &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;get_object&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Params&lt;&#x2F;span&gt;&lt;span&gt;={&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: bucket, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Key&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: key},
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExpiresIn&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;86400
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Params&lt;&#x2F;span&gt;&lt;span&gt;={&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: bucket, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Key&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: backup_file},
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExpiresIn&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;86400  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 24시간
 &lt;&#x2F;span&gt;&lt;span&gt;    )
 &lt;&#x2F;span&gt;&lt;span&gt;    
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Slack 알림
-&lt;&#x2F;span&gt;&lt;span&gt;    slack_webhook = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;YOUR_SLACK_WEBHOOK_URL&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 2. Slack 메시지 작성
 &lt;&#x2F;span&gt;&lt;span&gt;    message = {
-&lt;&#x2F;span&gt;&lt;span&gt;        &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;text&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;백업 완료: &lt;&#x2F;span&gt;&lt;span&gt;{key}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;다운로드 링크(24시간 유효): &lt;&#x2F;span&gt;&lt;span&gt;{url}&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;text&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;📦 백업 완료: &lt;&#x2F;span&gt;&lt;span&gt;{backup_file}&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;attachments&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [{
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;color&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;good&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;fields&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;                {&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;다운로드 링크&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: url, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;short&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;False&lt;&#x2F;span&gt;&lt;span&gt;},
+&lt;&#x2F;span&gt;&lt;span&gt;                {&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;유효 시간&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;24시간&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;short&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span&gt;},
+&lt;&#x2F;span&gt;&lt;span&gt;                {&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;생성 시각&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: datetime.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;now&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;strftime&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%Y&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%m&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d %H&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%M&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;), &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;short&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;            ]
+&lt;&#x2F;span&gt;&lt;span&gt;        }]
 &lt;&#x2F;span&gt;&lt;span&gt;    }
-&lt;&#x2F;span&gt;&lt;span&gt;    requests.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;post&lt;&#x2F;span&gt;&lt;span&gt;(slack_webhook, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;json&lt;&#x2F;span&gt;&lt;span&gt;=message)
 &lt;&#x2F;span&gt;&lt;span&gt;    
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;{&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;statusCode&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;200&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 3. Slack 전송
+&lt;&#x2F;span&gt;&lt;span&gt;    response = requests.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;post&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SLACK_WEBHOOK&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;json&lt;&#x2F;span&gt;&lt;span&gt;=message)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;response.status_code == &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;200&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;✅ Slack 알림 전송 완료&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;❌ Slack 전송 실패: &lt;&#x2F;span&gt;&lt;span&gt;{response.status_code}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 실행
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;share_backup_to_slack&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;backup-bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;daily&#x2F;db-backup-2025-01-18.sql.gz&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h3 id=&quot;2-jenkins-ci-cd-bildeu-atipaegteu-baepo&quot;&gt;2. Jenkins CI&#x2F;CD 빌드 아티팩트 배포&lt;&#x2F;h3&gt;
-&lt;pre data-lang=&quot;groovy&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-groovy &quot;&gt;&lt;code class=&quot;language-groovy&quot; data-lang=&quot;groovy&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Jenkinsfile
-&lt;&#x2F;span&gt;&lt;span&gt;pipeline {
-&lt;&#x2F;span&gt;&lt;span&gt;    agent any
-&lt;&#x2F;span&gt;&lt;span&gt;    stages {
-&lt;&#x2F;span&gt;&lt;span&gt;        stage(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Upload to S3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;) {
-&lt;&#x2F;span&gt;&lt;span&gt;            steps {
-&lt;&#x2F;span&gt;&lt;span&gt;                script {
-&lt;&#x2F;span&gt;&lt;span&gt;                    sh &amp;quot;&amp;quot;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;                        aws s3 cp build&#x2F;artifact.tar.gz s3:&#x2F;&#x2F;artifacts-bucket&#x2F;builds&#x2F;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;                        PRESIGNED_URL=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(aws s3 presign s3:&#x2F;&#x2F;artifacts-bucket&#x2F;builds&#x2F;artifact.tar.gz --expires-in 7200)
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;                        echo &amp;quot;Artifact URL: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\$&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;{PRESIGNED_URL}&amp;quot; &amp;gt; artifact_url.txt
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;                    &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;quot;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;                    archiveArtifacts &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;artifact_url.txt&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
-&lt;&#x2F;span&gt;&lt;span&gt;                }
-&lt;&#x2F;span&gt;&lt;span&gt;            }
-&lt;&#x2F;span&gt;&lt;span&gt;        }
-&lt;&#x2F;span&gt;&lt;span&gt;    }
-&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;h3 id=&quot;sinario-2-moniteoring-ripoteu-jadong-baepo&quot;&gt;시나리오 2: 모니터링 리포트 자동 배포&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;boto3
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;datetime &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;datetime, timedelta
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;create_daily_report_url&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bucket&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;report_date&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;일일 리포트 URL 생성&amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;report_date is &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        report_date = datetime.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;now&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;strftime&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%Y&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%m&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%d&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    report_key = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;reports&#x2F;daily&#x2F;monitoring-&lt;&#x2F;span&gt;&lt;span&gt;{report_date}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.pdf&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    s3_client = boto3.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;client&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 리포트가 존재하는지 확인
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        s3_client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;head_object&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Bucket&lt;&#x2F;span&gt;&lt;span&gt;=bucket, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Key&lt;&#x2F;span&gt;&lt;span&gt;=report_key)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;except&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;❌ 리포트가 없습니다: &lt;&#x2F;span&gt;&lt;span&gt;{report_key}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# URL 생성 (12시간 유효)
+&lt;&#x2F;span&gt;&lt;span&gt;    url = s3_client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;get_object&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Params&lt;&#x2F;span&gt;&lt;span&gt;={&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: bucket, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Key&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: report_key},
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExpiresIn&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;43200
+&lt;&#x2F;span&gt;&lt;span&gt;    )
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;✅ 리포트 URL 생성: &lt;&#x2F;span&gt;&lt;span&gt;{report_date}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;URL: &lt;&#x2F;span&gt;&lt;span&gt;{url}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;url
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# cron으로 매일 오전 9시 실행
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 0 9 * * * python3 &#x2F;scripts&#x2F;send_report.py
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;sinario-3-seobeo-rogeu-imsi-gongyu&quot;&gt;시나리오 3: 서버 로그 임시 공유&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;boto3
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;sys
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;share_server_logs&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;server_name&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;log_date&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expires_minutes&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;30&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;특정 서버의 로그 파일을 임시로 공유&amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    bucket = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;server-logs&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    log_file = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;{server_name}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;access-&lt;&#x2F;span&gt;&lt;span&gt;{log_date}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.log.gz&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    s3_client = boto3.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;client&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 파일 존재 확인
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        response = s3_client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;head_object&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Bucket&lt;&#x2F;span&gt;&lt;span&gt;=bucket, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Key&lt;&#x2F;span&gt;&lt;span&gt;=log_file)
+&lt;&#x2F;span&gt;&lt;span&gt;        file_size = response[&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ContentLength&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;] &#x2F; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1024&lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1024&lt;&#x2F;span&gt;&lt;span&gt;)  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# MB
+&lt;&#x2F;span&gt;&lt;span&gt;        
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;📄 로그 파일 찾음: &lt;&#x2F;span&gt;&lt;span&gt;{log_file}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;📦 크기: &lt;&#x2F;span&gt;&lt;span&gt;{file_size&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;:.2f&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; MB&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;except&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;❌ 로그 파일이 없습니다: &lt;&#x2F;span&gt;&lt;span&gt;{log_file}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Pre-signed URL 생성
+&lt;&#x2F;span&gt;&lt;span&gt;    url = s3_client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;        &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;get_object&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Params&lt;&#x2F;span&gt;&lt;span&gt;={&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: bucket, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Key&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: log_file},
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExpiresIn&lt;&#x2F;span&gt;&lt;span&gt;=expires_minutes * &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;60
+&lt;&#x2F;span&gt;&lt;span&gt;    )
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;✅ 다운로드 링크 (&lt;&#x2F;span&gt;&lt;span&gt;{expires_minutes}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;분 유효):&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(url)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;다운로드 명령어:&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;curl -o &lt;&#x2F;span&gt;&lt;span&gt;{server_name}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-&lt;&#x2F;span&gt;&lt;span&gt;{log_date}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.log.gz &amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;{url}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;url
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 사용 예시
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;__name__ == &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;__main__&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span&gt;(sys.argv) &amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;사용법: python share_logs.py &amp;lt;서버명&amp;gt; &amp;lt;날짜&amp;gt;&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;예시: python share_logs.py web-01 2025-01-18&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;        sys.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;exit&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    server = sys.argv[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    date = sys.argv[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;share_server_logs&lt;&#x2F;span&gt;&lt;span&gt;(server, date, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expires_minutes&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;30&lt;&#x2F;span&gt;&lt;span&gt;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;h2 id=&quot;boan-goryeosahang&quot;&gt;보안 고려사항&lt;&#x2F;h2&gt;
-&lt;p&gt;Pre-signed URL 사용 시 주의할 점:&lt;&#x2F;p&gt;
-&lt;h3 id=&quot;manryo-sigan-seoljeong&quot;&gt;만료 시간 설정&lt;&#x2F;h3&gt;
-&lt;ul&gt;
-&lt;li&gt;최소 권한 원칙에 따라 &lt;strong&gt;가능한 짧은 만료 시간&lt;&#x2F;strong&gt; 설정&lt;&#x2F;li&gt;
-&lt;li&gt;일반 파일 공유: 1-24시간&lt;&#x2F;li&gt;
-&lt;li&gt;긴급 공유: 15-30분&lt;&#x2F;li&gt;
-&lt;li&gt;AWS 최대 제한: 7일 (STS 임시 자격 증명 사용 시)&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;h3 id=&quot;url-nocul-bangji&quot;&gt;URL 노출 방지&lt;&#x2F;h3&gt;
-&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# ❌ 잘못된 예 - 로그에 URL 노출
+&lt;h3 id=&quot;1-jeogjeolhan-manryo-sigan-seoljeong&quot;&gt;1. 적절한 만료 시간 설정&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 용도별 권장 만료 시간
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXPIRATION_TIMES &lt;&#x2F;span&gt;&lt;span&gt;= {
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;emergency_share&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;900&lt;&#x2F;span&gt;&lt;span&gt;,      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 15분 - 긴급 공유
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;customer_download&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3600&lt;&#x2F;span&gt;&lt;span&gt;,   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 1시간 - 고객 다운로드
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;daily_report&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;43200&lt;&#x2F;span&gt;&lt;span&gt;,       &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 12시간 - 일일 리포트
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;backup_archive&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;604800     &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 7일 - 백업 아카이브
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 사용
+&lt;&#x2F;span&gt;&lt;span&gt;url = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;create_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bucket&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;my-bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;key&lt;&#x2F;span&gt;&lt;span&gt;=&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sensitive-data.zip&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expires_in&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;EXPIRATION_TIMES&lt;&#x2F;span&gt;&lt;span&gt;[&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;emergency_share&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;]  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 15분만
+&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;2-url-nocul-bangji&quot;&gt;2. URL 노출 방지&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;logging
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# ❌ 나쁜 예 - 로그에 URL 노출
 &lt;&#x2F;span&gt;&lt;span&gt;logger.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;info&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Generated URL: &lt;&#x2F;span&gt;&lt;span&gt;{presigned_url}&amp;quot;)
 &lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# ✅ 올바른 예 - 민감 정보 마스킹
-&lt;&#x2F;span&gt;&lt;span&gt;logger.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;info&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Generated URL for object: &lt;&#x2F;span&gt;&lt;span&gt;{object_name}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# ✅ 좋은 예 - URL은 숨기고 메타데이터만
+&lt;&#x2F;span&gt;&lt;span&gt;logger.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;info&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Generated presigned URL for: &lt;&#x2F;span&gt;&lt;span&gt;{bucket}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;{key}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;, expires in &lt;&#x2F;span&gt;&lt;span&gt;{expires_in}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h3 id=&quot;cloudtrail-roging&quot;&gt;CloudTrail 로깅&lt;&#x2F;h3&gt;
-&lt;p&gt;Pre-signed URL로 접근한 이력도 CloudTrail에 기록됩니다:&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;json&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-json &quot;&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span&gt;{
-&lt;&#x2F;span&gt;&lt;span&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;eventName&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;GetObject&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;requestParameters&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: {
-&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;bucketName&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;my-bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;key&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sensitive-data.json&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;  },
-&lt;&#x2F;span&gt;&lt;span&gt;  &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;sourceIPAddress&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;203.0.113.42&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;}
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;seongneung-coejeoghwa-tib&quot;&gt;성능 최적화 팁&lt;&#x2F;h2&gt;
-&lt;h3 id=&quot;1-cloudfrontwa-hamgge-sayong&quot;&gt;1. CloudFront와 함께 사용&lt;&#x2F;h3&gt;
-&lt;p&gt;대용량 파일 배포 시 CloudFront를 앞단에 두면 다운로드 속도가 크게 향상됩니다:&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;create_cloudfront_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;key_pair_id&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;private_key_file&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expire_time&lt;&#x2F;span&gt;&lt;span&gt;):
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;CloudFront Signed URL 생성&amp;quot;&amp;quot;&amp;quot;
+&lt;h2 id=&quot;seongneung-coejeoghwa&quot;&gt;성능 최적화&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;daeyongryang-paileun-cloudfront-sayong&quot;&gt;대용량 파일은 CloudFront 사용&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;create_cloudfront_url&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;s3_key&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;expires_hours&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;24&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;CloudFront Signed URL 생성 (더 빠른 다운로드)&amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# CloudFront 설정 (한 번만)
+&lt;&#x2F;span&gt;&lt;span&gt;    cloudfront_domain = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;d1234567890.cloudfront.net&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    key_pair_id = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;APKAEXAMPLE&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    private_key_file = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;path&#x2F;to&#x2F;private-key.pem&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;    
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;botocore.signers &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;CloudFrontSigner
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;cryptography.hazmat.backends &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;default_backend
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;cryptography.hazmat.primitives &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;hashes, serialization
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;cryptography.hazmat.primitives.asymmetric &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;padding
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;datetime &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;datetime, timedelta
 &lt;&#x2F;span&gt;&lt;span&gt;    
 &lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;rsa_signer&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;message&lt;&#x2F;span&gt;&lt;span&gt;):
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;cryptography.hazmat.backends &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;default_backend
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;cryptography.hazmat.primitives &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;hashes, serialization
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;cryptography.hazmat.primitives.asymmetric &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;padding
-&lt;&#x2F;span&gt;&lt;span&gt;        
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;with &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(private_key_file, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rb&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;key_file:
 &lt;&#x2F;span&gt;&lt;span&gt;            private_key = serialization.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;load_pem_private_key&lt;&#x2F;span&gt;&lt;span&gt;(
 &lt;&#x2F;span&gt;&lt;span&gt;                key_file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;read&lt;&#x2F;span&gt;&lt;span&gt;(),
@@ -218,67 +291,29 @@
 &lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;private_key.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sign&lt;&#x2F;span&gt;&lt;span&gt;(message, padding.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;PKCS1v15&lt;&#x2F;span&gt;&lt;span&gt;(), hashes.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SHA1&lt;&#x2F;span&gt;&lt;span&gt;())
 &lt;&#x2F;span&gt;&lt;span&gt;    
 &lt;&#x2F;span&gt;&lt;span&gt;    cloudfront_signer = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;CloudFrontSigner&lt;&#x2F;span&gt;&lt;span&gt;(key_pair_id, rsa_signer)
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;cloudfront_signer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(url, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;date_less_than&lt;&#x2F;span&gt;&lt;span&gt;=expire_time)
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h3 id=&quot;2-kaesing-jeonryag&quot;&gt;2. 캐싱 전략&lt;&#x2F;h3&gt;
-&lt;p&gt;자주 요청되는 객체는 Pre-signed URL을 캐싱하여 API 호출 절감:&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;functools &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;lru_cache
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;from &lt;&#x2F;span&gt;&lt;span&gt;datetime &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span&gt;datetime, timedelta
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;lru_cache&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;maxsize&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;)
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;get_cached_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;bucket&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;key&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cache_key&lt;&#x2F;span&gt;&lt;span&gt;):
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;캐시 가능한 Pre-signed URL 생성&amp;quot;&amp;quot;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;    s3_client = boto3.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;client&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
-&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;s3_client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(
-&lt;&#x2F;span&gt;&lt;span&gt;        &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;get_object&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;,
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Params&lt;&#x2F;span&gt;&lt;span&gt;={&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: bucket, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Key&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;: key},
-&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExpiresIn&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3600
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    url = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;{cloudfront_domain}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;&lt;&#x2F;span&gt;&lt;span&gt;{s3_key}&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;    expire_date = datetime.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;now&lt;&#x2F;span&gt;&lt;span&gt;() + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;timedelta&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;hours&lt;&#x2F;span&gt;&lt;span&gt;=expires_hours)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    signed_url = cloudfront_signer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;generate_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(
+&lt;&#x2F;span&gt;&lt;span&gt;        url,
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;date_less_than&lt;&#x2F;span&gt;&lt;span&gt;=expire_date
 &lt;&#x2F;span&gt;&lt;span&gt;    )
-&lt;&#x2F;span&gt;&lt;span&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# cache_key에 현재 시간의 시(hour)를 사용하여 매 시간 갱신
-&lt;&#x2F;span&gt;&lt;span&gt;cache_key = datetime.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;now&lt;&#x2F;span&gt;&lt;span&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;strftime&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;%Y%m%d%H&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
-&lt;&#x2F;span&gt;&lt;span&gt;url = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get_cached_presigned_url&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;bucket&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;file.zip&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, cache_key)
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;signed_url
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h2 id=&quot;teureobeulsyuting&quot;&gt;트러블슈팅&lt;&#x2F;h2&gt;
-&lt;h3 id=&quot;munje-access-denied-ereo&quot;&gt;문제: &quot;Access Denied&quot; 에러&lt;&#x2F;h3&gt;
-&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# IAM 정책 확인
-&lt;&#x2F;span&gt;&lt;span&gt;{
-&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Version&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;2012-10-17&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Statement&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
-&lt;&#x2F;span&gt;&lt;span&gt;        {
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Effect&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Allow&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Action&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: [
-&lt;&#x2F;span&gt;&lt;span&gt;                &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3:GetObject&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;,
-&lt;&#x2F;span&gt;&lt;span&gt;                &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;s3:PutObject&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;            ],
-&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Resource&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;arn:aws:s3:::your-bucket&#x2F;*&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span&gt;        }
-&lt;&#x2F;span&gt;&lt;span&gt;    ]
-&lt;&#x2F;span&gt;&lt;span&gt;}
-&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h3 id=&quot;munje-urli-manryodoegi-jeone-jeobgeun-bulga&quot;&gt;문제: URL이 만료되기 전에 접근 불가&lt;&#x2F;h3&gt;
-&lt;ul&gt;
-&lt;li&gt;서버 시간 동기화 확인 (NTP)&lt;&#x2F;li&gt;
-&lt;li&gt;AWS 리전 설정 확인&lt;&#x2F;li&gt;
-&lt;li&gt;S3 버킷 정책과 CORS 설정 검토&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;h2 id=&quot;biyong-coejeoghwa&quot;&gt;비용 최적화&lt;&#x2F;h2&gt;
-&lt;p&gt;Pre-signed URL 자체는 무료이지만, 실제 데이터 전송 비용이 발생합니다:&lt;&#x2F;p&gt;
-&lt;ul&gt;
-&lt;li&gt;GET 요청: $0.0004 per 1,000 requests&lt;&#x2F;li&gt;
-&lt;li&gt;데이터 전송(아웃바운드): $0.09&#x2F;GB (첫 10TB 기준)&lt;&#x2F;li&gt;
-&lt;li&gt;CloudFront 사용 시 더 저렴한 전송 비용&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
 &lt;h2 id=&quot;mamuri&quot;&gt;마무리&lt;&#x2F;h2&gt;
-&lt;p&gt;Pre-signed URL은 S3의 보안을 유지하면서도 유연한 파일 공유를 가능하게 하는 필수 기능입니다. 저는 실무에서 백업 시스템, 모니터링 리포트 배포, CI&#x2F;CD 파이프라인 등에 적극 활용하고 있으며, 특히 멀티 클라우드 환경에서 AWS S3를 중앙 스토리지로 사용할 때 큰 도움이 됩니다.&lt;&#x2F;p&gt;
-&lt;p&gt;여러분의 인프라 환경에 맞게 적절한 만료 시간과 보안 정책을 설정하여 안전하고 효율적인 파일 공유 시스템을 구축해보세요.&lt;&#x2F;p&gt;
-&lt;hr &#x2F;&gt;
-&lt;p&gt;&lt;strong&gt;관련 글&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
-&lt;ul&gt;
-&lt;li&gt;AWS S3 백업 자동화 구축하기&lt;&#x2F;li&gt;
-&lt;li&gt;Lambda@Edge로 동적 콘텐츠 배포하기&lt;&#x2F;li&gt;
-&lt;li&gt;멀티 클라우드 스토리지 전략&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
+&lt;p&gt;Pre-signed URL은 S3 파일 공유의 핵심 기능입니다. 실습한 내용 요약:&lt;&#x2F;p&gt;
+&lt;p&gt;✅ &lt;strong&gt;콘솔:&lt;&#x2F;strong&gt; 빠른 일회성 공유 (최대 12시간)
+✅ &lt;strong&gt;CLI:&lt;&#x2F;strong&gt; 스크립트 활용 (최대 7일)
+✅ &lt;strong&gt;Python:&lt;&#x2F;strong&gt; 완전 자동화 + 알림 통합&lt;&#x2F;p&gt;
+&lt;p&gt;저는 매일 백업 파일 공유, Zabbix&#x2F;Grafana 리포트 배포에 사용하고 있습니다. 특히 멀티 클라우드 환경에서 AWS S3를 중앙 스토리지로 쓸 때 필수입니다.&lt;&#x2F;p&gt;
+&lt;p&gt;다음 단계:&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;본인 환경에 맞는 자동화 스크립트 작성&lt;&#x2F;li&gt;
+&lt;li&gt;보안 정책과 만료 시간 설정&lt;&#x2F;li&gt;
+&lt;li&gt;모니터링 시스템과 통합&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
 </content>
         
     </entry>
