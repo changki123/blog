@@ -1,225 +1,303 @@
 +++
-title = "S3 Pre-signed URL 완벽 가이드: 보안과 편의성을 동시에"
-date = 2025-01-15
-description = "AWS S3 Pre-signed URL의 개념부터 실무 활용까지, 안전한 파일 공유 방법을 알아봅니다"
+title = "S3 Pre-signed URL 실전 실습 가이드: 10분 만에 마스터하기"
+date = 2025-01-18
+description = "AWS 콘솔부터 자동화까지, Pre-signed URL을 직접 만들고 활용하는 실습 가이드"
 [taxonomies]
-tags = ["AWS", "S3", "Security", "Infrastructure"]
+tags = ["AWS", "S3", "Security", "Hands-on"]
 +++
 
 ## Pre-signed URL이란?
 
-Pre-signed URL은 AWS S3 버킷의 객체에 대해 **임시 접근 권한**을 부여하는 URL입니다. S3 버킷을 private으로 유지하면서도 특정 사용자에게 제한된 시간 동안만 파일 접근을 허용할 수 있는 강력한 기능입니다.
+S3 버킷을 **private으로 유지**하면서도, 특정 파일에 대해 **임시 접근 권한**을 부여하는 URL입니다. 
 
-## 왜 Pre-signed URL을 사용해야 할까?
+**핵심 포인트:**
+- S3 버킷은 비공개 상태 유지
+- URL을 아는 사람만 제한 시간 동안 접근 가능
+- 시간 지나면 자동으로 차단
 
-실무에서 다음과 같은 상황에 자주 마주칩니다:
+## 왜 필요한가?
 
-- 고객에게 대용량 로그 파일을 공유해야 하는데, S3 버킷을 public으로 열고 싶지 않을 때
-- 사용자가 업로드한 파일을 일정 시간 동안만 다운로드 가능하게 하고 싶을 때
-- 백업 파일을 외부 협력사와 안전하게 공유해야 할 때
+실무에서 이런 상황 자주 마주치지 않나요?
 
-저는 3,000대 이상의 서버를 관리하면서 자동 백업 파일 공유, 모니터링 리포트 배포 등에 Pre-signed URL을 활용하고 있습니다.
-
-## Pre-signed URL의 동작 원리
 ```
-1. 애플리케이션이 AWS SDK를 통해 Pre-signed URL 생성 요청
-2. AWS IAM 자격 증명으로 서명된 URL 생성
-3. 생성된 URL에는 인증 정보가 쿼리 파라미터로 포함됨
-4. 사용자는 AWS 자격 증명 없이도 해당 URL로 접근 가능
-5. 만료 시간이 지나면 URL은 자동으로 무효화됨
-```
+❌ 문제 상황:
+- 고객에게 10GB 백업 파일 전달해야 하는데 이메일 첨부 불가
+- S3 버킷을 public으로 열면 보안 위험
+- 특정 사람에게만 일시적으로 파일 공유 필요
 
-## 실전 코드 예제
-
-### Python (Boto3)로 Pre-signed URL 생성하기
-```python
-import boto3
-from botocore.exceptions import ClientError
-
-def create_presigned_url(bucket_name, object_name, expiration=3600):
-    """
-    S3 객체에 대한 Pre-signed URL 생성
-    
-    Args:
-        bucket_name: S3 버킷 이름
-        object_name: S3 객체 키
-        expiration: URL 만료 시간(초), 기본값 1시간
-    
-    Returns:
-        Pre-signed URL 문자열, 에러 발생 시 None
-    """
-    s3_client = boto3.client('s3')
-    
-    try:
-        response = s3_client.generate_presigned_url(
-            'get_object',
-            Params={
-                'Bucket': bucket_name,
-                'Key': object_name
-            },
-            ExpiresIn=expiration
-        )
-    except ClientError as e:
-        print(f"Error: {e}")
-        return None
-    
-    return response
-
-# 사용 예시
-url = create_presigned_url('my-backup-bucket', 'logs/server-20250115.tar.gz', 7200)
-print(f"다운로드 링크(2시간 유효): {url}")
+✅ Pre-signed URL 해결:
+- S3는 private 유지
+- URL만 전달하면 다운로드 가능
+- 12시간 후 자동 만료
 ```
 
-### 업로드용 Pre-signed URL 생성
-```python
-def create_presigned_post(bucket_name, object_name, 
-                          fields=None, conditions=None, expiration=3600):
-    """
-    파일 업로드를 위한 Pre-signed POST URL 생성
-    """
-    s3_client = boto3.client('s3')
-    
-    try:
-        response = s3_client.generate_presigned_post(
-            bucket_name,
-            object_name,
-            Fields=fields,
-            Conditions=conditions,
-            ExpiresIn=expiration
-        )
-    except ClientError as e:
-        print(f"Error: {e}")
-        return None
-    
-    return response
+## AWS 콘솔에서 Pre-signed URL 만들기 (실습)
 
-# 사용 예시 - 최대 10MB 파일만 업로드 가능
-response = create_presigned_post(
-    'my-upload-bucket',
-    'uploads/${filename}',
-    conditions=[
-        ['content-length-range', 1, 10485760]  # 1 byte ~ 10MB
-    ],
-    expiration=1800  # 30분
-)
+오늘 직접 실습해본 내용입니다. 생각보다 정말 간단합니다!
+
+### 실습 과정
+
+**1. S3 버킷에서 파일 선택**
+- AWS Console → S3 → 버킷 선택
+- 공유할 파일 체크박스 클릭
+
+**2. 객체 작업 메뉴**
+- 우측 상단 **"객체 작업(Object actions)"** 버튼 클릭
+- **"미리 서명된 URL로 공유"** 선택
+
+**3. 만료 시간 설정**
+- Minutes (분) 또는 Hours (시간) 선택
+- 원하는 시간 입력
+- "미리 서명된 URL 생성" 버튼 클릭
+
+**4. URL 복사 및 테스트**
+- "클립보드에 복사" 버튼 클릭
+- 브라우저 새 탭에 붙여넣기
+- Enter → 파일 다운로드 확인! ✅
+
+### 실습 결과
+
+```
+✅ 버킷은 private 상태 유지
+✅ URL로 AWS 자격증명 없이 다운로드 가능
+✅ 설정한 시간 후 자동 만료
 ```
 
-## AWS CLI로 빠르게 생성하기
+### 콘솔 사용 시 참고사항
 
-터미널에서 간단하게 Pre-signed URL을 생성할 수 있습니다:
+**만료 시간 제한:**
+- 콘솔에서는 **Minutes와 Hours만** 선택 가능
+- **최대 12시간(720분)**까지만 설정 가능
+- 그 이상 필요하면 AWS CLI 사용
+
+**언제 콘솔 사용?**
+- 빠른 일회성 파일 공유
+- 고객/협력사에 임시 다운로드 링크 전달
+- 복잡한 설정 없이 간단하게 공유할 때
+
+## AWS CLI로 만들기 (더 긴 만료 시간 필요할 때)
+
+### CloudShell 사용 (설치 불필요)
+
+AWS 콘솔 우측 상단 CloudShell 아이콘 클릭:
+
 ```bash
-# 다운로드용 URL (기본 1시간 유효)
-aws s3 presign s3://bucket-name/path/to/file.zip
+# 버킷 목록 확인
+aws s3 ls
 
-# 만료 시간 지정 (초 단위)
-aws s3 presign s3://bucket-name/backup.sql --expires-in 604800  # 7일
+# 특정 버킷 내용 보기
+aws s3 ls s3://your-bucket-name/
 
-# 특정 프로파일 사용
-aws s3 presign s3://bucket-name/report.pdf --profile production --expires-in 3600
+# Pre-signed URL 생성 (1시간)
+aws s3 presign s3://your-bucket-name/test.txt --expires-in 3600
+
+# 7일짜리 URL 생성
+aws s3 presign s3://your-bucket-name/backup.tar.gz --expires-in 604800
 ```
 
-## 실무 활용 시나리오
+**생성된 URL 예시:**
+```
+https://your-bucket.s3.ap-northeast-2.amazonaws.com/test.txt?
+X-Amz-Algorithm=AWS4-HMAC-SHA256&
+X-Amz-Credential=AKIA...&
+X-Amz-Date=20250118T120000Z&
+X-Amz-Expires=3600&
+X-Amz-SignedHeaders=host&
+X-Amz-Signature=abc123...
+```
 
-### 1. 자동 백업 파일 공유 시스템
+## 실전 활용 시나리오
 
-Lambda 함수와 결합하여 백업 완료 시 자동으로 Pre-signed URL을 생성하고 Slack으로 전송:
+### 시나리오 1: 백업 파일 Slack 공유
+
 ```python
 import boto3
-import json
 import requests
+from datetime import datetime
 
-def lambda_handler(event, context):
-    # S3 이벤트에서 정보 추출
-    bucket = event['Records'][0]['s3']['bucket']['name']
-    key = event['Records'][0]['s3']['object']['key']
+SLACK_WEBHOOK = "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+
+def share_backup_to_slack(bucket, backup_file):
+    """백업 완료 시 Slack으로 다운로드 링크 전송"""
     
-    # Pre-signed URL 생성 (24시간 유효)
+    # 1. Pre-signed URL 생성 (24시간)
     s3_client = boto3.client('s3')
     url = s3_client.generate_presigned_url(
         'get_object',
-        Params={'Bucket': bucket, 'Key': key},
-        ExpiresIn=86400
+        Params={'Bucket': bucket, 'Key': backup_file},
+        ExpiresIn=86400  # 24시간
     )
     
-    # Slack 알림
-    slack_webhook = "YOUR_SLACK_WEBHOOK_URL"
+    # 2. Slack 메시지 작성
     message = {
-        "text": f"백업 완료: {key}\n다운로드 링크(24시간 유효): {url}"
+        "text": f"📦 백업 완료: {backup_file}",
+        "attachments": [{
+            "color": "good",
+            "fields": [
+                {"title": "다운로드 링크", "value": url, "short": False},
+                {"title": "유효 시간", "value": "24시간", "short": True},
+                {"title": "생성 시각", "value": datetime.now().strftime("%Y-%m-%d %H:%M"), "short": True}
+            ]
+        }]
     }
-    requests.post(slack_webhook, json=message)
     
-    return {'statusCode': 200}
+    # 3. Slack 전송
+    response = requests.post(SLACK_WEBHOOK, json=message)
+    
+    if response.status_code == 200:
+        print("✅ Slack 알림 전송 완료")
+    else:
+        print(f"❌ Slack 전송 실패: {response.status_code}")
+
+# 실행
+share_backup_to_slack('backup-bucket', 'daily/db-backup-2025-01-18.sql.gz')
 ```
 
-### 2. Jenkins CI/CD 빌드 아티팩트 배포
-```groovy
-// Jenkinsfile
-pipeline {
-    agent any
-    stages {
-        stage('Upload to S3') {
-            steps {
-                script {
-                    sh """
-                        aws s3 cp build/artifact.tar.gz s3://artifacts-bucket/builds/
-                        PRESIGNED_URL=\$(aws s3 presign s3://artifacts-bucket/builds/artifact.tar.gz --expires-in 7200)
-                        echo "Artifact URL: \${PRESIGNED_URL}" > artifact_url.txt
-                    """
-                    archiveArtifacts 'artifact_url.txt'
-                }
-            }
-        }
-    }
-}
+### 시나리오 2: 모니터링 리포트 자동 배포
+
+```python
+import boto3
+from datetime import datetime, timedelta
+
+def create_daily_report_url(bucket, report_date=None):
+    """일일 리포트 URL 생성"""
+    
+    if report_date is None:
+        report_date = datetime.now().strftime('%Y-%m-%d')
+    
+    report_key = f'reports/daily/monitoring-{report_date}.pdf'
+    
+    s3_client = boto3.client('s3')
+    
+    # 리포트가 존재하는지 확인
+    try:
+        s3_client.head_object(Bucket=bucket, Key=report_key)
+    except:
+        print(f"❌ 리포트가 없습니다: {report_key}")
+        return None
+    
+    # URL 생성 (12시간 유효)
+    url = s3_client.generate_presigned_url(
+        'get_object',
+        Params={'Bucket': bucket, 'Key': report_key},
+        ExpiresIn=43200
+    )
+    
+    print(f"✅ 리포트 URL 생성: {report_date}")
+    print(f"URL: {url}")
+    
+    return url
+
+# cron으로 매일 오전 9시 실행
+# 0 9 * * * python3 /scripts/send_report.py
+```
+
+### 시나리오 3: 서버 로그 임시 공유
+
+```python
+import boto3
+import sys
+
+def share_server_logs(server_name, log_date, expires_minutes=30):
+    """특정 서버의 로그 파일을 임시로 공유"""
+    
+    bucket = 'server-logs'
+    log_file = f'{server_name}/access-{log_date}.log.gz'
+    
+    s3_client = boto3.client('s3')
+    
+    # 파일 존재 확인
+    try:
+        response = s3_client.head_object(Bucket=bucket, Key=log_file)
+        file_size = response['ContentLength'] / (1024*1024)  # MB
+        
+        print(f"📄 로그 파일 찾음: {log_file}")
+        print(f"📦 크기: {file_size:.2f} MB")
+        
+    except:
+        print(f"❌ 로그 파일이 없습니다: {log_file}")
+        return None
+    
+    # Pre-signed URL 생성
+    url = s3_client.generate_presigned_url(
+        'get_object',
+        Params={'Bucket': bucket, 'Key': log_file},
+        ExpiresIn=expires_minutes * 60
+    )
+    
+    print(f"\n✅ 다운로드 링크 ({expires_minutes}분 유효):")
+    print(url)
+    print(f"\n다운로드 명령어:")
+    print(f"curl -o {server_name}-{log_date}.log.gz '{url}'")
+    
+    return url
+
+# 사용 예시
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("사용법: python share_logs.py <서버명> <날짜>")
+        print("예시: python share_logs.py web-01 2025-01-18")
+        sys.exit(1)
+    
+    server = sys.argv[1]
+    date = sys.argv[2]
+    
+    share_server_logs(server, date, expires_minutes=30)
 ```
 
 ## 보안 고려사항
 
-Pre-signed URL 사용 시 주의할 점:
+### 1. 적절한 만료 시간 설정
 
-### 만료 시간 설정
-- 최소 권한 원칙에 따라 **가능한 짧은 만료 시간** 설정
-- 일반 파일 공유: 1-24시간
-- 긴급 공유: 15-30분
-- AWS 최대 제한: 7일 (STS 임시 자격 증명 사용 시)
-
-### URL 노출 방지
 ```python
-# ❌ 잘못된 예 - 로그에 URL 노출
+# 용도별 권장 만료 시간
+EXPIRATION_TIMES = {
+    'emergency_share': 900,      # 15분 - 긴급 공유
+    'customer_download': 3600,   # 1시간 - 고객 다운로드
+    'daily_report': 43200,       # 12시간 - 일일 리포트
+    'backup_archive': 604800     # 7일 - 백업 아카이브
+}
+
+# 사용
+url = create_presigned_url(
+    bucket='my-bucket',
+    key='sensitive-data.zip',
+    expires_in=EXPIRATION_TIMES['emergency_share']  # 15분만
+)
+```
+
+### 2. URL 노출 방지
+
+```python
+import logging
+
+# ❌ 나쁜 예 - 로그에 URL 노출
 logger.info(f"Generated URL: {presigned_url}")
 
-# ✅ 올바른 예 - 민감 정보 마스킹
-logger.info(f"Generated URL for object: {object_name}")
+# ✅ 좋은 예 - URL은 숨기고 메타데이터만
+logger.info(f"Generated presigned URL for: {bucket}/{key}, expires in {expires_in}s")
 ```
 
-### CloudTrail 로깅
-Pre-signed URL로 접근한 이력도 CloudTrail에 기록됩니다:
-```json
-{
-  "eventName": "GetObject",
-  "requestParameters": {
-    "bucketName": "my-bucket",
-    "key": "sensitive-data.json"
-  },
-  "sourceIPAddress": "203.0.113.42"
-}
-```
+## 성능 최적화
 
-## 성능 최적화 팁
+### 대용량 파일은 CloudFront 사용
 
-### 1. CloudFront와 함께 사용
-
-대용량 파일 배포 시 CloudFront를 앞단에 두면 다운로드 속도가 크게 향상됩니다:
 ```python
-def create_cloudfront_presigned_url(url, key_pair_id, private_key_file, expire_time):
-    """CloudFront Signed URL 생성"""
+def create_cloudfront_url(s3_key, expires_hours=24):
+    """CloudFront Signed URL 생성 (더 빠른 다운로드)"""
+    
+    # CloudFront 설정 (한 번만)
+    cloudfront_domain = 'd1234567890.cloudfront.net'
+    key_pair_id = 'APKAEXAMPLE'
+    private_key_file = '/path/to/private-key.pem'
+    
     from botocore.signers import CloudFrontSigner
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import padding
+    from datetime import datetime, timedelta
     
     def rsa_signer(message):
-        from cryptography.hazmat.backends import default_backend
-        from cryptography.hazmat.primitives import hashes, serialization
-        from cryptography.hazmat.primitives.asymmetric import padding
-        
         with open(private_key_file, 'rb') as key_file:
             private_key = serialization.load_pem_private_key(
                 key_file.read(),
@@ -229,74 +307,29 @@ def create_cloudfront_presigned_url(url, key_pair_id, private_key_file, expire_t
         return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
     
     cloudfront_signer = CloudFrontSigner(key_pair_id, rsa_signer)
-    return cloudfront_signer.generate_presigned_url(url, date_less_than=expire_time)
-```
-
-### 2. 캐싱 전략
-
-자주 요청되는 객체는 Pre-signed URL을 캐싱하여 API 호출 절감:
-```python
-from functools import lru_cache
-from datetime import datetime, timedelta
-
-@lru_cache(maxsize=100)
-def get_cached_presigned_url(bucket, key, cache_key):
-    """캐시 가능한 Pre-signed URL 생성"""
-    s3_client = boto3.client('s3')
-    return s3_client.generate_presigned_url(
-        'get_object',
-        Params={'Bucket': bucket, 'Key': key},
-        ExpiresIn=3600
+    
+    url = f"https://{cloudfront_domain}/{s3_key}"
+    expire_date = datetime.now() + timedelta(hours=expires_hours)
+    
+    signed_url = cloudfront_signer.generate_presigned_url(
+        url,
+        date_less_than=expire_date
     )
-
-# cache_key에 현재 시간의 시(hour)를 사용하여 매 시간 갱신
-cache_key = datetime.now().strftime('%Y%m%d%H')
-url = get_cached_presigned_url('bucket', 'file.zip', cache_key)
+    
+    return signed_url
 ```
-
-## 트러블슈팅
-
-### 문제: "Access Denied" 에러
-```python
-# IAM 정책 확인
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:PutObject"
-            ],
-            "Resource": "arn:aws:s3:::your-bucket/*"
-        }
-    ]
-}
-```
-
-### 문제: URL이 만료되기 전에 접근 불가
-
-- 서버 시간 동기화 확인 (NTP)
-- AWS 리전 설정 확인
-- S3 버킷 정책과 CORS 설정 검토
-
-## 비용 최적화
-
-Pre-signed URL 자체는 무료이지만, 실제 데이터 전송 비용이 발생합니다:
-
-- GET 요청: $0.0004 per 1,000 requests
-- 데이터 전송(아웃바운드): $0.09/GB (첫 10TB 기준)
-- CloudFront 사용 시 더 저렴한 전송 비용
 
 ## 마무리
 
-Pre-signed URL은 S3의 보안을 유지하면서도 유연한 파일 공유를 가능하게 하는 필수 기능입니다. 저는 실무에서 백업 시스템, 모니터링 리포트 배포, CI/CD 파이프라인 등에 적극 활용하고 있으며, 특히 멀티 클라우드 환경에서 AWS S3를 중앙 스토리지로 사용할 때 큰 도움이 됩니다.
+Pre-signed URL은 S3 파일 공유의 핵심 기능입니다. 실습한 내용 요약:
 
-여러분의 인프라 환경에 맞게 적절한 만료 시간과 보안 정책을 설정하여 안전하고 효율적인 파일 공유 시스템을 구축해보세요.
+✅ **콘솔:** 빠른 일회성 공유 (최대 12시간)
+✅ **CLI:** 스크립트 활용 (최대 7일)
+✅ **Python:** 완전 자동화 + 알림 통합
 
----
+저는 매일 백업 파일 공유, Zabbix/Grafana 리포트 배포에 사용하고 있습니다. 특히 멀티 클라우드 환경에서 AWS S3를 중앙 스토리지로 쓸 때 필수입니다.
 
-**관련 글**
-- AWS S3 백업 자동화 구축하기
-- Lambda@Edge로 동적 콘텐츠 배포하기
-- 멀티 클라우드 스토리지 전략
+다음 단계:
+1. 본인 환경에 맞는 자동화 스크립트 작성
+2. 보안 정책과 만료 시간 설정
+3. 모니터링 시스템과 통합
