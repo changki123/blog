@@ -7,28 +7,7 @@
 {% block content %}
 <div class="content-with-sidebar">
     <main class="main-content">
-        <div class="posts">
-            {% set all_pages = section.pages | sort(attribute="date") | reverse %}
-            
-            {# all_pages 변수 사용 #}
-            {%- for page in all_pages %}
-                <div class="post on-list">
-                    <h2 class="post-title">
-                        <a href="{{ page.permalink }}">{{ page.title }}</a>
-                    </h2>
-                    <div class="post-meta">
-                        {% if page.date %}
-                        <time datetime="{{ page.date }}">
-                            {{ page.date | date(format="%Y-%m-%d") }}
-                        </time>
-                        {% endif %}
-                    </div>
-                    {% if page.summary %}
-                        <div class="post-summary">{{ page.summary | safe }}</div>
-                    {% endif %}
-                </div>
-            {% endfor -%}
-        </div>
+        {{ super() }}
     </main>
     
     {% include "partials/sidebar.html" %}
