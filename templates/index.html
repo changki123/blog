@@ -8,13 +8,10 @@
 <div class="content-with-sidebar">
     <main class="main-content">
         <div class="posts">
-            {%- if paginator %}
-                {%- set show_pages = paginator.pages | reverse -%}
-            {% else %}
-                {%- set show_pages = section.pages | reverse -%}
-            {% endif -%}
-
-            {%- for page in show_pages %}
+            {% set all_pages = section.pages | sort(attribute="date") | reverse %}
+            
+            {# all_pages 변수 사용 #}
+            {%- for page in all_pages %}
                 <div class="post on-list">
                     <h2 class="post-title">
                         <a href="{{ page.permalink }}">{{ page.title }}</a>
@@ -26,7 +23,6 @@
                         </time>
                         {% endif %}
                     </div>
-                    
                     {% if page.summary %}
                         <div class="post-summary">{{ page.summary | safe }}</div>
                     {% endif %}
