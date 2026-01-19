@@ -58,915 +58,101 @@
         
 <div class="content-with-sidebar">
     <main class="main-content">
-        
         <div class="posts">
                 <div class="post on-list">
+                    <h2 class="post-title">
+                        <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;260114-01-presigned-url&#x2F;">S3 Pre-signed URL 실전 실습 가이드: 10분 만에 마스터하기</a>
+                    </h2>
+                    <div class="post-meta">
+                        
+                        <time datetime="2025-01-18">
+                            2025-01-18
+                        </time>
+                        
+                    </div>
                     
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260109-01-cloudflare/">Cloudflare DNS로 커스텀 도메인 구매하고 GitHub 블로그 연결하기</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-01-12
-        </span>
-
-    </div>
-
-    
-
-
-                    <div class="post-content">
-            <p>기술 블로그를 위해 <code>.click</code> 도메인을 구매하고 Cloudflare DNS를 통해 GitHub Pages에 연결한 과정을 기록합니다.</p>
-<h2 id="wae-keoseuteom-domeininga">왜 커스텀 도메인인가?</h2>
-<p>GitHub Pages는 기본적으로 <code>username.github.io</code> 형태의 도메인을 제공하지만, 커스텀 도메인을 사용하면:</p>
-<ul>
-<li>전문적인 브랜딩</li>
-<li>기억하기 쉬운 URL</li>
-<li>포트폴리오 가치 상승</li>
-<li>실무 DNS 관리 경험</li>
-</ul>
-<h2 id="domein-seontaeg-gwajeong">도메인 선택 과정</h2>
-<h3 id="tld-bigyo">TLD 비교</h3>
-<p>처음엔 <code>.com</code>을 고려했지만:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>changki123.com - $15/년
-</span><span>changki123.org - $15/년
-</span><span>
-</span><span>vs
-</span><span>
-</span><span>changki123.click - $3/년 (5배 저렴!)
-</span></code></pre>
-<p><code>.click</code> 도메인을 선택한 이유:</p>
-<ul>
-<li>저렴한 비용 (연 $3)</li>
-<li>등록 제약 없음 (누구나 등록 가능)</li>
-<li>기술/블로그 용도로 적합</li>
-<li>다양한 레지스트라에서 구매 가능</li>
-</ul>
-<h3 id="domein-gujo-seolgye-yesi">도메인 구조 설계 예시</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>changki123.click              → 메인 홈페이지 (향후 포트폴리오)
-</span><span>blog.changki123.click         → 기술 블로그 (현재)
-</span><span>lab.changki123.click          → 실습/테스트용 (계획)
-</span><span>monitor.changki123.click      → 모니터링 대시보드 (계획)
-</span></code></pre>
-<p>서브도메인으로 분리하면 용도별 관리가 쉽고 나중에 확장하기 좋습니다.</p>
-<h2 id="cloudflare-dns-seoljeong">Cloudflare DNS 설정</h2>
-<h3 id="1dangye-cloudflare-gyejeong-saengseong-mic-saiteu-cuga">1단계: Cloudflare 계정 생성 및 사이트 추가</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>1. cloudflare.com 접속
-</span><span>2. 계정 가입 (무료 플랜 선택)
-</span><span>3. 대시보드에서 &quot;Add a Site&quot; 클릭
-</span><span>4. 도메인 입력: changki123.click
-</span><span>5. Free 플랜 선택
-</span></code></pre>
-<h3 id="2dangye-dns-rekodeu-seoljeong">2단계: DNS 레코드 설정</h3>
-<p>Cloudflare가 기존 DNS 레코드를 자동 스캔한 후:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>DNS → Records 메뉴
-</span><span>
-</span><span>블로그용 CNAME 레코드 추가:
-</span><span>Type: CNAME
-</span><span>Name: blog
-</span><span>Target: changki123.github.io
-</span><span>Proxy status: Proxied (주황색 구름) 또는 DNS only
-</span><span>TTL: Auto
-</span><span>
-</span><span>→ Save
-</span></code></pre>
-<p><strong>Proxy 설정 참고:</strong></p>
-<ul>
-<li><strong>Proxied (주황색 구름)</strong>: Cloudflare CDN 사용, DDoS 보호, SSL 자동</li>
-<li><strong>DNS only (회색 구름)</strong>: 단순 DNS만 사용, GitHub 직접 연결</li>
-</ul>
-<h3 id="3dangye-neimseobeo-byeongyeong">3단계: 네임서버 변경</h3>
-<p>Cloudflare가 제공하는 네임서버 정보를 도메인 레지스트라에 등록합니다.</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Cloudflare가 제공하는 네임서버 예시:
-</span><span>aldo.ns.cloudflare.com
-</span><span>raquel.ns.cloudflare.com
-</span></code></pre>
-<p>도메인 구매한 레지스트라(AWS Route 53, GoDaddy 등) 관리 페이지에서:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>1. 도메인 관리 메뉴 접속
-</span><span>2. 네임서버(Name Server) 설정 찾기
-</span><span>3. Custom 네임서버로 변경
-</span><span>4. Cloudflare 네임서버 2개 입력
-</span><span>5. 저장
-</span></code></pre>
-<p><strong>전파 시간:</strong> 최대 24~48시간 소요 (보통 몇 시간 내 완료)</p>
-<h3 id="4dangye-dns-jeonpa-hwagin">4단계: DNS 전파 확인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 터미널에서 확인
-</span><span style="color:#bf616a;">dig</span><span> blog.changki123.click
-</span><span>
-</span><span style="color:#65737e;"># 또는 nslookup
-</span><span style="color:#bf616a;">nslookup</span><span> blog.changki123.click
-</span><span>
-</span><span style="color:#65737e;"># 출력 예시:
-</span><span style="color:#65737e;"># blog.changki123.click. 300 IN CNAME changki123.github.io.
-</span></code></pre>
-<h2 id="github-pages-seoljeong">GitHub Pages 설정</h2>
-<h3 id="1dangye-custom-domain-seoljeong">1단계: Custom Domain 설정</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>GitHub 저장소 접속
-</span><span>→ Settings 탭
-</span><span>→ Pages 메뉴
-</span><span>→ Custom domain에 입력: blog.changki123.click
-</span><span>→ Save
-</span></code></pre>
-<p>GitHub이 자동으로:</p>
-<ul>
-<li>DNS 체크 수행</li>
-<li>CNAME 파일 생성 (루트 디렉토리)</li>
-<li>HTTPS 인증서 발급 시작</li>
-</ul>
-<h3 id="2dangye-cname-pail-cuga-zola-jeonyong">2단계: CNAME 파일 추가 (Zola 전용)</h3>
-<p>Zola는 빌드 시 <code>public</code> 디렉토리를 생성하므로, CNAME 파일이 포함되도록 설정해야 합니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 프로젝트 루트에서
-</span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">blog.changki123.click</span><span>&quot; &gt; static/CNAME
-</span></code></pre>
-<p>디렉토리 구조:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>your-blog/
-</span><span>├── config.toml
-</span><span>├── content/
-</span><span>├── static/
-</span><span>│   └── CNAME          ← 여기에 생성
-</span><span>└── templates/
-</span></code></pre>
-<p><strong>왜 static 폴더인가?</strong></p>
-<ul>
-<li>Zola는 <code>static/</code> 폴더의 내용을 빌드 시 <code>public/</code>으로 그대로 복사</li>
-<li>GitHub Pages는 루트의 CNAME 파일을 찾음</li>
-<li><code>static/CNAME</code> → 빌드 후 → <code>public/CNAME</code></li>
-</ul>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 빌드 및 배포
-</span><span style="color:#bf616a;">git</span><span> add static/CNAME
-</span><span style="color:#bf616a;">git</span><span> commit</span><span style="color:#bf616a;"> -m </span><span>&quot;</span><span style="color:#a3be8c;">Add CNAME for custom domain</span><span>&quot;
-</span><span style="color:#bf616a;">git</span><span> push origin main
-</span></code></pre>
-<h3 id="3dangye-https-hwalseonghwa">3단계: HTTPS 활성화</h3>
-<p>GitHub Pages Settings에서:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>☑ Enforce HTTPS (체크)
-</span></code></pre>
-<h2 id="seontaeg-gijon-gyeongro-byeongyeong">(선택) 기존 경로 변경</h2>
-<p>도메인 변경으로 인해 기존 콘텐츠의 경로가 바뀐 경우:</p>
-<h3 id="imiji-midieo-pail-gyeongro-sujeong">이미지/미디어 파일 경로 수정</h3>
-<pre data-lang="markdown" style="background-color:#2b303b;color:#c0c5ce;" class="language-markdown "><code class="language-markdown" data-lang="markdown"><span style="color:#8fa1b3;"># 변경 전
-</span><span>![이미지](/blog/images/sample.png)
-</span><span>&lt;</span><span style="color:#bf616a;">video </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">/blog/videos/sample.mp4</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">video</span><span>&gt;
-</span><span>
-</span><span style="color:#8fa1b3;"># 변경 후
-</span><span>![이미지](/images/sample.png)
-</span><span>&lt;</span><span style="color:#bf616a;">video </span><span style="color:#d08770;">src</span><span>=&quot;</span><span style="color:#a3be8c;">/videos/sample.mp4</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">video</span><span>&gt;
-</span></code></pre>
-<h3 id="ringkeu-gyeongro-hwagin">링크 경로 확인</h3>
-<pre data-lang="markdown" style="background-color:#2b303b;color:#c0c5ce;" class="language-markdown "><code class="language-markdown" data-lang="markdown"><span style="color:#8fa1b3;"># 내부 링크
-</span><span style="color:#d08770;">[다른 포스트](../other-post/)</span><span>  ← 상대 경로 권장
-</span><span>
-</span><span style="color:#8fa1b3;"># 절대 경로 사용 시
-</span><span style="color:#d08770;">[홈으로](https://blog.changki123.click/)
-</span></code></pre>
-<h2 id="coejong-hwagin">최종 확인</h2>
-<h3 id="jeobsog-teseuteu">접속 테스트</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>http://blog.changki123.click   → https로 자동 리다이렉트
-</span><span>https://blog.changki123.click  → 정상 접속
-</span></code></pre>
-<h3 id="dns-rekodeu-hwagin">DNS 레코드 확인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">dig</span><span> blog.changki123.click
-</span><span>
-</span><span style="color:#65737e;"># Cloudflare 사용 시 출력 예시:
-</span><span style="color:#65737e;"># blog.changki123.click. 300 IN CNAME changki123.github.io.
-</span></code></pre>
-<h3 id="ssl-injeungseo-hwagin">SSL 인증서 확인</h3>
-<p>브라우저 주소창에서:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>자물쇠 아이콘 클릭
-</span><span>→ 인증서 정보 확인
-</span><span>→ &quot;Issued by: GitHub&quot; 또는 &quot;Cloudflare&quot;
-</span></code></pre>
-<h2 id="jeongri">정리</h2>
-<h3 id="jeonce-gwajeong-yoyag">전체 과정 요약</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>1. 도메인 구매 (.click, $3/년)
-</span><span>2. Cloudflare 계정 생성 및 사이트 추가 (무료 플랜)
-</span><span>3. Cloudflare DNS 레코드 설정 (CNAME: blog → changki123.github.io)
-</span><span>4. 도메인 레지스트라에서 네임서버를 Cloudflare로 변경
-</span><span>5. GitHub Settings → Pages → Custom domain 설정
-</span><span>6. static/CNAME 파일 생성 및 푸시
-</span><span>7. (선택) 기존 경로 수정
-</span></code></pre>
-<h3 id="cloudflare-sayongyi-jangjeom">Cloudflare 사용의 장점</h3>
-<ul>
-<li><strong>무료 SSL/TLS</strong>: 자동 HTTPS 적용</li>
-<li><strong>CDN</strong>: 전 세계 빠른 접속 속도</li>
-<li><strong>DDoS 보호</strong>: 기본 보안 제공</li>
-<li><strong>분석 도구</strong>: 트래픽 모니터링</li>
-<li><strong>유연한 DNS 관리</strong>: 쉬운 레코드 추가/수정</li>
-</ul>
-<h3 id="biyong-jeongri">비용 정리</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>도메인 비용: $3/년 (.click)
-</span><span>Cloudflare DNS: 무료
-</span><span>GitHub Pages: 무료
-</span><span>HTTPS 인증서: 무료
-</span><span>
-</span><span>총 비용: $3/년
-</span></code></pre>
-<h2 id="camgo-jaryo">참고 자료</h2>
-<ul>
-<li><a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site">GitHub Pages 공식 문서</a></li>
-<li><a href="https://developers.cloudflare.com/dns/">Cloudflare DNS 가이드</a></li>
-<li><a href="https://www.getzola.org/documentation/deployment/github-pages/">Zola 공식 문서</a></li>
-</ul>
-
-        </div>
-
+                    
+                        <div class="post-summary">AWS 콘솔부터 자동화까지, Pre-signed URL을 직접 만들고 활용하는 실습 가이드</div>
+                    
                 </div>
             
                 <div class="post on-list">
+                    <h2 class="post-title">
+                        <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;260101-01-first-post&#x2F;">첫 번째 포스트</a>
+                    </h2>
+                    <div class="post-meta">
+                        
+                        <time datetime="2026-01-01">
+                            2026-01-01
+                        </time>
+                        
+                    </div>
                     
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260105-01-fish/">라스보라 물고기 키우기 - 초보자 가이드</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-01-05
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/aquarium/">#aquarium</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/beginner-guide/">#beginner-guide</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/rasbora/">#rasbora</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/tropical-fish/">#tropical-fish</a></span>
-    
-
-
-                    <div class="post-content">
-            <h1 id="raseuboraran">라스보라란?</h1>
-<p>라스보라(Rasbora)는 동남아시아가 원산지인 작은 열대어로, 온순한 성격과 아름다운 색상으로 초보자에게 인기가 많은 물고기입니다.</p>
-<h2 id="juyo-teugjing">주요 특징</h2>
-<h3 id="1-keugiwa-oehyeong">1. 크기와 외형</h3>
-<ul>
-<li>평균 크기: 3-5cm</li>
-<li>날씬하고 유선형 몸매</li>
-<li>종류에 따라 다양한 색상 (은색, 주황색, 검은색 줄무늬 등)</li>
-</ul>
-<h3 id="2-seonggyeog">2. 성격</h3>
-<ul>
-<li>매우 온순하고 평화로움</li>
-<li>무리 생활을 선호 (최소 6마리 이상 권장)</li>
-<li>다른 물고기와 합사 가능</li>
-</ul>
-<h3 id="3-ingi-issneun-jongryu">3. 인기 있는 종류</h3>
-<h4 id="helri-raseubora-harlequin-rasbora">헬리 라스보라 (Harlequin Rasbora)</h4>
-<ul>
-<li>가장 흔한 종류</li>
-<li>주황빛 몸에 검은색 삼각형 무늬</li>
-<li>사육 난이도: 매우 쉬움</li>
-</ul>
-<h4 id="gaelreogsi-raseubora-galaxy-rasbora">갤럭시 라스보라 (Galaxy Rasbora)</h4>
-<ul>
-<li>작은 크기 (2cm)</li>
-<li>파란색 몸에 흰색 점박이</li>
-<li>사육 난이도: 중간</li>
-</ul>
-<h2 id="gibon-sayug-jogeon">기본 사육 조건</h2>
-<h3 id="sujo-hwangyeong">수조 환경</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>수온: 24-26°C
-</span><span>pH: 6.0-7.5
-</span><span>경도: 연수 선호
-</span><span>수조 크기: 최소 40L (6마리 기준)
-</span></code></pre>
-<h3 id="meogi">먹이</h3>
-<ul>
-<li>플레이크 사료</li>
-<li>냉동 장구벌레</li>
-<li>브라인 쉬림프</li>
-<li>하루 2회, 3분 내 먹을 양</li>
-</ul>
-<h2 id="sayug-tib">사육 팁</h2>
-<ol>
-<li><strong>무리 생활</strong>: 혼자 키우면 스트레스 받음, 6마리 이상 추천</li>
-<li><strong>수초 배치</strong>: 숨을 공간 제공, 스트레스 감소</li>
-<li><strong>조명</strong>: 밝은 조명보다 은은한 조명 선호</li>
-<li><strong>수질 관리</strong>: 주 1회 30% 물갈이</li>
-</ol>
-<h2 id="habsa-ganeunghan-mulgogi">합사 가능한 물고기</h2>
-<ul>
-<li>네온테트라</li>
-<li>구피</li>
-<li>코리도라스</li>
-<li>새우류</li>
-</ul>
-<h2 id="juyisahang">주의사항</h2>
-<p>⚠️ <strong>피해야 할 것들:</strong></p>
-<ul>
-<li>큰 육식성 물고기와 합사</li>
-<li>급격한 수온 변화</li>
-<li>과다 급여</li>
-</ul>
-<h2 id="beonsig">번식</h2>
-<p>라스보라는 수조에서도 번식이 가능하지만, 성공률을 높이려면:</p>
-<ol>
-<li>별도 번식 수조 준비</li>
-<li>수온 1-2도 올리기</li>
-<li>먹이를 충분히 급여</li>
-<li>수초(자바모스 등) 배치</li>
-</ol>
-<p>알을 낳으면 부모 물고기를 분리해야 알을 먹지 않습니다.</p>
-<h2 id="gyeolron">결론</h2>
-<p>라스보라는 초보자가 키우기 좋은 물고기입니다. 온순하고 관리가 쉬우며, 무리지어 헤엄치는 모습이 아름답습니다. 기본적인 수질 관리만 해준다면 오랫동안 건강하게 키울 수 있습니다.</p>
-<hr />
-<p><strong>참고 자료:</strong></p>
-<ul>
-<li>평균 수명: 3-5년</li>
-<li>구매 가격: 마리당 1,000-3,000원</li>
-<li>사육 난이도: ⭐⭐☆☆☆ (5점 만점에 2점)</li>
-</ul>
-
-        </div>
-
+                    
                 </div>
             
                 <div class="post on-list">
+                    <h2 class="post-title">
+                        <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;260102-01-zola-blog-setup&#x2F;">Windows에서 Zola + GitHub Pages로 블로그 만들기</a>
+                    </h2>
+                    <div class="post-meta">
+                        
+                        <time datetime="2026-01-02">
+                            2026-01-02
+                        </time>
+                        
+                    </div>
                     
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260105-02-ascii/">ASCII 동영상</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-01-05
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/ascii/">#ascii</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/video/">#video</a></span>
-    
-
-
-                    <div class="post-content">
-            <style>
-  .video-wrapper {
-    background: #000;
-    text-align: center;
-    padding: 20px;
-  }
-  #ascii-output {
-    font-size: 5px;
-    line-height: 2.5px;
-    background: #000;
-    color: #0f0;
-    font-family: monospace;
-    white-space: pre;
-    overflow-x: auto;
-    letter-spacing: 0;
-    padding: 30px 50px;
-  }
-</style>
-<div class="video-wrapper">
-  <video id="sourceVideo" width="640" height="360" autoplay loop muted>
-    <source src="/video/sample.mp4" type="video/mp4">
-  </video>
-  <div id="ascii-output"></div>
-</div>
-<script>
-(function() {
-  const video = document.getElementById('sourceVideo');
-  const output = document.getElementById('ascii-output');
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  
-  canvas.width = 240;
-  canvas.height = 135;
-  
-  const chars = ' .:-=+*#%@';
-  
-  function convert() {
-    if (!video.paused && !video.ended) {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      let ascii = '';
-      
-      for (let i = 0; i < imgData.data.length; i += 4) {
-        const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
-        const charIdx = Math.floor(avg / 255 * (chars.length - 1));
-        ascii += chars[charIdx];
-        if ((i/4 + 1) % canvas.width === 0) ascii += '\n';
-      }
-      
-      output.textContent = ascii;
-      requestAnimationFrame(convert);
-    }
-  }
-  
-  video.addEventListener('playing', convert);
-})();
-</script>
-<hr />
-<p><strong>원본 영상:</strong> <a href="https://youtu.be/jy2aZHUI-6A?si=EdLWyIsgQw3kib5r">YouTube에서 보기</a></p>
-
-        </div>
-
+                    
                 </div>
             
                 <div class="post on-list">
+                    <h2 class="post-title">
+                        <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;260105-02-ascii&#x2F;">ASCII 동영상</a>
+                    </h2>
+                    <div class="post-meta">
+                        
+                        <time datetime="2026-01-05">
+                            2026-01-05
+                        </time>
+                        
+                    </div>
                     
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260102-01-zola-blog-setup/">Windows에서 Zola + GitHub Pages로 블로그 만들기</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-01-02
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/blog/">#blog</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/github-pages/">#github-pages</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/rust/">#rust</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/tutorial/">#tutorial</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/zola/">#zola</a></span>
-    
-
-
-                    <div class="post-content">
-            <p>Rust로 만든 정적 사이트 생성기 Zola를 사용해서 GitHub Pages 블로그를 만들어봤다.</p>
-<h2 id="wae-zolainga">왜 Zola인가?</h2>
-<ul>
-<li><strong>빠름</strong>: Rust로 작성되어 빌드 속도가 매우 빠르다</li>
-<li><strong>간단함</strong>: Hugo나 Jekyll보다 설정이 심플하다</li>
-<li><strong>GitHub 언어 통계</strong>: Zola 테마를 사용하면 레포에 Rust 비율이 나온다</li>
-</ul>
-<h2 id="seolci-gwajeong">설치 과정</h2>
-<h3 id="1-zola-seolci-windows">1. Zola 설치 (Windows)</h3>
-<p>GitHub 릴리즈에서 직접 다운로드하는 방식을 사용했다.</p>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span style="color:#65737e;"># 1. https://github.com/getzola/zola/releases/latest 에서
-</span><span style="color:#65737e;"># zola-v0.21.0-x86_64-pc-windows-msvc.zip 다운로드
-</span><span>
-</span><span style="color:#65737e;"># 2. C:\zola 폴더에 압축 해제
-</span><span>
-</span><span style="color:#65737e;"># 3. 환경 변수 Path에 C:\zola 추가
-</span></code></pre>
-<h3 id="2-beulrogeu-peurojegteu-saengseong">2. 블로그 프로젝트 생성</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>cd C:\Users\player\Documents
-</span><span>zola init myblog
-</span><span>
-</span><span style="color:#65737e;"># 질문에 답변:
-</span><span style="color:#65737e;"># URL: https://yourusername.github.io/blog
-</span><span style="color:#65737e;"># Sass: Y
-</span><span style="color:#65737e;"># Syntax highlighting: y
-</span><span style="color:#65737e;"># Search index: y
-</span></code></pre>
-<h3 id="3-tema-seolci">3. 테마 설치</h3>
-<p>terminimal 테마를 선택했다. 터미널 스타일이 깔끔하고 마음에 들었다.</p>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>cd myblog
-</span><span>git init
-</span><span>git submodule add https://</span><span style="color:#96b5b4;">github.com</span><span>/pawroman/zola-theme-terminimal.git themes/terminimal
-</span></code></pre>
-<h3 id="4-seoljeong-pail-sujeong">4. 설정 파일 수정</h3>
-<p><code>config.toml</code>:</p>
-<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#bf616a;">base_url </span><span>= &quot;</span><span style="color:#a3be8c;">https://changki123.github.io/blog</span><span>&quot;
-</span><span style="color:#bf616a;">title </span><span>= &quot;</span><span style="color:#a3be8c;">changki123&#39;s blog</span><span>&quot;
-</span><span style="color:#bf616a;">description </span><span>= &quot;</span><span style="color:#a3be8c;">Infrastructure Engineer&#39;s Tech Blog</span><span>&quot;
-</span><span style="color:#bf616a;">compile_sass </span><span>= </span><span style="color:#d08770;">true
-</span><span style="color:#bf616a;">build_search_index </span><span>= </span><span style="color:#d08770;">true
-</span><span>
-</span><span style="color:#bf616a;">theme </span><span>= &quot;</span><span style="color:#a3be8c;">terminimal</span><span>&quot;
-</span><span>
-</span><span>[markdown]
-</span><span style="color:#bf616a;">highlight_code </span><span>= </span><span style="color:#d08770;">true
-</span><span>
-</span><span>[extra]
-</span><span style="color:#bf616a;">accent_color </span><span>= &quot;</span><span style="color:#a3be8c;">green</span><span>&quot;
-</span><span style="color:#bf616a;">logo_text </span><span>= &quot;</span><span style="color:#a3be8c;">changki123</span><span>&quot;
-</span></code></pre>
-<h3 id="5-rokeol-teseuteu">5. 로컬 테스트</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>zola serve
-</span><span style="color:#65737e;"># http://127.0.0.1:1111 접속
-</span></code></pre>
-<p>완벽하게 작동했다!</p>
-<h2 id="github-pages-baepo">GitHub Pages 배포</h2>
-<h3 id="1-github-repo-saengseong">1. GitHub 레포 생성</h3>
-<ul>
-<li>Repository name: <code>blog</code></li>
-<li>Public으로 생성</li>
-</ul>
-<h3 id="2-git-seoljeong">2. Git 설정</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span style="color:#65737e;"># Git 사용자 정보
-</span><span>git config --global user.email &quot;</span><span style="color:#a3be8c;">이메일@example.com</span><span>&quot;
-</span><span>git config --global user.name &quot;</span><span style="color:#a3be8c;">changki123</span><span>&quot;
-</span><span>
-</span><span style="color:#65737e;"># .gitignore 생성
-</span><span>echo &quot;</span><span style="color:#a3be8c;">public/</span><span>&quot; &gt; .gitignore
-</span><span>
-</span><span style="color:#65737e;"># 커밋 &amp; 푸시
-</span><span>git add .
-</span><span>git commit -m &quot;</span><span style="color:#a3be8c;">Initial commit</span><span>&quot;
-</span><span>git branch -M main
-</span><span>git remote add origin https://</span><span style="color:#96b5b4;">github.com</span><span>/changki123/blog.git
-</span><span>git push -u origin main
-</span></code></pre>
-<h3 id="3-github-actions-weokeupeulrou">3. GitHub Actions 워크플로우</h3>
-<p><code>.github/workflows/deploy.yml</code>:</p>
-<pre data-lang="yaml" style="background-color:#2b303b;color:#c0c5ce;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Deploy to GitHub Pages
-</span><span>
-</span><span style="color:#d08770;">on</span><span>:
-</span><span>  </span><span style="color:#bf616a;">push</span><span>:
-</span><span>    </span><span style="color:#bf616a;">branches</span><span>: [</span><span style="color:#a3be8c;">main</span><span>]
-</span><span>
-</span><span style="color:#bf616a;">jobs</span><span>:
-</span><span>  </span><span style="color:#bf616a;">build</span><span>:
-</span><span>    </span><span style="color:#bf616a;">runs-on</span><span>: </span><span style="color:#a3be8c;">ubuntu-latest
-</span><span>    
-</span><span>    </span><span style="color:#bf616a;">permissions</span><span>:
-</span><span>      </span><span style="color:#bf616a;">contents</span><span>: </span><span style="color:#a3be8c;">write
-</span><span>    
-</span><span>    </span><span style="color:#bf616a;">steps</span><span>:
-</span><span>      - </span><span style="color:#bf616a;">uses</span><span>: </span><span style="color:#a3be8c;">actions/checkout@v4
-</span><span>        </span><span style="color:#bf616a;">with</span><span>:
-</span><span>          </span><span style="color:#bf616a;">submodules</span><span>: </span><span style="color:#d08770;">true
-</span><span>      
-</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Install Zola
-</span><span>        </span><span style="color:#bf616a;">uses</span><span>: </span><span style="color:#a3be8c;">taiki-e/install-action@v2
-</span><span>        </span><span style="color:#bf616a;">with</span><span>:
-</span><span>          </span><span style="color:#bf616a;">tool</span><span>: </span><span style="color:#a3be8c;">zola@0.21.0
-</span><span>      
-</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Build
-</span><span>        </span><span style="color:#bf616a;">run</span><span>: </span><span style="color:#a3be8c;">zola build --base-url https://changki123.github.io/blog
-</span><span>      
-</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Deploy
-</span><span>        </span><span style="color:#bf616a;">uses</span><span>: </span><span style="color:#a3be8c;">peaceiris/actions-gh-pages@v3
-</span><span>        </span><span style="color:#bf616a;">with</span><span>:
-</span><span>          </span><span style="color:#bf616a;">github_token</span><span>: </span><span style="color:#a3be8c;">${{ secrets.GITHUB_TOKEN }}
-</span><span>          </span><span style="color:#bf616a;">publish_dir</span><span>: </span><span style="color:#a3be8c;">./public
-</span></code></pre>
-<h3 id="4-jekyll-bihwalseonghwa">4. Jekyll 비활성화</h3>
-<p>GitHub가 자동으로 Jekyll을 실행하려고 해서 <code>.nojekyll</code> 파일을 추가했다.</p>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>echo $</span><span style="color:#d08770;">null </span><span>&gt; .nojekyll
-</span><span>echo $</span><span style="color:#d08770;">null </span><span>&gt; </span><span style="color:#b48ead;">static</span><span>\.nojekyll
-</span></code></pre>
-<h3 id="5-github-seoljeong">5. GitHub 설정</h3>
-<ul>
-<li>Settings → Actions → Workflow permissions</li>
-<li>"Read and write permissions" 선택</li>
-<li>Settings → Pages</li>
-<li>Source: Deploy from a branch</li>
-<li>Branch: gh-pages, /root</li>
-</ul>
-<h2 id="gyeolgwa">결과</h2>
-<p>https://changki123.github.io/blog</p>
-<p>블로그가 성공적으로 배포되었다! 🎉</p>
-<h2 id="teureobeulsyuting-gyeongheom">트러블슈팅 경험</h2>
-<h3 id="munje-1-jekyll-jadong-silhaeng">문제 1: Jekyll 자동 실행</h3>
-<p><strong>해결</strong>: <code>.nojekyll</code> 파일 추가</p>
-<h3 id="munje-2-git-gweonhan-ereo-exit-code-128">문제 2: Git 권한 에러 (exit code 128)</h3>
-<p><strong>해결</strong>: GitHub Actions 권한을 "Read and write"로 변경</p>
-<h3 id="munje-3-hwangyeong-byeonsu-insig-andoem">문제 3: 환경 변수 인식 안됨</h3>
-<p><strong>해결</strong>: PowerShell 재시작 필요</p>
-<hr />
-<p><strong>참고 링크:</strong></p>
-<ul>
-<li><a href="https://www.getzola.org/">Zola 공식 문서</a></li>
-<li><a href="https://github.com/pawroman/zola-theme-terminimal">terminimal 테마</a></li>
-</ul>
-
-        </div>
-
+                    
                 </div>
             
                 <div class="post on-list">
+                    <h2 class="post-title">
+                        <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;260105-01-fish&#x2F;">라스보라 물고기 키우기 - 초보자 가이드</a>
+                    </h2>
+                    <div class="post-meta">
+                        
+                        <time datetime="2026-01-05">
+                            2026-01-05
+                        </time>
+                        
+                    </div>
                     
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260101-01-first-post/">첫 번째 포스트</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-01-01
-        </span>
-
-    </div>
-
-    
-
-
-                    <div class="post-content">
-            <p>안녕하세요! Rust로 만든 Zola 블로그입니다.</p>
-<p>## Zola + terminimal 테마</p>
-<p>터미널 스타일의 깔끔한 블로그를 만들었습니다.</p>
-<p>- Rust로 작성된 초고속 정적 사이트 생성기</p>
-<p>- GitHub Pages 배포 예정</p>
-<p>- 인프라 엔지니어의 기술 블로그</p>
-
-        </div>
-
+                    
+                        <div class="post-summary">작고 아름다운 열대어 라스보라의 특징과 기본 사육 방법</div>
+                    
                 </div>
             
                 <div class="post on-list">
+                    <h2 class="post-title">
+                        <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;260109-01-cloudflare&#x2F;">Cloudflare DNS로 커스텀 도메인 구매하고 GitHub 블로그 연결하기</a>
+                    </h2>
+                    <div class="post-meta">
+                        
+                        <time datetime="2026-01-12">
+                            2026-01-12
+                        </time>
+                        
+                    </div>
                     
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260114-01-presigned-url/">S3 Pre-signed URL 실전 실습 가이드: 10분 만에 마스터하기</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2025-01-18
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#AWS</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/hands-on/">#Hands-on</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/s3/">#S3</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/security/">#Security</a></span>
-    
-
-
-                    <div class="post-content">
-            <h2 id="pre-signed-urliran">Pre-signed URL이란?</h2>
-<p>S3 버킷을 <strong>private으로 유지</strong>하면서도, 특정 파일에 대해 <strong>임시 접근 권한</strong>을 부여하는 URL입니다.</p>
-<p><strong>핵심 포인트:</strong></p>
-<ul>
-<li>S3 버킷은 비공개 상태 유지</li>
-<li>URL을 아는 사람만 제한 시간 동안 접근 가능</li>
-<li>시간 지나면 자동으로 차단</li>
-</ul>
-<h2 id="wae-pilyohanga">왜 필요한가?</h2>
-<p>실무에서 이런 상황 자주 마주치지 않나요?</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>❌ 문제 상황:
-</span><span>- 고객에게 10GB 백업 파일 전달해야 하는데 이메일 첨부 불가
-</span><span>- S3 버킷을 public으로 열면 보안 위험
-</span><span>- 특정 사람에게만 일시적으로 파일 공유 필요
-</span><span>
-</span><span>✅ Pre-signed URL 해결:
-</span><span>- S3는 private 유지
-</span><span>- URL만 전달하면 다운로드 가능
-</span><span>- 12시간 후 자동 만료
-</span></code></pre>
-<h2 id="aws-konsoleseo-pre-signed-url-mandeulgi-silseub">AWS 콘솔에서 Pre-signed URL 만들기 (실습)</h2>
-<p>오늘 직접 실습해본 내용입니다. 생각보다 정말 간단합니다!</p>
-<h3 id="silseub-gwajeong">실습 과정</h3>
-<p><strong>1. S3 버킷에서 파일 선택</strong></p>
-<ul>
-<li>AWS Console → S3 → 버킷 선택</li>
-<li>공유할 파일 체크박스 클릭</li>
-</ul>
-<p><strong>2. 객체 작업 메뉴</strong></p>
-<ul>
-<li>우측 상단 <strong>"객체 작업(Object actions)"</strong> 버튼 클릭</li>
-<li><strong>"미리 서명된 URL로 공유"</strong> 선택</li>
-</ul>
-<p><strong>3. 만료 시간 설정</strong></p>
-<ul>
-<li>Minutes (분) 또는 Hours (시간) 선택</li>
-<li>원하는 시간 입력</li>
-<li>"미리 서명된 URL 생성" 버튼 클릭</li>
-</ul>
-<p><strong>4. URL 복사 및 테스트</strong></p>
-<ul>
-<li>"클립보드에 복사" 버튼 클릭</li>
-<li>브라우저 새 탭에 붙여넣기</li>
-<li>Enter → 파일 다운로드 확인! ✅</li>
-</ul>
-<h3 id="silseub-gyeolgwa">실습 결과</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>✅ 버킷은 private 상태 유지
-</span><span>✅ URL로 AWS 자격증명 없이 다운로드 가능
-</span><span>✅ 설정한 시간 후 자동 만료
-</span></code></pre>
-<h3 id="konsol-sayong-si-camgosahang">콘솔 사용 시 참고사항</h3>
-<p><strong>만료 시간 제한:</strong></p>
-<ul>
-<li>콘솔에서는 <strong>Minutes와 Hours만</strong> 선택 가능</li>
-<li>**최대 12시간(720분)**까지만 설정 가능</li>
-<li>그 이상 필요하면 AWS CLI 사용</li>
-</ul>
-<p><strong>언제 콘솔 사용?</strong></p>
-<ul>
-<li>빠른 일회성 파일 공유</li>
-<li>고객/협력사에 임시 다운로드 링크 전달</li>
-<li>복잡한 설정 없이 간단하게 공유할 때</li>
-</ul>
-<h2 id="aws-cliro-mandeulgi-deo-gin-manryo-sigan-pilyohal-ddae">AWS CLI로 만들기 (더 긴 만료 시간 필요할 때)</h2>
-<h3 id="cloudshell-sayong-seolci-bulpilyo">CloudShell 사용 (설치 불필요)</h3>
-<p>AWS 콘솔 우측 상단 CloudShell 아이콘 클릭:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 버킷 목록 확인
-</span><span style="color:#bf616a;">aws</span><span> s3 ls
-</span><span>
-</span><span style="color:#65737e;"># 특정 버킷 내용 보기
-</span><span style="color:#bf616a;">aws</span><span> s3 ls s3://your-bucket-name/
-</span><span>
-</span><span style="color:#65737e;"># Pre-signed URL 생성 (1시간)
-</span><span style="color:#bf616a;">aws</span><span> s3 presign s3://your-bucket-name/test.txt</span><span style="color:#bf616a;"> --expires-in</span><span> 3600
-</span><span>
-</span><span style="color:#65737e;"># 7일짜리 URL 생성
-</span><span style="color:#bf616a;">aws</span><span> s3 presign s3://your-bucket-name/backup.tar.gz</span><span style="color:#bf616a;"> --expires-in</span><span> 604800
-</span></code></pre>
-<p><strong>생성된 URL 예시:</strong></p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>https://your-bucket.s3.ap-northeast-2.amazonaws.com/test.txt?
-</span><span>X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;
-</span><span>X-Amz-Credential=AKIA...&amp;
-</span><span>X-Amz-Date=20250118T120000Z&amp;
-</span><span>X-Amz-Expires=3600&amp;
-</span><span>X-Amz-SignedHeaders=host&amp;
-</span><span>X-Amz-Signature=abc123...
-</span></code></pre>
-<h2 id="siljeon-hwalyong-sinario">실전 활용 시나리오</h2>
-<h3 id="sinario-1-baegeob-pail-slack-gongyu">시나리오 1: 백업 파일 Slack 공유</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>boto3
-</span><span style="color:#b48ead;">import </span><span>requests
-</span><span style="color:#b48ead;">from </span><span>datetime </span><span style="color:#b48ead;">import </span><span>datetime
-</span><span>
-</span><span style="color:#bf616a;">SLACK_WEBHOOK </span><span>= &quot;</span><span style="color:#a3be8c;">https://hooks.slack.com/services/YOUR/WEBHOOK/URL</span><span>&quot;
-</span><span>
-</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">share_backup_to_slack</span><span>(</span><span style="color:#bf616a;">bucket</span><span>, </span><span style="color:#bf616a;">backup_file</span><span>):
-</span><span>    </span><span style="color:#65737e;">&quot;&quot;&quot;백업 완료 시 Slack으로 다운로드 링크 전송&quot;&quot;&quot;
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 1. Pre-signed URL 생성 (24시간)
-</span><span>    s3_client = boto3.</span><span style="color:#bf616a;">client</span><span>(&#39;</span><span style="color:#a3be8c;">s3</span><span>&#39;)
-</span><span>    url = s3_client.</span><span style="color:#bf616a;">generate_presigned_url</span><span>(
-</span><span>        &#39;</span><span style="color:#a3be8c;">get_object</span><span>&#39;,
-</span><span>        </span><span style="color:#bf616a;">Params</span><span>={&#39;</span><span style="color:#a3be8c;">Bucket</span><span>&#39;: bucket, &#39;</span><span style="color:#a3be8c;">Key</span><span>&#39;: backup_file},
-</span><span>        </span><span style="color:#bf616a;">ExpiresIn</span><span>=</span><span style="color:#d08770;">86400  </span><span style="color:#65737e;"># 24시간
-</span><span>    )
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 2. Slack 메시지 작성
-</span><span>    message = {
-</span><span>        &quot;</span><span style="color:#a3be8c;">text</span><span>&quot;: </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">📦 백업 완료: </span><span>{backup_file}&quot;,
-</span><span>        &quot;</span><span style="color:#a3be8c;">attachments</span><span>&quot;: [{
-</span><span>            &quot;</span><span style="color:#a3be8c;">color</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">good</span><span>&quot;,
-</span><span>            &quot;</span><span style="color:#a3be8c;">fields</span><span>&quot;: [
-</span><span>                {&quot;</span><span style="color:#a3be8c;">title</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">다운로드 링크</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: url, &quot;</span><span style="color:#a3be8c;">short</span><span>&quot;: </span><span style="color:#d08770;">False</span><span>},
-</span><span>                {&quot;</span><span style="color:#a3be8c;">title</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">유효 시간</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">24시간</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">short</span><span>&quot;: </span><span style="color:#d08770;">True</span><span>},
-</span><span>                {&quot;</span><span style="color:#a3be8c;">title</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">생성 시각</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: datetime.</span><span style="color:#bf616a;">now</span><span>().</span><span style="color:#bf616a;">strftime</span><span>(&quot;</span><span style="color:#d08770;">%Y</span><span style="color:#a3be8c;">-</span><span style="color:#d08770;">%m</span><span style="color:#a3be8c;">-</span><span style="color:#d08770;">%d %H</span><span style="color:#a3be8c;">:</span><span style="color:#d08770;">%M</span><span>&quot;), &quot;</span><span style="color:#a3be8c;">short</span><span>&quot;: </span><span style="color:#d08770;">True</span><span>}
-</span><span>            ]
-</span><span>        }]
-</span><span>    }
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 3. Slack 전송
-</span><span>    response = requests.</span><span style="color:#bf616a;">post</span><span>(</span><span style="color:#bf616a;">SLACK_WEBHOOK</span><span>, </span><span style="color:#bf616a;">json</span><span>=message)
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">if </span><span>response.status_code == </span><span style="color:#d08770;">200</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(&quot;</span><span style="color:#a3be8c;">✅ Slack 알림 전송 완료</span><span>&quot;)
-</span><span>    </span><span style="color:#b48ead;">else</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">❌ Slack 전송 실패: </span><span>{response.status_code}&quot;)
-</span><span>
-</span><span style="color:#65737e;"># 실행
-</span><span style="color:#bf616a;">share_backup_to_slack</span><span>(&#39;</span><span style="color:#a3be8c;">backup-bucket</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">daily/db-backup-2025-01-18.sql.gz</span><span>&#39;)
-</span></code></pre>
-<h3 id="sinario-2-moniteoring-ripoteu-jadong-baepo">시나리오 2: 모니터링 리포트 자동 배포</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>boto3
-</span><span style="color:#b48ead;">from </span><span>datetime </span><span style="color:#b48ead;">import </span><span>datetime, timedelta
-</span><span>
-</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">create_daily_report_url</span><span>(</span><span style="color:#bf616a;">bucket</span><span>, </span><span style="color:#bf616a;">report_date</span><span>=</span><span style="color:#d08770;">None</span><span>):
-</span><span>    </span><span style="color:#65737e;">&quot;&quot;&quot;일일 리포트 URL 생성&quot;&quot;&quot;
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">if </span><span>report_date is </span><span style="color:#d08770;">None</span><span>:
-</span><span>        report_date = datetime.</span><span style="color:#bf616a;">now</span><span>().</span><span style="color:#bf616a;">strftime</span><span>(&#39;</span><span style="color:#d08770;">%Y</span><span style="color:#a3be8c;">-</span><span style="color:#d08770;">%m</span><span style="color:#a3be8c;">-</span><span style="color:#d08770;">%d</span><span>&#39;)
-</span><span>    
-</span><span>    report_key = </span><span style="color:#b48ead;">f</span><span>&#39;</span><span style="color:#a3be8c;">reports/daily/monitoring-</span><span>{report_date}</span><span style="color:#a3be8c;">.pdf</span><span>&#39;
-</span><span>    
-</span><span>    s3_client = boto3.</span><span style="color:#bf616a;">client</span><span>(&#39;</span><span style="color:#a3be8c;">s3</span><span>&#39;)
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 리포트가 존재하는지 확인
-</span><span>    </span><span style="color:#b48ead;">try</span><span>:
-</span><span>        s3_client.</span><span style="color:#bf616a;">head_object</span><span>(</span><span style="color:#bf616a;">Bucket</span><span>=bucket, </span><span style="color:#bf616a;">Key</span><span>=report_key)
-</span><span>    </span><span style="color:#b48ead;">except</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">❌ 리포트가 없습니다: </span><span>{report_key}&quot;)
-</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">None
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># URL 생성 (12시간 유효)
-</span><span>    url = s3_client.</span><span style="color:#bf616a;">generate_presigned_url</span><span>(
-</span><span>        &#39;</span><span style="color:#a3be8c;">get_object</span><span>&#39;,
-</span><span>        </span><span style="color:#bf616a;">Params</span><span>={&#39;</span><span style="color:#a3be8c;">Bucket</span><span>&#39;: bucket, &#39;</span><span style="color:#a3be8c;">Key</span><span>&#39;: report_key},
-</span><span>        </span><span style="color:#bf616a;">ExpiresIn</span><span>=</span><span style="color:#d08770;">43200
-</span><span>    )
-</span><span>    
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">✅ 리포트 URL 생성: </span><span>{report_date}&quot;)
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">URL: </span><span>{url}&quot;)
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">return </span><span>url
-</span><span>
-</span><span style="color:#65737e;"># cron으로 매일 오전 9시 실행
-</span><span style="color:#65737e;"># 0 9 * * * python3 /scripts/send_report.py
-</span></code></pre>
-<h3 id="sinario-3-seobeo-rogeu-imsi-gongyu">시나리오 3: 서버 로그 임시 공유</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>boto3
-</span><span style="color:#b48ead;">import </span><span>sys
-</span><span>
-</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">share_server_logs</span><span>(</span><span style="color:#bf616a;">server_name</span><span>, </span><span style="color:#bf616a;">log_date</span><span>, </span><span style="color:#bf616a;">expires_minutes</span><span>=</span><span style="color:#d08770;">30</span><span>):
-</span><span>    </span><span style="color:#65737e;">&quot;&quot;&quot;특정 서버의 로그 파일을 임시로 공유&quot;&quot;&quot;
-</span><span>    
-</span><span>    bucket = &#39;</span><span style="color:#a3be8c;">server-logs</span><span>&#39;
-</span><span>    log_file = </span><span style="color:#b48ead;">f</span><span>&#39;{server_name}</span><span style="color:#a3be8c;">/access-</span><span>{log_date}</span><span style="color:#a3be8c;">.log.gz</span><span>&#39;
-</span><span>    
-</span><span>    s3_client = boto3.</span><span style="color:#bf616a;">client</span><span>(&#39;</span><span style="color:#a3be8c;">s3</span><span>&#39;)
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 파일 존재 확인
-</span><span>    </span><span style="color:#b48ead;">try</span><span>:
-</span><span>        response = s3_client.</span><span style="color:#bf616a;">head_object</span><span>(</span><span style="color:#bf616a;">Bucket</span><span>=bucket, </span><span style="color:#bf616a;">Key</span><span>=log_file)
-</span><span>        file_size = response[&#39;</span><span style="color:#a3be8c;">ContentLength</span><span>&#39;] / (</span><span style="color:#d08770;">1024</span><span>*</span><span style="color:#d08770;">1024</span><span>)  </span><span style="color:#65737e;"># MB
-</span><span>        
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">📄 로그 파일 찾음: </span><span>{log_file}&quot;)
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">📦 크기: </span><span>{file_size</span><span style="color:#d08770;">:.2f</span><span>}</span><span style="color:#a3be8c;"> MB</span><span>&quot;)
-</span><span>        
-</span><span>    </span><span style="color:#b48ead;">except</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">❌ 로그 파일이 없습니다: </span><span>{log_file}&quot;)
-</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">None
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># Pre-signed URL 생성
-</span><span>    url = s3_client.</span><span style="color:#bf616a;">generate_presigned_url</span><span>(
-</span><span>        &#39;</span><span style="color:#a3be8c;">get_object</span><span>&#39;,
-</span><span>        </span><span style="color:#bf616a;">Params</span><span>={&#39;</span><span style="color:#a3be8c;">Bucket</span><span>&#39;: bucket, &#39;</span><span style="color:#a3be8c;">Key</span><span>&#39;: log_file},
-</span><span>        </span><span style="color:#bf616a;">ExpiresIn</span><span>=expires_minutes * </span><span style="color:#d08770;">60
-</span><span>    )
-</span><span>    
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">✅ 다운로드 링크 (</span><span>{expires_minutes}</span><span style="color:#a3be8c;">분 유효):</span><span>&quot;)
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(url)
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">다운로드 명령어:</span><span>&quot;)
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">curl -o </span><span>{server_name}</span><span style="color:#a3be8c;">-</span><span>{log_date}</span><span style="color:#a3be8c;">.log.gz &#39;</span><span>{url}</span><span style="color:#a3be8c;">&#39;</span><span>&quot;)
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">return </span><span>url
-</span><span>
-</span><span style="color:#65737e;"># 사용 예시
-</span><span style="color:#b48ead;">if </span><span>__name__ == &quot;</span><span style="color:#a3be8c;">__main__</span><span>&quot;:
-</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">len</span><span>(sys.argv) &lt; </span><span style="color:#d08770;">3</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(&quot;</span><span style="color:#a3be8c;">사용법: python share_logs.py &lt;서버명&gt; &lt;날짜&gt;</span><span>&quot;)
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(&quot;</span><span style="color:#a3be8c;">예시: python share_logs.py web-01 2025-01-18</span><span>&quot;)
-</span><span>        sys.</span><span style="color:#bf616a;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>)
-</span><span>    
-</span><span>    server = sys.argv[</span><span style="color:#d08770;">1</span><span>]
-</span><span>    date = sys.argv[</span><span style="color:#d08770;">2</span><span>]
-</span><span>    
-</span><span>    </span><span style="color:#bf616a;">share_server_logs</span><span>(server, date, </span><span style="color:#bf616a;">expires_minutes</span><span>=</span><span style="color:#d08770;">30</span><span>)
-</span></code></pre>
-<h2 id="boan-goryeosahang">보안 고려사항</h2>
-<h3 id="1-jeogjeolhan-manryo-sigan-seoljeong">1. 적절한 만료 시간 설정</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#65737e;"># 용도별 권장 만료 시간
-</span><span style="color:#bf616a;">EXPIRATION_TIMES </span><span>= {
-</span><span>    &#39;</span><span style="color:#a3be8c;">emergency_share</span><span>&#39;: </span><span style="color:#d08770;">900</span><span>,      </span><span style="color:#65737e;"># 15분 - 긴급 공유
-</span><span>    &#39;</span><span style="color:#a3be8c;">customer_download</span><span>&#39;: </span><span style="color:#d08770;">3600</span><span>,   </span><span style="color:#65737e;"># 1시간 - 고객 다운로드
-</span><span>    &#39;</span><span style="color:#a3be8c;">daily_report</span><span>&#39;: </span><span style="color:#d08770;">43200</span><span>,       </span><span style="color:#65737e;"># 12시간 - 일일 리포트
-</span><span>    &#39;</span><span style="color:#a3be8c;">backup_archive</span><span>&#39;: </span><span style="color:#d08770;">604800     </span><span style="color:#65737e;"># 7일 - 백업 아카이브
-</span><span>}
-</span><span>
-</span><span style="color:#65737e;"># 사용
-</span><span>url = </span><span style="color:#bf616a;">create_presigned_url</span><span>(
-</span><span>    </span><span style="color:#bf616a;">bucket</span><span>=&#39;</span><span style="color:#a3be8c;">my-bucket</span><span>&#39;,
-</span><span>    </span><span style="color:#bf616a;">key</span><span>=&#39;</span><span style="color:#a3be8c;">sensitive-data.zip</span><span>&#39;,
-</span><span>    </span><span style="color:#bf616a;">expires_in</span><span>=</span><span style="color:#bf616a;">EXPIRATION_TIMES</span><span>[&#39;</span><span style="color:#a3be8c;">emergency_share</span><span>&#39;]  </span><span style="color:#65737e;"># 15분만
-</span><span>)
-</span></code></pre>
-<h3 id="2-url-nocul-bangji">2. URL 노출 방지</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>logging
-</span><span>
-</span><span style="color:#65737e;"># ❌ 나쁜 예 - 로그에 URL 노출
-</span><span>logger.</span><span style="color:#bf616a;">info</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">Generated URL: </span><span>{presigned_url}&quot;)
-</span><span>
-</span><span style="color:#65737e;"># ✅ 좋은 예 - URL은 숨기고 메타데이터만
-</span><span>logger.</span><span style="color:#bf616a;">info</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">Generated presigned URL for: </span><span>{bucket}</span><span style="color:#a3be8c;">/</span><span>{key}</span><span style="color:#a3be8c;">, expires in </span><span>{expires_in}</span><span style="color:#a3be8c;">s</span><span>&quot;)
-</span></code></pre>
-<h2 id="seongneung-coejeoghwa">성능 최적화</h2>
-<h3 id="daeyongryang-paileun-cloudfront-sayong">대용량 파일은 CloudFront 사용</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">create_cloudfront_url</span><span>(</span><span style="color:#bf616a;">s3_key</span><span>, </span><span style="color:#bf616a;">expires_hours</span><span>=</span><span style="color:#d08770;">24</span><span>):
-</span><span>    </span><span style="color:#65737e;">&quot;&quot;&quot;CloudFront Signed URL 생성 (더 빠른 다운로드)&quot;&quot;&quot;
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># CloudFront 설정 (한 번만)
-</span><span>    cloudfront_domain = &#39;</span><span style="color:#a3be8c;">d1234567890.cloudfront.net</span><span>&#39;
-</span><span>    key_pair_id = &#39;</span><span style="color:#a3be8c;">APKAEXAMPLE</span><span>&#39;
-</span><span>    private_key_file = &#39;</span><span style="color:#a3be8c;">/path/to/private-key.pem</span><span>&#39;
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">from </span><span>botocore.signers </span><span style="color:#b48ead;">import </span><span>CloudFrontSigner
-</span><span>    </span><span style="color:#b48ead;">from </span><span>cryptography.hazmat.backends </span><span style="color:#b48ead;">import </span><span>default_backend
-</span><span>    </span><span style="color:#b48ead;">from </span><span>cryptography.hazmat.primitives </span><span style="color:#b48ead;">import </span><span>hashes, serialization
-</span><span>    </span><span style="color:#b48ead;">from </span><span>cryptography.hazmat.primitives.asymmetric </span><span style="color:#b48ead;">import </span><span>padding
-</span><span>    </span><span style="color:#b48ead;">from </span><span>datetime </span><span style="color:#b48ead;">import </span><span>datetime, timedelta
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">rsa_signer</span><span>(</span><span style="color:#bf616a;">message</span><span>):
-</span><span>        </span><span style="color:#b48ead;">with </span><span style="color:#96b5b4;">open</span><span>(private_key_file, &#39;</span><span style="color:#a3be8c;">rb</span><span>&#39;) </span><span style="color:#b48ead;">as </span><span>key_file:
-</span><span>            private_key = serialization.</span><span style="color:#bf616a;">load_pem_private_key</span><span>(
-</span><span>                key_file.</span><span style="color:#bf616a;">read</span><span>(),
-</span><span>                </span><span style="color:#bf616a;">password</span><span>=</span><span style="color:#d08770;">None</span><span>,
-</span><span>                </span><span style="color:#bf616a;">backend</span><span>=</span><span style="color:#bf616a;">default_backend</span><span>()
-</span><span>            )
-</span><span>        </span><span style="color:#b48ead;">return </span><span>private_key.</span><span style="color:#bf616a;">sign</span><span>(message, padding.</span><span style="color:#bf616a;">PKCS1v15</span><span>(), hashes.</span><span style="color:#bf616a;">SHA1</span><span>())
-</span><span>    
-</span><span>    cloudfront_signer = </span><span style="color:#bf616a;">CloudFrontSigner</span><span>(key_pair_id, rsa_signer)
-</span><span>    
-</span><span>    url = </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">https://</span><span>{cloudfront_domain}</span><span style="color:#a3be8c;">/</span><span>{s3_key}&quot;
-</span><span>    expire_date = datetime.</span><span style="color:#bf616a;">now</span><span>() + </span><span style="color:#bf616a;">timedelta</span><span>(</span><span style="color:#bf616a;">hours</span><span>=expires_hours)
-</span><span>    
-</span><span>    signed_url = cloudfront_signer.</span><span style="color:#bf616a;">generate_presigned_url</span><span>(
-</span><span>        url,
-</span><span>        </span><span style="color:#bf616a;">date_less_than</span><span>=expire_date
-</span><span>    )
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">return </span><span>signed_url
-</span></code></pre>
-
-        </div>
-
+                    
                 </div>
-            <div class="pagination">
-                <div class="pagination__buttons"></div>
             </div>
-        </div>
-        
     </main>
     
     <aside class="sidebar">
