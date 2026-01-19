@@ -7,7 +7,34 @@
 {% block content %}
 <div class="content-with-sidebar">
     <main class="main-content">
-        {{ super() }}
+        <div class="posts">
+            {%- if paginator %}
+                {%- set show_pages = paginator.pages | reverse -%}
+            {% else %}
+                {%- set show_pages = section.pages | reverse -%}
+            {% endif -%}
+
+            {%- for page in show_pages %}
+                <div class="post on-list">
+                    <h2 class="post-title">
+                        <a href="{{ page.permalink }}">{{ page.title }}</a>
+                    </h2>
+                    <div class="post-meta">
+                        {% if page.date %}
+                        <time datetime="{{ page.date }}">
+                            {{ page.date | date(format="%Y-%m-%d") }}
+                        </time>
+                        {% endif %}
+                    </div>
+                    
+                    {% if page.summary %}
+                        <div class="post-summary">{{ page.summary | safe }}</div>
+                    {% elif page.description %}
+                        <div class="post-summary">{{ page.description }}</div>
+                    {% endif %}
+                </div>
+            {% endfor -%}
+        </div>
     </main>
     
     {% include "partials/sidebar.html" %}
