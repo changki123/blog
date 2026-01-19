@@ -1,6 +1,6 @@
 +++
 title = "S3 Pre-signed URL 실전 실습 가이드: 10분 만에 마스터하기"
-date = 2025-01-18
+date = 2026-01-18
 description = "AWS 콘솔부터 자동화까지, Pre-signed URL을 직접 만들고 활용하는 실습 가이드"
 [taxonomies]
 tags = ["AWS", "S3", "Security", "Hands-on"]
