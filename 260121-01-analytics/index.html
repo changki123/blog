@@ -20,13 +20,13 @@
     <meta property="og:description" content="">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://changki123.github.io/blog/260105-02-ascii/">
+    <meta property="og:url" content="https://changki123.github.io/blog/260121-01-analytics/">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:description" content="">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
-    <meta property="twitter:url" content="https://changki123.github.io/blog/260105-02-ascii/">
+    <meta property="twitter:url" content="https://changki123.github.io/blog/260121-01-analytics/">
 
 <link rel="stylesheet" href="/custom.css">
 </head>
@@ -61,11 +61,11 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260105-02-ascii/">ASCII 동영상</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260121-01-analytics/">Zola 정적 사이트에 Google Analytics 적용하기</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-01-05
+            2025-01-21
         </span>
 
     </div>
@@ -73,70 +73,40 @@
     
         <span class="post-tags-inline">
                 :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/ascii/">#ascii</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/video/">#video</a></span>
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/analytics/">#analytics</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/blog/">#blog</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/monitoring/">#monitoring</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/zola/">#zola</a></span>
     
 
         <div class="post-content">
-            <style>
-  .video-wrapper {
-    background: #000;
-    text-align: center;
-    padding: 20px;
-  }
-  #ascii-output {
-    font-size: 5px;
-    line-height: 2.5px;
-    background: #000;
-    color: #0f0;
-    font-family: monospace;
-    white-space: pre;
-    overflow-x: auto;
-    letter-spacing: 0;
-    padding: 30px 50px;
-  }
-</style>
-<div class="video-wrapper">
-  <video id="sourceVideo" width="640" height="360" autoplay loop muted>
-    <source src="/video/sample.mp4" type="video/mp4">
-  </video>
-  <div id="ascii-output"></div>
-</div>
-<script>
-(function() {
-  const video = document.getElementById('sourceVideo');
-  const output = document.getElementById('ascii-output');
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  
-  canvas.width = 240;
-  canvas.height = 135;
-  
-  const chars = ' .:-=+*#%@';
-  
-  function convert() {
-    if (!video.paused && !video.ended) {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      let ascii = '';
-      
-      for (let i = 0; i < imgData.data.length; i += 4) {
-        const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
-        const charIdx = Math.floor(avg / 255 * (chars.length - 1));
-        ascii += chars[charIdx];
-        if ((i/4 + 1) % canvas.width === 0) ascii += '\n';
-      }
-      
-      output.textContent = ascii;
-      requestAnimationFrame(convert);
-    }
-  }
-  
-  video.addEventListener('playing', convert);
-})();
-</script>
-<hr />
-<p><strong>원본 영상:</strong> <a href="https://youtu.be/jy2aZHUI-6A?si=EdLWyIsgQw3kib5r">YouTube에서 보기</a></p>
+            <h2 id="baegyeong">배경</h2>
+<p>블로그 방문자 통계를 확인하고 싶어서 Google Analytics를 적용하기로 했다.
+Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정한 과정을 기록한다.</p>
+<h2 id="google-analytics-seoljeong">Google Analytics 설정</h2>
+<ol>
+<li>Google Analytics 계정 생성</li>
+<li>속성 추가 및 데이터 스트림 설정</li>
+<li>측정 ID 확인</li>
+</ol>
+<h2 id="zola-beulrogeu-seoljeong">Zola 블로그 설정</h2>
+<p>Terminimal 테마는 GA 지원이 내장되어 있어 <code>config.toml</code>에 측정 ID만 추가하면 된다.</p>
+<p>```toml
+[extra]
+google_analytics = "G-XXXXXXXXXX"
+```</p>
+<h2 id="baepo-mic-hwagin">배포 및 확인</h2>
+<ul>
+<li>GitHub Pages 배포 후 실시간 보고서에서 트래킹 확인</li>
+<li>개발자 도구 Network 탭에서 gtag.js 로드 확인</li>
+</ul>
+<h2 id="teureobeulsyuting">트러블슈팅</h2>
+<p>(발생한 이슈가 있다면 여기에 추가)</p>
+<h2 id="camgo">참고</h2>
+<ul>
+<li>[Zola 공식 문서]</li>
+<li>[Google Analytics 설정 가이드]</li>
+</ul>
 
         </div>
 
@@ -147,17 +117,10 @@
                     <hr />
                 </div>
                 <div class="pagination__buttons">
-                        <span class="button previous">
-                            <a href="https://changki123.github.io/blog/260102-01-zola-blog-setup/">
-                                <span class="button__icon">←</span>&nbsp;
-                                <span class="button__text">Windows에서 Zola + GitHub Pages로 블로그 만들기</span>
-                            </a>
-                        </span>
-                    
                     
                         <span class="button next">
-                            <a href="https://changki123.github.io/blog/260105-01-fish/">
-                                <span class="button__text">라스보라 물고기 키우기 - 초보자 가이드</span>&nbsp;
+                            <a href="https://changki123.github.io/blog/260101-01-first-post/">
+                                <span class="button__text">첫 번째 포스트</span>&nbsp;
                                 <span class="button__icon">→</span>
                             </a>
                         </span>
