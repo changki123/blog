@@ -5,8 +5,110 @@
     <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/blog/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2026-01-02T00:00:00+00:00</updated>
+    <updated>2026-01-21T00:00:00+00:00</updated>
     <id>https://changki123.github.io/blog/tags/blog/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Zola 정적 사이트에 Google Analytics 적용하기</title>
+        <published>2026-01-21T00:00:00+00:00</published>
+        <updated>2026-01-21T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260121-01-analytics/"/>
+        <id>https://changki123.github.io/blog/260121-01-analytics/</id>
+        
+        <content type="html" xml:base="https://changki123.github.io/blog/260121-01-analytics/">&lt;h2 id=&quot;baegyeong&quot;&gt;배경&lt;&#x2F;h2&gt;
+&lt;p&gt;블로그 방문자 통계를 확인하고 싶어서 Google Analytics 4(GA4)를 적용하기로 했다.
+Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정한 과정을 기록한다.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;google-analytics-seoljeong&quot;&gt;Google Analytics 설정&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;1-ga4-sogseong-saengseong&quot;&gt;1. GA4 속성 생성&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;analytics.google.com&quot;&gt;Google Analytics&lt;&#x2F;a&gt; 접속&lt;&#x2F;li&gt;
+&lt;li&gt;관리 → 계정 만들기&lt;&#x2F;li&gt;
+&lt;li&gt;속성 추가 → 속성 이름 입력&lt;&#x2F;li&gt;
+&lt;li&gt;데이터 스트림 → 웹 선택&lt;&#x2F;li&gt;
+&lt;li&gt;웹사이트 URL과 스트림 이름 입력&lt;&#x2F;li&gt;
+&lt;li&gt;측정 ID(G-XXXXXXXXXX) 복사&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h3 id=&quot;2-deiteo-sujib-hwalseonghwa-hwagin&quot;&gt;2. 데이터 수집 활성화 확인&lt;&#x2F;h3&gt;
+&lt;p&gt;관리 → 데이터 수집 및 수정 → 데이터 수집에서 토글이 활성화되어 있는지 확인한다.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;zola-beulrogeue-ga-kodeu-cuga&quot;&gt;Zola 블로그에 GA 코드 추가&lt;&#x2F;h2&gt;
+&lt;p&gt;Terminimal 테마는 기본적으로 Google Analytics를 지원하지 않아 템플릿 오버라이드를 통해 직접 추가해야 한다.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-config-toml-seoljeong&quot;&gt;1. config.toml 설정&lt;&#x2F;h3&gt;
+&lt;p&gt;먼저 &lt;code&gt;config.toml&lt;&#x2F;code&gt; 파일의 &lt;code&gt;[extra]&lt;&#x2F;code&gt; 섹션에 측정 ID를 추가한다.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;toml&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-toml &quot;&gt;&lt;code class=&quot;language-toml&quot; data-lang=&quot;toml&quot;&gt;&lt;span&gt;[extra]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;accent_color &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;orange&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;logo_text &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;changki123&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;google_analytics &lt;&#x2F;span&gt;&lt;span&gt;= &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;G-XXXXXXXXXX&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 실제 측정 ID로 변경
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;2-rokeol-tempeulris-obeoraideu&quot;&gt;2. 로컬 템플릿 오버라이드&lt;&#x2F;h3&gt;
+&lt;p&gt;테마 파일을 직접 수정하지 않고 로컬에 복사하여 커스터마이징한다.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;powershell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-powershell &quot;&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 로컬 templates 디렉토리 생성
+&lt;&#x2F;span&gt;&lt;span&gt;mkdir templates\macros -Force
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 테마의 head.html 파일 복사
+&lt;&#x2F;span&gt;&lt;span&gt;copy themes\terminimal\templates\macros\head.html templates\macros\head.html
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;3-ga-kodeu-sabib&quot;&gt;3. GA 코드 삽입&lt;&#x2F;h3&gt;
+&lt;p&gt;복사한 &lt;code&gt;templates\macros\head.html&lt;&#x2F;code&gt; 파일을 열어 &lt;code&gt;{% endmacro head %}&lt;&#x2F;code&gt; 바로 위에 다음 코드를 추가한다.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;html&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-html &quot;&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span&gt;{%- if config.extra.google_analytics %}
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;lt;!-- Google tag (gtag.js) --&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;script &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;async src&lt;&#x2F;span&gt;&lt;span&gt;=&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;https:&#x2F;&#x2F;www.googletagmanager.com&#x2F;gtag&#x2F;js?id={{ config.extra.google_analytics }}&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;gt;&amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;script&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;script&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;      window.dataLayer = window.dataLayer || [];
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;function &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;gtag&lt;&#x2F;span&gt;&lt;span&gt;(){&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;dataLayer&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;arguments&lt;&#x2F;span&gt;&lt;span&gt;);}
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gtag&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;js&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Date&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;gtag&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;config&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;{{ config.extra.google_analytics }}&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;lt;&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;script&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;
+&lt;&#x2F;span&gt;&lt;span&gt;{% endif -%}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;baepo-mic-hwagin&quot;&gt;배포 및 확인&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;1-rokeol-bildeu-teseuteu&quot;&gt;1. 로컬 빌드 테스트&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;powershell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-powershell &quot;&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;span&gt;zola build
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;Select-String &lt;&#x2F;span&gt;&lt;span&gt;-Path public\index.html -Pattern &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;gtag&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;gtag 스크립트가 검색되면 정상적으로 삽입된 것이다.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-git-keomis-mic-baepo&quot;&gt;2. Git 커밋 및 배포&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;powershell&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-powershell &quot;&gt;&lt;code class=&quot;language-powershell&quot; data-lang=&quot;powershell&quot;&gt;&lt;span&gt;git add templates\macros\head.html config.toml
+&lt;&#x2F;span&gt;&lt;span&gt;git commit -m &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Add Google Analytics tracking&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;git push
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;3-silsigan-deiteo-hwagin&quot;&gt;3. 실시간 데이터 확인&lt;&#x2F;h3&gt;
+&lt;p&gt;배포 후 5-10분 뒤 다음 방법으로 확인한다.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;브라우저 개발자 도구 확인:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;블로그 접속 후 F12&lt;&#x2F;li&gt;
+&lt;li&gt;Network 탭에서 &lt;code&gt;gtag&lt;&#x2F;code&gt; 검색&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;gtag&#x2F;js?id=G-XXXXXXXXXX&lt;&#x2F;code&gt; 요청 확인&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;&lt;strong&gt;Google Analytics 실시간 보고서:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;GA 관리 페이지 → 실시간 메뉴&lt;&#x2F;li&gt;
+&lt;li&gt;블로그 접속 상태로 대기&lt;&#x2F;li&gt;
+&lt;li&gt;활성 사용자 1명 표시 확인&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h2 id=&quot;teureobeulsyuting&quot;&gt;트러블슈팅&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;deiteo-sujibi-hwalseonghwadoeji-anheum&quot;&gt;데이터 수집이 활성화되지 않음&lt;&#x2F;h3&gt;
+&lt;p&gt;GA 관리 → 데이터 수집 및 수정 → 데이터 수집에서 토글을 활성화한다.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;beuraujeoeseo-gtag-seukeuribteuga-rodeudoeji-anheum&quot;&gt;브라우저에서 gtag 스크립트가 로드되지 않음&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;GitHub Actions에서 배포가 정상 완료되었는지 확인&lt;&#x2F;li&gt;
+&lt;li&gt;브라우저 캐시를 지우고 시크릿 모드로 재접속&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;camgo&quot;&gt;참고&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;documentation&#x2F;&quot;&gt;Zola 공식 문서&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;support.google.com&#x2F;analytics&#x2F;&quot;&gt;Google Analytics 설정 가이드&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
     <entry xml:lang="en">
         <title>Windows에서 Zola + GitHub Pages로 블로그 만들기</title>
         <published>2026-01-02T00:00:00+00:00</published>
@@ -161,54 +263,6 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;&quot;&gt;Zola 공식 문서&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
 &lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;pawroman&#x2F;zola-theme-terminimal&quot;&gt;terminimal 테마&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-</content>
-        
-    </entry>
-    <entry xml:lang="en">
-        <title>Zola 정적 사이트에 Google Analytics 적용하기</title>
-        <published>2025-01-21T00:00:00+00:00</published>
-        <updated>2025-01-21T00:00:00+00:00</updated>
-        
-        <author>
-          <name>
-            
-              Unknown
-            
-          </name>
-        </author>
-        
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260121-01-analytics/"/>
-        <id>https://changki123.github.io/blog/260121-01-analytics/</id>
-        
-        <content type="html" xml:base="https://changki123.github.io/blog/260121-01-analytics/">&lt;h2 id=&quot;baegyeong&quot;&gt;배경&lt;&#x2F;h2&gt;
-&lt;p&gt;블로그 방문자 통계를 확인하고 싶어서 Google Analytics를 적용하기로 했다.
-Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정한 과정을 기록한다.&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;google-analytics-seoljeong&quot;&gt;Google Analytics 설정&lt;&#x2F;h2&gt;
-&lt;ol&gt;
-&lt;li&gt;Google Analytics 계정 생성&lt;&#x2F;li&gt;
-&lt;li&gt;속성 추가 및 데이터 스트림 설정&lt;&#x2F;li&gt;
-&lt;li&gt;측정 ID 확인&lt;&#x2F;li&gt;
-&lt;&#x2F;ol&gt;
-&lt;h2 id=&quot;zola-beulrogeu-seoljeong&quot;&gt;Zola 블로그 설정&lt;&#x2F;h2&gt;
-&lt;h1 id=&quot;rokeol-templates-diregtori-saengseong&quot;&gt;로컬 templates 디렉토리 생성&lt;&#x2F;h1&gt;
-&lt;p&gt;mkdir templates\macros -Force&lt;&#x2F;p&gt;
-&lt;h1 id=&quot;tema-pail-bogsa&quot;&gt;테마 파일 복사&lt;&#x2F;h1&gt;
-&lt;p&gt;copy themes\terminimal\templates\macros\head.html templates\macros\head.html&lt;&#x2F;p&gt;
-&lt;h1 id=&quot;bogsahan-pail-sujeong&quot;&gt;복사한 파일 수정&lt;&#x2F;h1&gt;
-&lt;p&gt;notepad templates\macros\head.html&lt;&#x2F;p&gt;
-&lt;p&gt;열린 파일에서 {% endmacro head %} 바로 위에 Google 태그 코드 추가&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;baepo-mic-hwagin&quot;&gt;배포 및 확인&lt;&#x2F;h2&gt;
-&lt;ul&gt;
-&lt;li&gt;GitHub Pages 배포 후 실시간 보고서에서 트래킹 확인&lt;&#x2F;li&gt;
-&lt;li&gt;개발자 도구 Network 탭에서 gtag.js 로드 확인&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;h2 id=&quot;teureobeulsyuting&quot;&gt;트러블슈팅&lt;&#x2F;h2&gt;
-&lt;p&gt;(발생한 이슈가 있다면 여기에 추가)&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;camgo&quot;&gt;참고&lt;&#x2F;h2&gt;
-&lt;ul&gt;
-&lt;li&gt;[Zola 공식 문서]&lt;&#x2F;li&gt;
-&lt;li&gt;[Google Analytics 설정 가이드]&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 </content>
         
