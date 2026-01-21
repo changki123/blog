@@ -1004,11 +1004,13 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
 <li>측정 ID 확인</li>
 </ol>
 <h2 id="zola-beulrogeu-seoljeong">Zola 블로그 설정</h2>
-<p>Terminimal 테마는 GA 지원이 내장되어 있어 <code>config.toml</code>에 측정 ID만 추가하면 된다.</p>
-<p>```toml
-[extra]
-google_analytics = "G-XXXXXXXXXX"
-```</p>
+<h1 id="rokeol-templates-diregtori-saengseong">로컬 templates 디렉토리 생성</h1>
+<p>mkdir templates\macros -Force</p>
+<h1 id="tema-pail-bogsa">테마 파일 복사</h1>
+<p>copy themes\terminimal\templates\macros\head.html templates\macros\head.html</p>
+<h1 id="bogsahan-pail-sujeong">복사한 파일 수정</h1>
+<p>notepad templates\macros\head.html</p>
+<p>열린 파일에서 {% endmacro head %} 바로 위에 Google 태그 코드 추가</p>
 <h2 id="baepo-mic-hwagin">배포 및 확인</h2>
 <ul>
 <li>GitHub Pages 배포 후 실시간 보고서에서 트래킹 확인</li>
