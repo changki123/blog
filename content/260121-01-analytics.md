@@ -18,12 +18,16 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
 
 ## Zola 블로그 설정
 
-Terminimal 테마는 GA 지원이 내장되어 있어 `config.toml`에 측정 ID만 추가하면 된다.
+# 로컬 templates 디렉토리 생성
+mkdir templates\macros -Force
 
-\`\`\`toml
-[extra]
-google_analytics = "G-XXXXXXXXXX"
-\`\`\`
+# 테마 파일 복사
+copy themes\terminimal\templates\macros\head.html templates\macros\head.html
+
+# 복사한 파일 수정
+notepad templates\macros\head.html
+
+열린 파일에서 {% endmacro head %} 바로 위에 Google 태그 코드 추가
 
 ## 배포 및 확인
 
