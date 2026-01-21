@@ -36,6 +36,12 @@
     </script>
 {% endif -%}
 
+{%- if config.extra.google_adsense %}
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config.extra.google_adsense }}"
+         crossorigin="anonymous"></script>
+{% endif -%}
+
 {% endmacro head %}
 
 
