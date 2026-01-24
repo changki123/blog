@@ -1,114 +1,133 @@
 +++
-title = "Zola 정적 사이트에 Google Analytics 적용하기"
-date = 2026-01-21
+title = "서버리스의 실질적인 시스템 이점 - 유저 편의성을 넘어서"
+date = 2026-01-24
 [taxonomies]
-tags = ["zola", "blog", "analytics", "monitoring"]
+tags = ["serverless", "aws", "lambda", "infrastructure", "cloud"]
 +++
 
-## 배경
+서버리스 아키텍처를 도입할 때 흔히 "개발자가 서버 관리 안 해도 된다"는 편의성만 강조되는 경향이 있다. 하지만 시스템 관점에서 봤을 때 서버리스가 가져오는 실질적인 이점들이 명확히 존재한다. 1년 넘게 멀티 클라우드 환경에서 인프라를 관리하면서 체감한 서버리스의 시스템적 장점을 정리해본다.
 
-블로그 방문자 통계를 확인하고 싶어서 Google Analytics 4(GA4)를 적용하기로 했다.
-Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정한 과정을 기록한다.
+## 1. 비용 효율성: 진짜 쓴 만큼만 내는 구조
 
-## Google Analytics 설정
+기존 EC2 기반 아키텍처는 트래픽이 없어도 서버를 켜두면 비용이 발생한다. 물론 Auto Scaling으로 인스턴스를 줄일 수 있지만, 최소 1대는 항상 떠 있어야 한다.
 
-### 1. GA4 속성 생성
+서버리스는 다르다:
+- **실행 시간만 과금**: 함수가 실행되는 시간(ms 단위)과 메모리 사용량만 과금
+- **Idle 비용 제로**: 요청이 없으면 비용이 0원
+- **스파이크 트래픽 대응**: 평소 트래픽 거의 없다가 갑자기 몰리는 워크로드에 최적
 
-1. [Google Analytics](https://analytics.google.com) 접속
-2. 관리 → 계정 만들기
-3. 속성 추가 → 속성 이름 입력
-4. 데이터 스트림 → 웹 선택
-5. 웹사이트 URL과 스트림 이름 입력
-6. 측정 ID(G-XXXXXXXXXX) 복사
+### 실무 예시
 
-### 2. 데이터 수집 활성화 확인
+매일 새벽 3시에 돌아가는 백업 검증 스크립트를 생각해보자:
+- **EC2 방식**: t3.micro 1대를 24시간 띄워둠 → 월 약 $7.5
+- **Lambda 방식**: 하루 1번, 2분 실행 → 월 약 $0.1
 
-관리 → 데이터 수집 및 수정 → 데이터 수집에서 토글이 활성화되어 있는지 확인한다.
+하루에 몇 번 안 도는 배치 작업, 간헐적인 webhook 처리 같은 건 서버리스가 압도적으로 유리하다.
 
-## Zola 블로그에 GA 코드 추가
+## 2. 자동 스케일링의 즉각성
 
-Terminimal 테마는 기본적으로 Google Analytics를 지원하지 않아 템플릿 오버라이드를 통해 직접 추가해야 한다.
+Auto Scaling Group은 좋지만 한계가 있다:
+- 새 인스턴스가 부팅되고 애플리케이션이 시작되기까지 시간 필요
+- CloudWatch 메트릭 수집 → 임계값 초과 → 스케일 아웃 판단 → 인스턴스 시작 → 로드밸런서 등록
 
-### 1. config.toml 설정
+이 과정에 최소 1~2분은 걸린다. 갑작스런 트래픽 스파이크에는 대응이 늦을 수밖에 없다.
 
-먼저 `config.toml` 파일의 `[extra]` 섹션에 측정 ID를 추가한다.
-```toml
-[extra]
-accent_color = "orange"
-logo_text = "changki123"
-google_analytics = "G-XXXXXXXXXX"  # 실제 측정 ID로 변경
+서버리스는:
+- **즉각 확장**: 요청이 들어오는 순간 동시에 처리
+- **요청당 독립 실행 환경**: 각 Lambda 호출은 격리된 컨테이너에서 실행
+- **플랫폼 레벨 동시성 제어**: AWS가 알아서 관리
+
+특히 예측 불가능한 트래픽 패턴을 가진 API나 이벤트 처리에 강점이 있다.
+
+## 3. 고가용성이 기본 설정
+
+멀티 AZ 구성을 직접 해본 사람은 알겠지만, 제대로 하려면 신경 쓸 게 많다:
+- 로드밸런서 설정
+- 각 AZ별 서브넷 구성
+- 헬스체크 설정
+- 장애 시나리오 테스트
+
+서버리스는 이게 기본이다:
+- **자동 멀티 AZ 배포**: 별도 설정 없이 여러 가용 영역에 분산
+- **개별 함수 장애 격리**: 한 Lambda 실행이 실패해도 다른 실행에 영향 없음
+- **빠른 복구**: Stateless 구조라 장애 발생 시 새 컨테이너로 즉시 대체
+
+## 4. 이벤트 기반 아키텍처 구현의 자연스러움
+
+AWS 생태계 내에서 서버리스는 다른 서비스들과 네이티브하게 연동된다:
+```python
+# S3에 파일 업로드되면 자동 실행
+# DynamoDB 스트림 변경사항 자동 처리
+# SQS 메시지 자동 polling
 ```
 
-### 2. 로컬 템플릿 오버라이드
+직접 구현하려면:
+- S3 이벤트를 받을 SQS 설정
+- EC2에서 SQS polling 코드 작성
+- Worker 프로세스 관리
+- 스케일링 로직 구현
 
-테마 파일을 직접 수정하지 않고 로컬에 복사하여 커스터마이징한다.
-```powershell
-# 로컬 templates 디렉토리 생성
-mkdir templates\macros -Force
+Lambda는 이 모든 게 IAM 권한 설정 몇 줄이면 끝난다.
 
-# 테마의 head.html 파일 복사
-copy themes\terminimal\templates\macros\head.html templates\macros\head.html
-```
+## 실무에서 서버리스가 빛나는 케이스
 
-### 3. GA 코드 삽입
+### 1. 간헐적 배치 작업
+- 매일 새벽 리포트 생성
+- 주간/월간 집계
+- 로그 아카이빙
 
-복사한 `templates\macros\head.html` 파일을 열어 `{% endmacro head %}` 바로 위에 다음 코드를 추가한다.
-```html
-{%- if config.extra.google_analytics %}
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.extra.google_analytics }}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '{{ config.extra.google_analytics }}');
-    </script>
-{% endif -%}
-```
+### 2. 비동기 처리
+- 이미지 리사이징
+- 동영상 인코딩
+- 대용량 데이터 처리
 
-## 배포 및 확인
+### 3. 이벤트 처리
+- Webhook 엔드포인트
+- Zabbix/Grafana alert를 Slack으로 전달
+- CloudWatch 로그 필터링 및 알람
 
-### 1. 로컬 빌드 테스트
-```powershell
-zola build
-Select-String -Path public\index.html -Pattern "gtag"
-```
+### 4. API 일부 기능
+- 전체를 서버리스로 할 필요는 없다
+- CRUD 중 간헐적으로 호출되는 특정 엔드포인트만 Lambda로
 
-gtag 스크립트가 검색되면 정상적으로 삽입된 것이다.
+## 트레이드오프: 알아야 할 단점들
 
-### 2. Git 커밋 및 배포
-```powershell
-git add templates\macros\head.html config.toml
-git commit -m "Add Google Analytics tracking"
-git push
-```
+완벽한 솔루션은 없다. 서버리스도 단점이 명확하다:
 
-### 3. 실시간 데이터 확인
+### Cold Start
+- 첫 호출 시 컨테이너 초기화 시간 필요
+- Python/Node.js는 수백ms, Java는 수초까지도
+- Provisioned Concurrency로 완화 가능하지만 비용 증가
 
-배포 후 5-10분 뒤 다음 방법으로 확인한다.
+### 실행 시간 제한
+- AWS Lambda는 최대 15분
+- 긴 처리가 필요하면 Step Functions로 쪼개거나 EC2/Fargate 사용
 
-**브라우저 개발자 도구 확인:**
-1. 블로그 접속 후 F12
-2. Network 탭에서 `gtag` 검색
-3. `gtag/js?id=G-XXXXXXXXXX` 요청 확인
+### Stateful 애플리케이션 부적합
+- WebSocket 같은 지속 연결은 어려움
+- 세션 관리는 외부 저장소(DynamoDB, ElastiCache) 필요
 
-**Google Analytics 실시간 보고서:**
-1. GA 관리 페이지 → 실시간 메뉴
-2. 블로그 접속 상태로 대기
-3. 활성 사용자 1명 표시 확인
+### 디버깅의 어려움
+- 로컬 환경과 실제 환경의 차이
+- CloudWatch Logs에 의존
+- X-Ray 같은 추가 도구 필요
 
-## 트러블슈팅
+### 벤더 Lock-in
+- AWS Lambda는 AWS 생태계에 묶임
+- 멀티 클라우드 전략에는 부적합
 
-### 데이터 수집이 활성화되지 않음
+## 결론: 언제 써야 하나?
 
-GA 관리 → 데이터 수집 및 수정 → 데이터 수집에서 토글을 활성화한다.
+서버리스가 시스템적으로 유리한 경우:
+- **트래픽 패턴이 불규칙하거나 간헐적인 경우**
+- **빠른 스케일 아웃이 중요한 경우**
+- **운영 리소스가 제한적인 경우**
+- **이벤트 기반 처리가 많은 경우**
 
-### 브라우저에서 gtag 스크립트가 로드되지 않음
+반대로 EC2/컨테이너가 나은 경우:
+- **상시 트래픽이 있고 예측 가능한 경우**
+- **긴 실행 시간이 필요한 경우**
+- **Stateful 애플리케이션**
+- **벤더 독립성이 중요한 경우**
 
-- GitHub Actions에서 배포가 정상 완료되었는지 확인
-- 브라우저 캐시를 지우고 시크릿 모드로 재접속
-
-## 참고
-
-- [Zola 공식 문서](https://www.getzola.org/documentation/)
-- [Google Analytics 설정 가이드](https://support.google.com/analytics/)
+서버리스는 만능이 아니다. 하지만 적재적소에 사용하면 시스템의 복잡도를 낮추고 비용을 절감하면서도 안정성을 확보할 수 있는 강력한 도구다. 중요한 건 "모든 걸 서버리스로"가 아니라 "필요한 부분만 서버리스로"라는 점이다.
