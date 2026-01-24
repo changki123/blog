@@ -20,10 +20,10 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260121-01-analytics/"/>
-        <id>https://changki123.github.io/blog/260121-01-analytics/</id>
+        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260124-01-serverless/"/>
+        <id>https://changki123.github.io/blog/260124-01-serverless/</id>
         
-        <content type="html" xml:base="https://changki123.github.io/blog/260121-01-analytics/">&lt;h2 id=&quot;baegyeong&quot;&gt;배경&lt;&#x2F;h2&gt;
+        <content type="html" xml:base="https://changki123.github.io/blog/260124-01-serverless/">&lt;h2 id=&quot;baegyeong&quot;&gt;배경&lt;&#x2F;h2&gt;
 &lt;p&gt;블로그 방문자 통계를 확인하고 싶어서 Google Analytics 4(GA4)를 적용하기로 했다.
 Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정한 과정을 기록한다.&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;google-analytics-seoljeong&quot;&gt;Google Analytics 설정&lt;&#x2F;h2&gt;

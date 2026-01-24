@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>changki123&#x27;s blog - lambda</title>
+    <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/lambda/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-01-24T00:00:00+00:00</updated>
+    <id>https://changki123.github.io/blog/tags/lambda/atom.xml</id>
+    <entry xml:lang="en">
+        <title>서버리스의 실질적인 시스템 이점 - 유저 편의성을 넘어서</title>
+        <published>2026-01-24T00:00:00+00:00</published>
+        <updated>2026-01-24T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260121-01-analytics/"/>
+        <id>https://changki123.github.io/blog/260121-01-analytics/</id>
+        
+        <content type="html" xml:base="https://changki123.github.io/blog/260121-01-analytics/">&lt;p&gt;서버리스 아키텍처를 도입할 때 흔히 &quot;개발자가 서버 관리 안 해도 된다&quot;는 편의성만 강조되는 경향이 있다. 하지만 시스템 관점에서 봤을 때 서버리스가 가져오는 실질적인 이점들이 명확히 존재한다. 1년 넘게 멀티 클라우드 환경에서 인프라를 관리하면서 체감한 서버리스의 시스템적 장점을 정리해본다.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;1-biyong-hyoyulseong-jinjja-sseun-mankeumman-naeneun-gujo&quot;&gt;1. 비용 효율성: 진짜 쓴 만큼만 내는 구조&lt;&#x2F;h2&gt;
+&lt;p&gt;기존 EC2 기반 아키텍처는 트래픽이 없어도 서버를 켜두면 비용이 발생한다. 물론 Auto Scaling으로 인스턴스를 줄일 수 있지만, 최소 1대는 항상 떠 있어야 한다.&lt;&#x2F;p&gt;
+&lt;p&gt;서버리스는 다르다:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;실행 시간만 과금&lt;&#x2F;strong&gt;: 함수가 실행되는 시간(ms 단위)과 메모리 사용량만 과금&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Idle 비용 제로&lt;&#x2F;strong&gt;: 요청이 없으면 비용이 0원&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;스파이크 트래픽 대응&lt;&#x2F;strong&gt;: 평소 트래픽 거의 없다가 갑자기 몰리는 워크로드에 최적&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;silmu-yesi&quot;&gt;실무 예시&lt;&#x2F;h3&gt;
+&lt;p&gt;매일 새벽 3시에 돌아가는 백업 검증 스크립트를 생각해보자:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;EC2 방식&lt;&#x2F;strong&gt;: t3.micro 1대를 24시간 띄워둠 → 월 약 $7.5&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Lambda 방식&lt;&#x2F;strong&gt;: 하루 1번, 2분 실행 → 월 약 $0.1&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;하루에 몇 번 안 도는 배치 작업, 간헐적인 webhook 처리 같은 건 서버리스가 압도적으로 유리하다.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;2-jadong-seukeilringyi-jeuggagseong&quot;&gt;2. 자동 스케일링의 즉각성&lt;&#x2F;h2&gt;
+&lt;p&gt;Auto Scaling Group은 좋지만 한계가 있다:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;새 인스턴스가 부팅되고 애플리케이션이 시작되기까지 시간 필요&lt;&#x2F;li&gt;
+&lt;li&gt;CloudWatch 메트릭 수집 → 임계값 초과 → 스케일 아웃 판단 → 인스턴스 시작 → 로드밸런서 등록&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;이 과정에 최소 1~2분은 걸린다. 갑작스런 트래픽 스파이크에는 대응이 늦을 수밖에 없다.&lt;&#x2F;p&gt;
+&lt;p&gt;서버리스는:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;즉각 확장&lt;&#x2F;strong&gt;: 요청이 들어오는 순간 동시에 처리&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;요청당 독립 실행 환경&lt;&#x2F;strong&gt;: 각 Lambda 호출은 격리된 컨테이너에서 실행&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;플랫폼 레벨 동시성 제어&lt;&#x2F;strong&gt;: AWS가 알아서 관리&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;특히 예측 불가능한 트래픽 패턴을 가진 API나 이벤트 처리에 강점이 있다.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;3-gogayongseongi-gibon-seoljeong&quot;&gt;3. 고가용성이 기본 설정&lt;&#x2F;h2&gt;
+&lt;p&gt;멀티 AZ 구성을 직접 해본 사람은 알겠지만, 제대로 하려면 신경 쓸 게 많다:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;로드밸런서 설정&lt;&#x2F;li&gt;
+&lt;li&gt;각 AZ별 서브넷 구성&lt;&#x2F;li&gt;
+&lt;li&gt;헬스체크 설정&lt;&#x2F;li&gt;
+&lt;li&gt;장애 시나리오 테스트&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;서버리스는 이게 기본이다:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;자동 멀티 AZ 배포&lt;&#x2F;strong&gt;: 별도 설정 없이 여러 가용 영역에 분산&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;개별 함수 장애 격리&lt;&#x2F;strong&gt;: 한 Lambda 실행이 실패해도 다른 실행에 영향 없음&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;빠른 복구&lt;&#x2F;strong&gt;: Stateless 구조라 장애 발생 시 새 컨테이너로 즉시 대체&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;4-ibenteu-giban-akitegceo-guhyeonyi-jayeonseureoum&quot;&gt;4. 이벤트 기반 아키텍처 구현의 자연스러움&lt;&#x2F;h2&gt;
+&lt;p&gt;AWS 생태계 내에서 서버리스는 다른 서비스들과 네이티브하게 연동된다:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# S3에 파일 업로드되면 자동 실행
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# DynamoDB 스트림 변경사항 자동 처리
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# SQS 메시지 자동 polling
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;직접 구현하려면:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;S3 이벤트를 받을 SQS 설정&lt;&#x2F;li&gt;
+&lt;li&gt;EC2에서 SQS polling 코드 작성&lt;&#x2F;li&gt;
+&lt;li&gt;Worker 프로세스 관리&lt;&#x2F;li&gt;
+&lt;li&gt;스케일링 로직 구현&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Lambda는 이 모든 게 IAM 권한 설정 몇 줄이면 끝난다.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;silmueseo-seobeoriseuga-bicnaneun-keiseu&quot;&gt;실무에서 서버리스가 빛나는 케이스&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;1-ganheoljeog-baeci-jageob&quot;&gt;1. 간헐적 배치 작업&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;매일 새벽 리포트 생성&lt;&#x2F;li&gt;
+&lt;li&gt;주간&#x2F;월간 집계&lt;&#x2F;li&gt;
+&lt;li&gt;로그 아카이빙&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;2-bidonggi-ceori&quot;&gt;2. 비동기 처리&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;이미지 리사이징&lt;&#x2F;li&gt;
+&lt;li&gt;동영상 인코딩&lt;&#x2F;li&gt;
+&lt;li&gt;대용량 데이터 처리&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;3-ibenteu-ceori&quot;&gt;3. 이벤트 처리&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Webhook 엔드포인트&lt;&#x2F;li&gt;
+&lt;li&gt;Zabbix&#x2F;Grafana alert를 Slack으로 전달&lt;&#x2F;li&gt;
+&lt;li&gt;CloudWatch 로그 필터링 및 알람&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;4-api-ilbu-gineung&quot;&gt;4. API 일부 기능&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;전체를 서버리스로 할 필요는 없다&lt;&#x2F;li&gt;
+&lt;li&gt;CRUD 중 간헐적으로 호출되는 특정 엔드포인트만 Lambda로&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;teureideuopeu-alaya-hal-danjeomdeul&quot;&gt;트레이드오프: 알아야 할 단점들&lt;&#x2F;h2&gt;
+&lt;p&gt;완벽한 솔루션은 없다. 서버리스도 단점이 명확하다:&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;cold-start&quot;&gt;Cold Start&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;첫 호출 시 컨테이너 초기화 시간 필요&lt;&#x2F;li&gt;
+&lt;li&gt;Python&#x2F;Node.js는 수백ms, Java는 수초까지도&lt;&#x2F;li&gt;
+&lt;li&gt;Provisioned Concurrency로 완화 가능하지만 비용 증가&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;silhaeng-sigan-jehan&quot;&gt;실행 시간 제한&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;AWS Lambda는 최대 15분&lt;&#x2F;li&gt;
+&lt;li&gt;긴 처리가 필요하면 Step Functions로 쪼개거나 EC2&#x2F;Fargate 사용&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;stateful-aepeulrikeisyeon-bujeoghab&quot;&gt;Stateful 애플리케이션 부적합&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;WebSocket 같은 지속 연결은 어려움&lt;&#x2F;li&gt;
+&lt;li&gt;세션 관리는 외부 저장소(DynamoDB, ElastiCache) 필요&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;dibeogingyi-eoryeoum&quot;&gt;디버깅의 어려움&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;로컬 환경과 실제 환경의 차이&lt;&#x2F;li&gt;
+&lt;li&gt;CloudWatch Logs에 의존&lt;&#x2F;li&gt;
+&lt;li&gt;X-Ray 같은 추가 도구 필요&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;bendeo-lock-in&quot;&gt;벤더 Lock-in&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;AWS Lambda는 AWS 생태계에 묶임&lt;&#x2F;li&gt;
+&lt;li&gt;멀티 클라우드 전략에는 부적합&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;gyeolron-eonje-sseoya-hana&quot;&gt;결론: 언제 써야 하나?&lt;&#x2F;h2&gt;
+&lt;p&gt;서버리스가 시스템적으로 유리한 경우:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;트래픽 패턴이 불규칙하거나 간헐적인 경우&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;빠른 스케일 아웃이 중요한 경우&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;운영 리소스가 제한적인 경우&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;이벤트 기반 처리가 많은 경우&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;반대로 EC2&#x2F;컨테이너가 나은 경우:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;상시 트래픽이 있고 예측 가능한 경우&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;긴 실행 시간이 필요한 경우&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Stateful 애플리케이션&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;벤더 독립성이 중요한 경우&lt;&#x2F;strong&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;서버리스는 만능이 아니다. 하지만 적재적소에 사용하면 시스템의 복잡도를 낮추고 비용을 절감하면서도 안정성을 확보할 수 있는 강력한 도구다. 중요한 건 &quot;모든 걸 서버리스로&quot;가 아니라 &quot;필요한 부분만 서버리스로&quot;라는 점이다.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
