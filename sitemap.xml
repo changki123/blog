@@ -36,6 +36,10 @@
         <lastmod>2026-01-21</lastmod>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/260126-01-minecraftserver/</loc>
+        <lastmod>2026-01-27</lastmod>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/page/1/</loc>
     </url>
     <url>
@@ -63,6 +67,12 @@
         <loc>https://changki123.github.io/blog/tags/cloud/</loc>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/tags/ec2/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/gaming/</loc>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/tags/github-pages/</loc>
     </url>
     <url>
@@ -73,6 +83,9 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/lambda/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/minecraft/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/monitoring/</loc>
@@ -88,6 +101,9 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/security/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/server/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/serverless/</loc>

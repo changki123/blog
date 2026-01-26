@@ -28,18 +28,18 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8843211354454320"
          crossorigin="anonymous"></script>
 
-    <meta name="description" content="">
+    <meta name="description" content="AWS EC2 인스턴스를 활용한 마인크래프트 Java Edition 서버 구축 및 운영 가이드">
 
-    <meta property="og:description" content="">
+    <meta property="og:description" content="AWS EC2 인스턴스를 활용한 마인크래프트 Java Edition 서버 구축 및 운영 가이드">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://changki123.github.io/blog/260121-01-analytics/">
+    <meta property="og:url" content="https://changki123.github.io/blog/260126-01-minecraftserver/">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:description" content="">
+    <meta name="twitter:description" content="AWS EC2 인스턴스를 활용한 마인크래프트 Java Edition 서버 구축 및 운영 가이드">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
-    <meta property="twitter:url" content="https://changki123.github.io/blog/260121-01-analytics/">
+    <meta property="twitter:url" content="https://changki123.github.io/blog/260126-01-minecraftserver/">
 
 <link rel="stylesheet" href="/custom.css">
 </head>
@@ -74,11 +74,11 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260121-01-analytics/">서버리스의 실질적인 시스템 이점 - 유저 편의성을 넘어서</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260126-01-minecraftserver/">AWS EC2로 마인크래프트 서버 구축하기</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-01-24
+            2026-01-27
         </span>
 
     </div>
@@ -88,139 +88,30 @@
                 :: tags:&nbsp;
                 <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#aws</a>&nbsp;
                 <a class="post-tag" href="https://changki123.github.io/blog/tags/cloud/">#cloud</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/infrastructure/">#infrastructure</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/lambda/">#lambda</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/serverless/">#serverless</a></span>
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/ec2/">#ec2</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/gaming/">#gaming</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/minecraft/">#minecraft</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/server/">#server</a></span>
     
 
         <div class="post-content">
-            <p>서버리스 아키텍처를 도입할 때 흔히 "개발자가 서버 관리 안 해도 된다"는 편의성만 강조되는 경향이 있다. 하지만 시스템 관점에서 봤을 때 서버리스가 가져오는 실질적인 이점들이 명확히 존재한다. 1년 넘게 멀티 클라우드 환경에서 인프라를 관리하면서 체감한 서버리스의 시스템적 장점을 정리해본다.</p>
-<h2 id="1-biyong-hyoyulseong-jinjja-sseun-mankeumman-naeneun-gujo">1. 비용 효율성: 진짜 쓴 만큼만 내는 구조</h2>
-<p>기존 EC2 기반 아키텍처는 트래픽이 없어도 서버를 켜두면 비용이 발생한다. 물론 Auto Scaling으로 인스턴스를 줄일 수 있지만, 최소 1대는 항상 떠 있어야 한다.</p>
-<p>서버리스는 다르다:</p>
-<ul>
-<li><strong>실행 시간만 과금</strong>: 함수가 실행되는 시간(ms 단위)과 메모리 사용량만 과금</li>
-<li><strong>Idle 비용 제로</strong>: 요청이 없으면 비용이 0원</li>
-<li><strong>스파이크 트래픽 대응</strong>: 평소 트래픽 거의 없다가 갑자기 몰리는 워크로드에 최적</li>
-</ul>
-<h3 id="silmu-yesi">실무 예시</h3>
-<p>매일 새벽 3시에 돌아가는 백업 검증 스크립트를 생각해보자:</p>
-<ul>
-<li><strong>EC2 방식</strong>: t3.micro 1대를 24시간 띄워둠 → 월 약 $7.5</li>
-<li><strong>Lambda 방식</strong>: 하루 1번, 2분 실행 → 월 약 $0.1</li>
-</ul>
-<p>하루에 몇 번 안 도는 배치 작업, 간헐적인 webhook 처리 같은 건 서버리스가 압도적으로 유리하다.</p>
-<h2 id="2-jadong-seukeilringyi-jeuggagseong">2. 자동 스케일링의 즉각성</h2>
-<p>Auto Scaling Group은 좋지만 한계가 있다:</p>
-<ul>
-<li>새 인스턴스가 부팅되고 애플리케이션이 시작되기까지 시간 필요</li>
-<li>CloudWatch 메트릭 수집 → 임계값 초과 → 스케일 아웃 판단 → 인스턴스 시작 → 로드밸런서 등록</li>
-</ul>
-<p>이 과정에 최소 1~2분은 걸린다. 갑작스런 트래픽 스파이크에는 대응이 늦을 수밖에 없다.</p>
-<p>서버리스는:</p>
-<ul>
-<li><strong>즉각 확장</strong>: 요청이 들어오는 순간 동시에 처리</li>
-<li><strong>요청당 독립 실행 환경</strong>: 각 Lambda 호출은 격리된 컨테이너에서 실행</li>
-<li><strong>플랫폼 레벨 동시성 제어</strong>: AWS가 알아서 관리</li>
-</ul>
-<p>특히 예측 불가능한 트래픽 패턴을 가진 API나 이벤트 처리에 강점이 있다.</p>
-<h2 id="3-gogayongseongi-gibon-seoljeong">3. 고가용성이 기본 설정</h2>
-<p>멀티 AZ 구성을 직접 해본 사람은 알겠지만, 제대로 하려면 신경 쓸 게 많다:</p>
-<ul>
-<li>로드밸런서 설정</li>
-<li>각 AZ별 서브넷 구성</li>
-<li>헬스체크 설정</li>
-<li>장애 시나리오 테스트</li>
-</ul>
-<p>서버리스는 이게 기본이다:</p>
-<ul>
-<li><strong>자동 멀티 AZ 배포</strong>: 별도 설정 없이 여러 가용 영역에 분산</li>
-<li><strong>개별 함수 장애 격리</strong>: 한 Lambda 실행이 실패해도 다른 실행에 영향 없음</li>
-<li><strong>빠른 복구</strong>: Stateless 구조라 장애 발생 시 새 컨테이너로 즉시 대체</li>
-</ul>
-<h2 id="4-ibenteu-giban-akitegceo-guhyeonyi-jayeonseureoum">4. 이벤트 기반 아키텍처 구현의 자연스러움</h2>
-<p>AWS 생태계 내에서 서버리스는 다른 서비스들과 네이티브하게 연동된다:</p>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#65737e;"># S3에 파일 업로드되면 자동 실행
-</span><span style="color:#65737e;"># DynamoDB 스트림 변경사항 자동 처리
-</span><span style="color:#65737e;"># SQS 메시지 자동 polling
-</span></code></pre>
-<p>직접 구현하려면:</p>
-<ul>
-<li>S3 이벤트를 받을 SQS 설정</li>
-<li>EC2에서 SQS polling 코드 작성</li>
-<li>Worker 프로세스 관리</li>
-<li>스케일링 로직 구현</li>
-</ul>
-<p>Lambda는 이 모든 게 IAM 권한 설정 몇 줄이면 끝난다.</p>
-<h2 id="silmueseo-seobeoriseuga-bicnaneun-keiseu">실무에서 서버리스가 빛나는 케이스</h2>
-<h3 id="1-ganheoljeog-baeci-jageob">1. 간헐적 배치 작업</h3>
-<ul>
-<li>매일 새벽 리포트 생성</li>
-<li>주간/월간 집계</li>
-<li>로그 아카이빙</li>
-</ul>
-<h3 id="2-bidonggi-ceori">2. 비동기 처리</h3>
-<ul>
-<li>이미지 리사이징</li>
-<li>동영상 인코딩</li>
-<li>대용량 데이터 처리</li>
-</ul>
-<h3 id="3-ibenteu-ceori">3. 이벤트 처리</h3>
-<ul>
-<li>Webhook 엔드포인트</li>
-<li>Zabbix/Grafana alert를 Slack으로 전달</li>
-<li>CloudWatch 로그 필터링 및 알람</li>
-</ul>
-<h3 id="4-api-ilbu-gineung">4. API 일부 기능</h3>
-<ul>
-<li>전체를 서버리스로 할 필요는 없다</li>
-<li>CRUD 중 간헐적으로 호출되는 특정 엔드포인트만 Lambda로</li>
-</ul>
-<h2 id="teureideuopeu-alaya-hal-danjeomdeul">트레이드오프: 알아야 할 단점들</h2>
-<p>완벽한 솔루션은 없다. 서버리스도 단점이 명확하다:</p>
-<h3 id="cold-start">Cold Start</h3>
-<ul>
-<li>첫 호출 시 컨테이너 초기화 시간 필요</li>
-<li>Python/Node.js는 수백ms, Java는 수초까지도</li>
-<li>Provisioned Concurrency로 완화 가능하지만 비용 증가</li>
-</ul>
-<h3 id="silhaeng-sigan-jehan">실행 시간 제한</h3>
-<ul>
-<li>AWS Lambda는 최대 15분</li>
-<li>긴 처리가 필요하면 Step Functions로 쪼개거나 EC2/Fargate 사용</li>
-</ul>
-<h3 id="stateful-aepeulrikeisyeon-bujeoghab">Stateful 애플리케이션 부적합</h3>
-<ul>
-<li>WebSocket 같은 지속 연결은 어려움</li>
-<li>세션 관리는 외부 저장소(DynamoDB, ElastiCache) 필요</li>
-</ul>
-<h3 id="dibeogingyi-eoryeoum">디버깅의 어려움</h3>
-<ul>
-<li>로컬 환경과 실제 환경의 차이</li>
-<li>CloudWatch Logs에 의존</li>
-<li>X-Ray 같은 추가 도구 필요</li>
-</ul>
-<h3 id="bendeo-lock-in">벤더 Lock-in</h3>
-<ul>
-<li>AWS Lambda는 AWS 생태계에 묶임</li>
-<li>멀티 클라우드 전략에는 부적합</li>
-</ul>
-<h2 id="gyeolron-eonje-sseoya-hana">결론: 언제 써야 하나?</h2>
-<p>서버리스가 시스템적으로 유리한 경우:</p>
-<ul>
-<li><strong>트래픽 패턴이 불규칙하거나 간헐적인 경우</strong></li>
-<li><strong>빠른 스케일 아웃이 중요한 경우</strong></li>
-<li><strong>운영 리소스가 제한적인 경우</strong></li>
-<li><strong>이벤트 기반 처리가 많은 경우</strong></li>
-</ul>
-<p>반대로 EC2/컨테이너가 나은 경우:</p>
-<ul>
-<li><strong>상시 트래픽이 있고 예측 가능한 경우</strong></li>
-<li><strong>긴 실행 시간이 필요한 경우</strong></li>
-<li><strong>Stateful 애플리케이션</strong></li>
-<li><strong>벤더 독립성이 중요한 경우</strong></li>
-</ul>
-<p>서버리스는 만능이 아니다. 하지만 적재적소에 사용하면 시스템의 복잡도를 낮추고 비용을 절감하면서도 안정성을 확보할 수 있는 강력한 도구다. 중요한 건 "모든 걸 서버리스로"가 아니라 "필요한 부분만 서버리스로"라는 점이다.</p>
+            <span id="continue-reading"></span><h2 id="gaeyo">개요</h2>
+<h2 id="sajeon-yogusahang">사전 요구사항</h2>
+<h2 id="aws-ec2-inseuteonseu-seoljeong">AWS EC2 인스턴스 설정</h2>
+<h3 id="inseuteonseu-taib-seontaeg">인스턴스 타입 선택</h3>
+<h3 id="boan-geurub-seoljeong">보안 그룹 설정</h3>
+<h2 id="mainkeuraepeuteu-seobeo-seolci">마인크래프트 서버 설치</h2>
+<h3 id="java-seolci">Java 설치</h3>
+<h3 id="seobeo-pail-daunrodeu">서버 파일 다운로드</h3>
+<h3 id="seobeo-seoljeong-server-properties">서버 설정 (server.properties)</h3>
+<h2 id="seobeo-silhaeng-mic-gwanri">서버 실행 및 관리</h2>
+<h3 id="seobiseu-deungrog">서비스 등록</h3>
+<h3 id="jadong-sijag-seoljeong">자동 시작 설정</h3>
+<h2 id="baegeob-seoljeong">백업 설정</h2>
+<h2 id="biyong-coejeoghwa">비용 최적화</h2>
+<h2 id="seongneung-tyuning">성능 튜닝</h2>
+<h2 id="teureobeulsyuting">트러블슈팅</h2>
+<h2 id="macimyeo">마치며</h2>
 
         </div>
 
@@ -232,19 +123,12 @@
                 </div>
                 <div class="pagination__buttons">
                         <span class="button previous">
-                            <a href="https://changki123.github.io/blog/260124-01-serverless/">
+                            <a href="https://changki123.github.io/blog/260121-01-analytics/">
                                 <span class="button__icon">←</span>&nbsp;
-                                <span class="button__text">Zola 정적 사이트에 Google Analytics 적용하기</span>
+                                <span class="button__text">서버리스의 실질적인 시스템 이점 - 유저 편의성을 넘어서</span>
                             </a>
                         </span>
                     
-                    
-                        <span class="button next">
-                            <a href="https://changki123.github.io/blog/260126-01-minecraftserver/">
-                                <span class="button__text">AWS EC2로 마인크래프트 서버 구축하기</span>&nbsp;
-                                <span class="button__icon">→</span>
-                            </a>
-                        </span>
                     </div>
             </div>
         

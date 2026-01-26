@@ -5,8 +5,44 @@
     <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/cloud/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2026-01-24T00:00:00+00:00</updated>
+    <updated>2026-01-27T00:00:00+00:00</updated>
     <id>https://changki123.github.io/blog/tags/cloud/atom.xml</id>
+    <entry xml:lang="en">
+        <title>AWS EC2로 마인크래프트 서버 구축하기</title>
+        <published>2026-01-27T00:00:00+00:00</published>
+        <updated>2026-01-27T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260126-01-minecraftserver/"/>
+        <id>https://changki123.github.io/blog/260126-01-minecraftserver/</id>
+        
+        <content type="html" xml:base="https://changki123.github.io/blog/260126-01-minecraftserver/">&lt;span id=&quot;continue-reading&quot;&gt;&lt;&#x2F;span&gt;&lt;h2 id=&quot;gaeyo&quot;&gt;개요&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;sajeon-yogusahang&quot;&gt;사전 요구사항&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;aws-ec2-inseuteonseu-seoljeong&quot;&gt;AWS EC2 인스턴스 설정&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;inseuteonseu-taib-seontaeg&quot;&gt;인스턴스 타입 선택&lt;&#x2F;h3&gt;
+&lt;h3 id=&quot;boan-geurub-seoljeong&quot;&gt;보안 그룹 설정&lt;&#x2F;h3&gt;
+&lt;h2 id=&quot;mainkeuraepeuteu-seobeo-seolci&quot;&gt;마인크래프트 서버 설치&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;java-seolci&quot;&gt;Java 설치&lt;&#x2F;h3&gt;
+&lt;h3 id=&quot;seobeo-pail-daunrodeu&quot;&gt;서버 파일 다운로드&lt;&#x2F;h3&gt;
+&lt;h3 id=&quot;seobeo-seoljeong-server-properties&quot;&gt;서버 설정 (server.properties)&lt;&#x2F;h3&gt;
+&lt;h2 id=&quot;seobeo-silhaeng-mic-gwanri&quot;&gt;서버 실행 및 관리&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;seobiseu-deungrog&quot;&gt;서비스 등록&lt;&#x2F;h3&gt;
+&lt;h3 id=&quot;jadong-sijag-seoljeong&quot;&gt;자동 시작 설정&lt;&#x2F;h3&gt;
+&lt;h2 id=&quot;baegeob-seoljeong&quot;&gt;백업 설정&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;biyong-coejeoghwa&quot;&gt;비용 최적화&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;seongneung-tyuning&quot;&gt;성능 튜닝&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;teureobeulsyuting&quot;&gt;트러블슈팅&lt;&#x2F;h2&gt;
+&lt;h2 id=&quot;macimyeo&quot;&gt;마치며&lt;&#x2F;h2&gt;
+</content>
+        
+    </entry>
     <entry xml:lang="en">
         <title>서버리스의 실질적인 시스템 이점 - 유저 편의성을 넘어서</title>
         <published>2026-01-24T00:00:00+00:00</published>
