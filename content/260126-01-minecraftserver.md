@@ -22,10 +22,9 @@ AWS EC2를 활용해 마인크래프트 Java Edition 1.21.11 서버를 구축하
 - 보안 그룹 설정 (25565 포트 개방)
 - 기본적인 Linux 명령어 지식
 
-### 권장 사양
-- **최소**: t3.small (2GB RAM)
-- **권장**: t3.medium (4GB RAM) - 5~10명 동시 접속
-- **넉넉하게**: t3.large (8GB RAM) - 10~20명 동시 접속
+### 사양
+- **최소**?: t3.small (2GB RAM)
+- **적용**: t3.medium (4GB RAM) - 5~10명 동시 접속
 
 ## 1단계: 시스템 환경 설정
 
@@ -54,7 +53,7 @@ sudo mkdir -p /opt/minecraft
 sudo chown -R ec2-user:ec2-user /opt/minecraft/
 cd /opt/minecraft
 
-# 마인크래프트 1.21.11 서버 파일 다운로드
+# 마인크래프트 1.21.11 서버 파일 다운로드 (최신버전은 알아서 변경해서 다운필요합니다.)
 wget https://piston-data.mojang.com/v1/objects/64bb6d763bed0a9f1d632ec347938594144943ed/server.jar -O minecraft_server.1.21.11.jar
 
 # EULA 동의 (필수)
@@ -65,7 +64,7 @@ java -Xmx2G -Xms1G -jar minecraft_server.1.21.11.jar nogui
 # 월드 생성이 완료되면 Ctrl+C로 중지
 ```
 
-## 3단계: 서버 설정 커스터마이징
+## 3단계: 서버 설정 커스터마이징 (선택)
 
 생성된 `server.properties` 파일을 수정해서 서버를 커스터마이징할 수 있습니다.
 ```bash
@@ -146,7 +145,7 @@ sudo systemctl status minecraft
 
 ### 로그 확인
 ```bash
-# 실시간 로그 보기
+# 실시간 로그 보기 (실행시키고 정상작동 하는지 확인 필요)
 sudo journalctl -u minecraft -f
 
 # 최근 100줄 보기
@@ -165,39 +164,13 @@ sudo systemctl restart minecraft
 sudo systemctl status minecraft
 ```
 
-### 백업 자동화
-
-정기적인 백업은 필수입니다:
-```bash
-#!/bin/bash
-# /opt/minecraft/backup.sh
-
-BACKUP_DIR="/opt/minecraft/backups"
-WORLD_DIR="/opt/minecraft/world"
-DATE=$(date +%Y%m%d_%H%M%S)
-
-mkdir -p $BACKUP_DIR
-tar -czf $BACKUP_DIR/world_backup_$DATE.tar.gz -C /opt/minecraft world
-
-# 7일 이상 된 백업 삭제
-find $BACKUP_DIR -name "world_backup_*.tar.gz" -mtime +7 -delete
-```
-
-crontab에 등록:
-```bash
-crontab -e
-
-# 매일 새벽 4시에 백업
-0 4 * * * /opt/minecraft/backup.sh
-```
-
 ## 보안 그룹 설정
 
 AWS 콘솔에서 EC2 보안 그룹에 다음 규칙을 추가해야 합니다:
 
 | 타입 | 프로토콜 | 포트 범위 | 소스 |
 |------|----------|----------|------|
-| 사용자 지정 TCP | TCP | 25565 | 0.0.0.0/0 |
+| 사용자 지정 TCP | TCP | 25565 | myip/0 |
 
 > **보안 팁**: 특정 IP만 접속하도록 제한하려면 소스에 허용할 IP 주소를 입력하세요.
 
@@ -210,34 +183,7 @@ your-ec2-public-ip:25565
 
 도메인이 있다면 A 레코드로 연결해서 사용할 수 있습니다.
 
-## 트러블슈팅
-
-### 서버가 시작되지 않는 경우
-```bash
-# 로그 확인
-sudo journalctl -u minecraft -n 50
-
-# 메모리 부족 확인
-free -h
-
-# Java 버전 확인
-java -version
-```
-
-### 메모리 부족 에러
-
-`server.properties`에서 다음 설정 조정:
-```properties
-view-distance=8  # 10에서 8로 줄이기
-simulation-distance=8  # 부하 감소
-```
-
-또는 JVM 메모리 할당 줄이기:
-```bash
-# service 파일에서 -Xmx3G를 -Xmx2G로 변경
-sudo vi /etc/systemd/system/minecraft.service
-sudo systemctl daemon-reload
-sudo systemctl restart minecraft
+# service 파일에서 -Xmx3G를 -Xmx2G로 변경 해서 적용도 가능해보이는데 테스트 필요해보입니다.
 ```
 
 ## 성능 최적화 팁
