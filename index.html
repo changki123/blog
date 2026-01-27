@@ -107,11 +107,10 @@
 <li>보안 그룹 설정 (25565 포트 개방)</li>
 <li>기본적인 Linux 명령어 지식</li>
 </ul>
-<h3 id="gweonjang-sayang">권장 사양</h3>
+<h3 id="sayang">사양</h3>
 <ul>
-<li><strong>최소</strong>: t3.small (2GB RAM)</li>
-<li><strong>권장</strong>: t3.medium (4GB RAM) - 5~10명 동시 접속</li>
-<li><strong>넉넉하게</strong>: t3.large (8GB RAM) - 10~20명 동시 접속</li>
+<li><strong>최소</strong>?: t3.small (2GB RAM)</li>
+<li><strong>적용</strong>: t3.medium (4GB RAM) - 5~10명 동시 접속</li>
 </ul>
 <h2 id="1dangye-siseutem-hwangyeong-seoljeong">1단계: 시스템 환경 설정</h2>
 <p>먼저 EC2 인스턴스에 접속한 후 시스템을 업데이트하고 필요한 패키지를 설치합니다.</p>
@@ -137,7 +136,7 @@
 </span><span style="color:#bf616a;">sudo</span><span> chown</span><span style="color:#bf616a;"> -R</span><span> ec2-user:ec2-user /opt/minecraft/
 </span><span style="color:#96b5b4;">cd</span><span> /opt/minecraft
 </span><span>
-</span><span style="color:#65737e;"># 마인크래프트 1.21.11 서버 파일 다운로드
+</span><span style="color:#65737e;"># 마인크래프트 1.21.11 서버 파일 다운로드 (최신버전은 알아서 변경해서 다운필요합니다.)
 </span><span style="color:#bf616a;">wget</span><span> https://piston-data.mojang.com/v1/objects/64bb6d763bed0a9f1d632ec347938594144943ed/server.jar</span><span style="color:#bf616a;"> -O</span><span> minecraft_server.1.21.11.jar
 </span><span>
 </span><span style="color:#65737e;"># EULA 동의 (필수)
@@ -147,7 +146,7 @@
 </span><span style="color:#bf616a;">java -Xmx2G -Xms1G -jar</span><span> minecraft_server.1.21.11.jar nogui
 </span><span style="color:#65737e;"># 월드 생성이 완료되면 Ctrl+C로 중지
 </span></code></pre>
-<h2 id="3dangye-seobeo-seoljeong-keoseuteomaijing">3단계: 서버 설정 커스터마이징</h2>
+<h2 id="3dangye-seobeo-seoljeong-keoseuteomaijing-seontaeg">3단계: 서버 설정 커스터마이징 (선택)</h2>
 <p>생성된 <code>server.properties</code> 파일을 수정해서 서버를 커스터마이징할 수 있습니다.</p>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">vi</span><span> server.properties
 </span></code></pre>
@@ -215,7 +214,7 @@
 </span></code></pre>
 <h2 id="5dangye-rogeu-mic-gwanri">5단계: 로그 및 관리</h2>
 <h3 id="rogeu-hwagin">로그 확인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 실시간 로그 보기
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 실시간 로그 보기 (실행시키고 정상작동 하는지 확인 필요)
 </span><span style="color:#bf616a;">sudo</span><span> journalctl</span><span style="color:#bf616a;"> -u</span><span> minecraft</span><span style="color:#bf616a;"> -f
 </span><span>
 </span><span style="color:#65737e;"># 최근 100줄 보기
@@ -231,31 +230,10 @@
 </span><span style="color:#65737e;"># 서버 상태 확인
 </span><span style="color:#bf616a;">sudo</span><span> systemctl status minecraft
 </span></code></pre>
-<h3 id="baegeob-jadonghwa">백업 자동화</h3>
-<p>정기적인 백업은 필수입니다:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;">#!/bin/bash
-</span><span style="color:#65737e;"># /opt/minecraft/backup.sh
-</span><span>
-</span><span style="color:#bf616a;">BACKUP_DIR</span><span>=&quot;</span><span style="color:#a3be8c;">/opt/minecraft/backups</span><span>&quot;
-</span><span style="color:#bf616a;">WORLD_DIR</span><span>=&quot;</span><span style="color:#a3be8c;">/opt/minecraft/world</span><span>&quot;
-</span><span style="color:#bf616a;">DATE</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">date</span><span style="color:#a3be8c;"> +</span><span>%</span><span style="color:#bf616a;">Y</span><span>%</span><span style="color:#bf616a;">m</span><span>%</span><span style="color:#bf616a;">d_</span><span>%</span><span style="color:#bf616a;">H</span><span>%</span><span style="color:#bf616a;">M</span><span>%</span><span style="color:#bf616a;">S</span><span style="color:#a3be8c;">)
-</span><span>
-</span><span style="color:#bf616a;">mkdir -p </span><span>$</span><span style="color:#bf616a;">BACKUP_DIR
-</span><span style="color:#bf616a;">tar -czf </span><span>$</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/world_backup_$</span><span style="color:#bf616a;">DATE</span><span>.tar.gz</span><span style="color:#bf616a;"> -C</span><span> /opt/minecraft world
-</span><span>
-</span><span style="color:#65737e;"># 7일 이상 된 백업 삭제
-</span><span style="color:#bf616a;">find </span><span>$</span><span style="color:#bf616a;">BACKUP_DIR -name </span><span>&quot;</span><span style="color:#a3be8c;">world_backup_*.tar.gz</span><span>&quot;</span><span style="color:#bf616a;"> -mtime</span><span> +7</span><span style="color:#bf616a;"> -delete
-</span></code></pre>
-<p>crontab에 등록:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">crontab -e
-</span><span>
-</span><span style="color:#65737e;"># 매일 새벽 4시에 백업
-</span><span style="color:#bf616a;">0</span><span> 4 * * * /opt/minecraft/backup.sh
-</span></code></pre>
 <h2 id="boan-geurub-seoljeong">보안 그룹 설정</h2>
 <p>AWS 콘솔에서 EC2 보안 그룹에 다음 규칙을 추가해야 합니다:</p>
 <table><thead><tr><th>타입</th><th>프로토콜</th><th>포트 범위</th><th>소스</th></tr></thead><tbody>
-<tr><td>사용자 지정 TCP</td><td>TCP</td><td>25565</td><td>0.0.0.0/0</td></tr>
+<tr><td>사용자 지정 TCP</td><td>TCP</td><td>25565</td><td>myip/0</td></tr>
 </tbody></table>
 <blockquote>
 <p><strong>보안 팁</strong>: 특정 IP만 접속하도록 제한하려면 소스에 허용할 IP 주소를 입력하세요.</p>
@@ -265,39 +243,22 @@
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>your-ec2-public-ip:25565
 </span></code></pre>
 <p>도메인이 있다면 A 레코드로 연결해서 사용할 수 있습니다.</p>
-<h2 id="teureobeulsyuting">트러블슈팅</h2>
-<h3 id="seobeoga-sijagdoeji-anhneun-gyeongu">서버가 시작되지 않는 경우</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 로그 확인
-</span><span style="color:#bf616a;">sudo</span><span> journalctl</span><span style="color:#bf616a;"> -u</span><span> minecraft</span><span style="color:#bf616a;"> -n</span><span> 50
+<h1 id="service-paileseo-xmx3greul-xmx2gro-byeongyeong-haeseo-jeogyongdo-ganeunghaeboineunde-teseuteu-pilyohaeboibnida">service 파일에서 -Xmx3G를 -Xmx2G로 변경 해서 적용도 가능해보이는데 테스트 필요해보입니다.</h1>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>
+</span><span>## 성능 최적화 팁
 </span><span>
-</span><span style="color:#65737e;"># 메모리 부족 확인
-</span><span style="color:#bf616a;">free -h
+</span><span>1. **Spigot/Paper 사용**: 바닐라 서버보다 최적화된 Paper 서버 사용 고려
+</span><span>2. **플러그인 최소화**: 필요한 플러그인만 설치
+</span><span>3. **청크 미리 생성**: 플레이 전에 월드 경계 미리 생성
+</span><span>4. **정기적인 재시작**: 매일 새벽에 자동 재시작 설정
 </span><span>
-</span><span style="color:#65737e;"># Java 버전 확인
-</span><span style="color:#bf616a;">java -version
-</span></code></pre>
-<h3 id="memori-bujog-ereo">메모리 부족 에러</h3>
-<p><code>server.properties</code>에서 다음 설정 조정:</p>
-<pre data-lang="properties" style="background-color:#2b303b;color:#c0c5ce;" class="language-properties "><code class="language-properties" data-lang="properties"><span>view-distance=</span><span style="color:#a3be8c;">8  # 10에서 8로 줄이기
-</span><span>simulation-distance=</span><span style="color:#a3be8c;">8  # 부하 감소
-</span></code></pre>
-<p>또는 JVM 메모리 할당 줄이기:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># service 파일에서 -Xmx3G를 -Xmx2G로 변경
-</span><span style="color:#bf616a;">sudo</span><span> vi /etc/systemd/system/minecraft.service
-</span><span style="color:#bf616a;">sudo</span><span> systemctl daemon-reload
-</span><span style="color:#bf616a;">sudo</span><span> systemctl restart minecraft
-</span></code></pre>
-<h2 id="seongneung-coejeoghwa-tib">성능 최적화 팁</h2>
-<ol>
-<li><strong>Spigot/Paper 사용</strong>: 바닐라 서버보다 최적화된 Paper 서버 사용 고려</li>
-<li><strong>플러그인 최소화</strong>: 필요한 플러그인만 설치</li>
-<li><strong>청크 미리 생성</strong>: 플레이 전에 월드 경계 미리 생성</li>
-<li><strong>정기적인 재시작</strong>: 매일 새벽에 자동 재시작 설정</li>
-</ol>
-<h2 id="mamuri">마무리</h2>
-<p>이제 친구들과 함께 즐길 수 있는 마인크래프트 서버가 준비되었습니다! AWS EC2의 Auto Scaling을 활용하면 플레이어 수에 따라 자동으로 인스턴스 크기를 조정할 수도 있습니다.</p>
-<p>비용 절감 팁: 아무도 접속하지 않을 때는 인스턴스를 중지하고, 플레이할 때만 시작하면 비용을 크게 줄일 수 있습니다.</p>
-<p>즐거운 마인크래프트 라이프 되세요! ⛏️</p>
+</span><span>## 마무리
+</span><span>
+</span><span>이제 친구들과 함께 즐길 수 있는 마인크래프트 서버가 준비되었습니다! AWS EC2의 Auto Scaling을 활용하면 플레이어 수에 따라 자동으로 인스턴스 크기를 조정할 수도 있습니다.
+</span><span>
+</span><span>비용 절감 팁: 아무도 접속하지 않을 때는 인스턴스를 중지하고, 플레이할 때만 시작하면 비용을 크게 줄일 수 있습니다.
+</span><span>
+</span><span>즐거운 마인크래프트 라이프 되세요! ⛏️</span></code></pre>
 
         </div>
 
