@@ -189,6 +189,187 @@
         
     </entry>
     <entry xml:lang="en">
+        <title>AWS EC2로 마인크래프트 서버 구축하기</title>
+        <published>2026-01-27T00:00:00+00:00</published>
+        <updated>2026-01-27T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260131-01-srv-record/"/>
+        <id>https://changki123.github.io/blog/260131-01-srv-record/</id>
+        
+        <content type="html" xml:base="https://changki123.github.io/blog/260131-01-srv-record/">&lt;h2 id=&quot;gaeyo&quot;&gt;개요&lt;&#x2F;h2&gt;
+&lt;p&gt;AWS EC2를 활용해 마인크래프트 Java Edition 1.21.11 서버를 구축하는 과정을 정리했습니다. 친구들과 함께 플레이할 수 있는 안정적인 멀티플레이 환경을 만들어봅시다.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;sajeon-junbi&quot;&gt;사전 준비&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;pilyohan-geosdeul&quot;&gt;필요한 것들&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;AWS 계정&lt;&#x2F;li&gt;
+&lt;li&gt;EC2 인스턴스 (권장: t3.medium 이상, 2GB RAM 이상)&lt;&#x2F;li&gt;
+&lt;li&gt;보안 그룹 설정 (25565 포트 개방)&lt;&#x2F;li&gt;
+&lt;li&gt;기본적인 Linux 명령어 지식&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;sayang&quot;&gt;사양&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;최소&lt;&#x2F;strong&gt;?: t3.small (2GB RAM)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;적용&lt;&#x2F;strong&gt;: t3.medium (4GB RAM) - 5~10명 동시 접속&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;1dangye-siseutem-hwangyeong-seoljeong&quot;&gt;1단계: 시스템 환경 설정&lt;&#x2F;h2&gt;
+&lt;p&gt;먼저 EC2 인스턴스에 접속한 후 시스템을 업데이트하고 필요한 패키지를 설치합니다.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 시스템 업데이트
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; dnf update&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -y
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# Java 21 설치 (마인크래프트 1.21+ 필수)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; dnf install java-21-amazon-corretto-headless&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -y
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 설치 확인
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java -version
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# openjdk version &amp;quot;21.0.x&amp;quot; 출력되면 성공
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 필수 도구 설치
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; dnf install wget screen&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -y
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;참고&lt;&#x2F;strong&gt;: 마인크래프트 1.21 이상 버전은 Java 21이 필수입니다. 이전 버전의 Java를 사용하면 서버가 시작되지 않습니다.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;2dangye-mainkeuraepeuteu-seobeo-pail-daunrodeu&quot;&gt;2단계: 마인크래프트 서버 파일 다운로드&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 서버 디렉토리 생성
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; mkdir&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -p&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;opt&#x2F;minecraft
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; chown&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -R&lt;&#x2F;span&gt;&lt;span&gt; ec2-user:ec2-user &#x2F;opt&#x2F;minecraft&#x2F;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;cd&lt;&#x2F;span&gt;&lt;span&gt; &#x2F;opt&#x2F;minecraft
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 마인크래프트 1.21.11 서버 파일 다운로드 (최신버전은 알아서 변경해서 다운필요합니다.)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;wget&lt;&#x2F;span&gt;&lt;span&gt; https:&#x2F;&#x2F;piston-data.mojang.com&#x2F;v1&#x2F;objects&#x2F;64bb6d763bed0a9f1d632ec347938594144943ed&#x2F;server.jar&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -O&lt;&#x2F;span&gt;&lt;span&gt; minecraft_server.1.21.11.jar
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# EULA 동의 (필수)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;echo &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;eula=true&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; &amp;gt; eula.txt
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 첫 실행으로 설정 파일 생성
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;java -Xmx2G -Xms1G -jar&lt;&#x2F;span&gt;&lt;span&gt; minecraft_server.1.21.11.jar nogui
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 월드 생성이 완료되면 Ctrl+C로 중지
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;3dangye-seobeo-seoljeong-keoseuteomaijing-seontaeg&quot;&gt;3단계: 서버 설정 커스터마이징 (선택)&lt;&#x2F;h2&gt;
+&lt;p&gt;생성된 &lt;code&gt;server.properties&lt;&#x2F;code&gt; 파일을 수정해서 서버를 커스터마이징할 수 있습니다.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;vi&lt;&#x2F;span&gt;&lt;span&gt; server.properties
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;주요 설정 항목:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;properties&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-properties &quot;&gt;&lt;code class=&quot;language-properties&quot; data-lang=&quot;properties&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 서버 이름
+&lt;&#x2F;span&gt;&lt;span&gt;motd=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;changki123&amp;#39;s Minecraft Server
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 최대 플레이어 수
+&lt;&#x2F;span&gt;&lt;span&gt;max-players=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;10
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 난이도 (peaceful, easy, normal, hard)
+&lt;&#x2F;span&gt;&lt;span&gt;difficulty=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;normal
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 게임 모드 (survival, creative, adventure)
+&lt;&#x2F;span&gt;&lt;span&gt;gamemode=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;survival
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# PvP 활성화
+&lt;&#x2F;span&gt;&lt;span&gt;pvp=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;true
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 화이트리스트 사용
+&lt;&#x2F;span&gt;&lt;span&gt;white-list=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;false
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 뷰 거리 (청크 단위, 높을수록 부하 증가)
+&lt;&#x2F;span&gt;&lt;span&gt;view-distance=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;10
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;4dangye-systemd-seobiseuro-jadonghwa&quot;&gt;4단계: systemd 서비스로 자동화&lt;&#x2F;h2&gt;
+&lt;p&gt;서버를 안정적으로 운영하기 위해 systemd 서비스로 등록합니다.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; vi &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;minecraft.service
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;서비스 파일 내용:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;ini&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-ini &quot;&gt;&lt;code class=&quot;language-ini&quot; data-lang=&quot;ini&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[Unit]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Description&lt;&#x2F;span&gt;&lt;span&gt;=Minecraft Server &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;21&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;11
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;After&lt;&#x2F;span&gt;&lt;span&gt;=network.target
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[Service]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Type&lt;&#x2F;span&gt;&lt;span&gt;=simple
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;User&lt;&#x2F;span&gt;&lt;span&gt;=ec2-user
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;WorkingDirectory&lt;&#x2F;span&gt;&lt;span&gt;=&#x2F;opt&#x2F;minecraft
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ExecStart&lt;&#x2F;span&gt;&lt;span&gt;=&#x2F;usr&#x2F;bin&#x2F;java -Xmx3G -Xms1G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;200 &lt;&#x2F;span&gt;&lt;span&gt;-jar minecraft_server.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;21&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;11&lt;&#x2F;span&gt;&lt;span&gt;.jar nogui
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Restart&lt;&#x2F;span&gt;&lt;span&gt;=on-failure
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RestartSec&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;[Install]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;WantedBy&lt;&#x2F;span&gt;&lt;span&gt;=multi-user.target
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;strong&gt;JVM 옵션 설명&lt;&#x2F;strong&gt;:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-Xmx3G&lt;&#x2F;code&gt;: 최대 메모리 3GB (인스턴스 메모리의 75% 정도 권장)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;-Xms1G&lt;&#x2F;code&gt;: 초기 메모리 1GB&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;-XX:+UseG1GC&lt;&#x2F;code&gt;: G1 가비지 컬렉터 사용 (성능 최적화)&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;-XX:MaxGCPauseMillis=200&lt;&#x2F;code&gt;: GC 일시정지 시간 최대 200ms로 제한&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;서비스 등록 및 시작:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# systemd 데몬 리로드
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; systemctl daemon-reload
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 서버 시작
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; systemctl start minecraft
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 부팅 시 자동 시작 설정
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; systemctl enable minecraft
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 서버 상태 확인
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; systemctl status minecraft
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;5dangye-rogeu-mic-gwanri&quot;&gt;5단계: 로그 및 관리&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;rogeu-hwagin&quot;&gt;로그 확인&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 실시간 로그 보기 (실행시키고 정상작동 하는지 확인 필요)
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; journalctl&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -u&lt;&#x2F;span&gt;&lt;span&gt; minecraft&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -f
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 최근 100줄 보기
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; journalctl&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -u&lt;&#x2F;span&gt;&lt;span&gt; minecraft&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt; -n&lt;&#x2F;span&gt;&lt;span&gt; 100
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;seobeo-gwanri-myeongryeongeo&quot;&gt;서버 관리 명령어&lt;&#x2F;h3&gt;
+&lt;pre data-lang=&quot;bash&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-bash &quot;&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 서버 중지
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; systemctl stop minecraft
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 서버 재시작
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; systemctl restart minecraft
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# 서버 상태 확인
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sudo&lt;&#x2F;span&gt;&lt;span&gt; systemctl status minecraft
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;boan-geurub-seoljeong&quot;&gt;보안 그룹 설정&lt;&#x2F;h2&gt;
+&lt;p&gt;AWS 콘솔에서 EC2 보안 그룹에 다음 규칙을 추가해야 합니다:&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;타입&lt;&#x2F;th&gt;&lt;th&gt;프로토콜&lt;&#x2F;th&gt;&lt;th&gt;포트 범위&lt;&#x2F;th&gt;&lt;th&gt;소스&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;사용자 지정 TCP&lt;&#x2F;td&gt;&lt;td&gt;TCP&lt;&#x2F;td&gt;&lt;td&gt;25565&lt;&#x2F;td&gt;&lt;td&gt;myip&#x2F;0&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;보안 팁&lt;&#x2F;strong&gt;: 특정 IP만 접속하도록 제한하려면 소스에 허용할 IP 주소를 입력하세요.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;jeobsog-bangbeob&quot;&gt;접속 방법&lt;&#x2F;h2&gt;
+&lt;p&gt;마인크래프트 클라이언트에서 멀티플레이 → 서버 추가 → 서버 주소에 EC2의 퍼블릭 IP 입력:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;your-ec2-public-ip:25565
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;도메인이 있다면 A 레코드로 연결해서 사용할 수 있습니다.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;service-paileseo-xmx3greul-xmx2gro-byeongyeong-haeseo-jeogyongdo-ganeunghaeboineunde-teseuteu-pilyohaeboibnida&quot;&gt;service 파일에서 -Xmx3G를 -Xmx2G로 변경 해서 적용도 가능해보이는데 테스트 필요해보입니다.&lt;&#x2F;h1&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;## 성능 최적화 팁
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;1. **Spigot&#x2F;Paper 사용**: 바닐라 서버보다 최적화된 Paper 서버 사용 고려
+&lt;&#x2F;span&gt;&lt;span&gt;2. **플러그인 최소화**: 필요한 플러그인만 설치
+&lt;&#x2F;span&gt;&lt;span&gt;3. **청크 미리 생성**: 플레이 전에 월드 경계 미리 생성
+&lt;&#x2F;span&gt;&lt;span&gt;4. **정기적인 재시작**: 매일 새벽에 자동 재시작 설정
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;## 마무리
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;이제 친구들과 함께 즐길 수 있는 마인크래프트 서버가 준비되었습니다! AWS EC2의 Auto Scaling을 활용하면 플레이어 수에 따라 자동으로 인스턴스 크기를 조정할 수도 있습니다.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;비용 절감 팁: 아무도 접속하지 않을 때는 인스턴스를 중지하고, 플레이할 때만 시작하면 비용을 크게 줄일 수 있습니다.
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;즐거운 마인크래프트 라이프 되세요! ⛏️&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
         <title>서버리스의 실질적인 시스템 이점 - 유저 편의성을 넘어서</title>
         <published>2026-01-24T00:00:00+00:00</published>
         <updated>2026-01-24T00:00:00+00:00</updated>
