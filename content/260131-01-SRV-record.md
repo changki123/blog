@@ -1,202 +1,162 @@
 +++
-title = "AWS EC2로 마인크래프트 서버 구축하기"
-date = 2026-01-27
-description = "AWS EC2 인스턴스를 활용한 마인크래프트 Java Edition 서버 구축 및 운영 가이드"
-
+title = "Minecraft 서버를 위한 SRV 레코드 완벽 가이드"
+date = 2026-01-31
+description = "Minecraft 서버에 SRV DNS 레코드를 설정하여 포트 없이 깔끔하게 접속하는 방법"
 [taxonomies]
-tags = ["minecraft", "aws", "ec2", "gaming", "server", "cloud"]
-
-[extra]
-toc = true
+tags = ["DNS", "Minecraft", "SRV레코드", "Cloudflare", "AWS"]
+categories = ["Infrastructure", "Gaming"]
 +++
 
-## 개요
+## SRV 레코드란?
 
-AWS EC2를 활용해 마인크래프트 Java Edition 1.21.11 서버를 구축하는 과정을 정리했습니다. 친구들과 함께 플레이할 수 있는 안정적인 멀티플레이 환경을 만들어봅시다.
+SRV(Service) 레코드는 특정 서비스의 위치 정보를 제공하는 DNS 레코드 타입입니다. 일반적인 A 레코드가 도메인을 IP 주소로 연결한다면, SRV 레코드는 서비스의 호스트명과 포트 정보까지 함께 제공할 수 있습니다.
 
-## 사전 준비
+<!-- more -->
 
-### 필요한 것들
-- AWS 계정
-- EC2 인스턴스 (권장: t3.medium 이상, 2GB RAM 이상)
-- 보안 그룹 설정 (25565 포트 개방)
-- 기본적인 Linux 명령어 지식
+## 왜 Minecraft 서버에서 SRV 레코드를 사용할까?
 
-### 사양
-- **최소**?: t3.small (2GB RAM)
-- **적용**: t3.medium (4GB RAM) - 5~10명 동시 접속
+Minecraft Java Edition 서버는 기본적으로 25565 포트를 사용합니다. 일반적으로 서버에 접속하려면 다음과 같이 입력해야 합니다:
+```
+mc.example.com:25565
+```
 
-## 1단계: 시스템 환경 설정
+하지만 SRV 레코드를 설정하면 포트 번호 없이 깔끔하게 접속할 수 있습니다:
+```
+play.example.com
+```
 
-먼저 EC2 인스턴스에 접속한 후 시스템을 업데이트하고 필요한 패키지를 설치합니다.
+특히 다음과 같은 상황에서 유용합니다:
+- 비표준 포트(예: 25566, 25567)를 사용하는 경우
+- 여러 Minecraft 서버를 운영하면서 각각 다른 서브도메인으로 접속하고 싶은 경우
+- 사용자 친화적인 접속 주소를 제공하고 싶은 경우
+
+## SRV 레코드의 구조
+
+SRV 레코드는 다음과 같은 형식을 가집니다:
+```
+_service._protocol.name TTL class SRV priority weight port target
+```
+
+각 필드의 의미:
+- **_service**: 서비스 이름 (Minecraft는 `_minecraft`)
+- **_protocol**: 프로토콜 (TCP 사용, `_tcp`)
+- **name**: 서비스 도메인 이름
+- **priority**: 우선순위 (낮을수록 우선, 0-65535)
+- **weight**: 같은 우선순위 내에서의 가중치 (부하 분산용)
+- **port**: 서비스 포트 번호
+- **target**: 실제 서버 주소
+
+## Minecraft 서버 SRV 레코드 설정 예시
+
+### 시나리오 1: 기본 설정
+
+실제 서버 주소가 `mc.example.com`이고 포트 `25565`를 사용하는 경우:
+```
+_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
+```
+
+이제 사용자는 `play.example.com`만 입력하면 자동으로 `mc.example.com:25565`로 연결됩니다.
+
+### 시나리오 2: 비표준 포트 사용
+
+AWS EC2에서 포트 `25570`을 사용하는 경우:
+```
+_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25570 ec2-server.example.com.
+```
+
+사용자는 `survival.example.com` 입력만으로 포트 25570으로 자동 접속됩니다.
+
+### 시나리오 3: 여러 서버 운영
+
+생존 서버와 크리에이티브 서버를 각각 다른 포트로 운영하는 경우:
+```
+# 생존 서버 (포트 25565)
+_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25565 mc1.example.com.
+
+# 크리에이티브 서버 (포트 25566)
+_minecraft._tcp.creative.example.com. 300 IN SRV 0 5 25566 mc2.example.com.
+```
+
+## Cloudflare에서 SRV 레코드 설정하기
+
+Cloudflare DNS 관리 페이지에서 다음과 같이 설정합니다:
+
+1. **Type**: SRV
+2. **Name**: `_minecraft._tcp.play` (play는 원하는 서브도메인)
+3. **Service**: `_minecraft`
+4. **Protocol**: `TCP`
+5. **Priority**: `0`
+6. **Weight**: `5`
+7. **Port**: `25565` (실제 서버 포트)
+8. **Target**: `mc.example.com` (실제 서버 주소)
+9. **TTL**: Auto 또는 300
+
+**주의사항**: Cloudflare의 프록시 기능(주황색 구름)은 SRV 레코드에 적용되지 않으므로 회색(DNS only)으로 설정됩니다.
+
+## 설정 확인 방법
+
+### Windows에서 확인
+```powershell
+nslookup -type=SRV _minecraft._tcp.play.example.com
+```
+
+### Linux/macOS에서 확인
 ```bash
-# 시스템 업데이트
-sudo dnf update -y
-
-# Java 21 설치 (마인크래프트 1.21+ 필수)
-sudo dnf install java-21-amazon-corretto-headless -y
-
-# 설치 확인
-java -version
-# openjdk version "21.0.x" 출력되면 성공
-
-# 필수 도구 설치
-sudo dnf install wget screen -y
+dig SRV _minecraft._tcp.play.example.com
 ```
 
-> **참고**: 마인크래프트 1.21 이상 버전은 Java 21이 필수입니다. 이전 버전의 Java를 사용하면 서버가 시작되지 않습니다.
+올바르게 설정되었다면 다음과 같은 결과가 나옵니다:
+```
+_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
+```
 
-## 2단계: 마인크래프트 서버 파일 다운로드
+## 실전 적용 팁
+
+### DNS 전파 시간 고려
+
+SRV 레코드 설정 후 전파까지 최대 24-48시간이 걸릴 수 있습니다. TTL을 낮게 설정하면(300초 권장) 변경사항이 더 빠르게 반영됩니다.
+
+### 여러 서버 간 부하 분산
+
+동일한 Priority에서 Weight 값을 조정하여 트래픽을 분산할 수 있습니다:
+```
+_minecraft._tcp.play.example.com. 300 IN SRV 0 70 25565 mc1.example.com.
+_minecraft._tcp.play.example.com. 300 IN SRV 0 30 25565 mc2.example.com.
+```
+
+이 경우 약 70%는 mc1으로, 30%는 mc2로 분산됩니다.
+
+### 장애 조치(Failover) 구성
+
+Priority를 다르게 설정하여 메인 서버 장애 시 백업 서버로 자동 전환:
+```
+_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc-main.example.com.
+_minecraft._tcp.play.example.com. 300 IN SRV 10 5 25565 mc-backup.example.com.
+```
+
+## 문제 해결
+
+### SRV 레코드가 작동하지 않을 때
+
+#### DNS 캐시 초기화
 ```bash
-# 서버 디렉토리 생성
-sudo mkdir -p /opt/minecraft
-sudo chown -R ec2-user:ec2-user /opt/minecraft/
-cd /opt/minecraft
+# Windows
+ipconfig /flushdns
 
-# 마인크래프트 1.21.11 서버 파일 다운로드 (최신버전은 알아서 변경해서 다운필요합니다.)
-wget https://piston-data.mojang.com/v1/objects/64bb6d763bed0a9f1d632ec347938594144943ed/server.jar -O minecraft_server.1.21.11.jar
+# Linux
+sudo systemd-resolve --flush-caches
 
-# EULA 동의 (필수)
-echo "eula=true" > eula.txt
-
-# 첫 실행으로 설정 파일 생성
-java -Xmx2G -Xms1G -jar minecraft_server.1.21.11.jar nogui
-# 월드 생성이 완료되면 Ctrl+C로 중지
+# macOS
+sudo dscacheutil -flushcache
 ```
 
-## 3단계: 서버 설정 커스터마이징 (선택)
+#### 방화벽 확인
 
-생성된 `server.properties` 파일을 수정해서 서버를 커스터마이징할 수 있습니다.
-```bash
-vi server.properties
-```
+- AWS Security Group에서 해당 포트 개방 확인
+- 서버 방화벽(firewalld, ufw)에서 포트 허용 확인
 
-주요 설정 항목:
-```properties
-# 서버 이름
-motd=changki123's Minecraft Server
+## 마치며
 
-# 최대 플레이어 수
-max-players=10
+SRV 레코드를 활용하면 Minecraft 서버를 더 전문적이고 사용자 친화적으로 운영할 수 있습니다. 특히 여러 서버를 운영하거나 비표준 포트를 사용하는 경우 필수적인 설정입니다.
 
-# 난이도 (peaceful, easy, normal, hard)
-difficulty=normal
-
-# 게임 모드 (survival, creative, adventure)
-gamemode=survival
-
-# PvP 활성화
-pvp=true
-
-# 화이트리스트 사용
-white-list=false
-
-# 뷰 거리 (청크 단위, 높을수록 부하 증가)
-view-distance=10
-```
-
-## 4단계: systemd 서비스로 자동화
-
-서버를 안정적으로 운영하기 위해 systemd 서비스로 등록합니다.
-```bash
-sudo vi /etc/systemd/system/minecraft.service
-```
-
-서비스 파일 내용:
-```ini
-[Unit]
-Description=Minecraft Server 1.21.11
-After=network.target
-
-[Service]
-Type=simple
-User=ec2-user
-WorkingDirectory=/opt/minecraft
-ExecStart=/usr/bin/java -Xmx3G -Xms1G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -jar minecraft_server.1.21.11.jar nogui
-Restart=on-failure
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-```
-
-**JVM 옵션 설명**:
-- `-Xmx3G`: 최대 메모리 3GB (인스턴스 메모리의 75% 정도 권장)
-- `-Xms1G`: 초기 메모리 1GB
-- `-XX:+UseG1GC`: G1 가비지 컬렉터 사용 (성능 최적화)
-- `-XX:MaxGCPauseMillis=200`: GC 일시정지 시간 최대 200ms로 제한
-
-서비스 등록 및 시작:
-```bash
-# systemd 데몬 리로드
-sudo systemctl daemon-reload
-
-# 서버 시작
-sudo systemctl start minecraft
-
-# 부팅 시 자동 시작 설정
-sudo systemctl enable minecraft
-
-# 서버 상태 확인
-sudo systemctl status minecraft
-```
-
-## 5단계: 로그 및 관리
-
-### 로그 확인
-```bash
-# 실시간 로그 보기 (실행시키고 정상작동 하는지 확인 필요)
-sudo journalctl -u minecraft -f
-
-# 최근 100줄 보기
-sudo journalctl -u minecraft -n 100
-```
-
-### 서버 관리 명령어
-```bash
-# 서버 중지
-sudo systemctl stop minecraft
-
-# 서버 재시작
-sudo systemctl restart minecraft
-
-# 서버 상태 확인
-sudo systemctl status minecraft
-```
-
-## 보안 그룹 설정
-
-AWS 콘솔에서 EC2 보안 그룹에 다음 규칙을 추가해야 합니다:
-
-| 타입 | 프로토콜 | 포트 범위 | 소스 |
-|------|----------|----------|------|
-| 사용자 지정 TCP | TCP | 25565 | myip/0 |
-
-> **보안 팁**: 특정 IP만 접속하도록 제한하려면 소스에 허용할 IP 주소를 입력하세요.
-
-## 접속 방법
-
-마인크래프트 클라이언트에서 멀티플레이 → 서버 추가 → 서버 주소에 EC2의 퍼블릭 IP 입력:
-```
-your-ec2-public-ip:25565
-```
-
-도메인이 있다면 A 레코드로 연결해서 사용할 수 있습니다.
-
-# service 파일에서 -Xmx3G를 -Xmx2G로 변경 해서 적용도 가능해보이는데 테스트 필요해보입니다.
-```
-
-## 성능 최적화 팁
-
-1. **Spigot/Paper 사용**: 바닐라 서버보다 최적화된 Paper 서버 사용 고려
-2. **플러그인 최소화**: 필요한 플러그인만 설치
-3. **청크 미리 생성**: 플레이 전에 월드 경계 미리 생성
-4. **정기적인 재시작**: 매일 새벽에 자동 재시작 설정
-
-## 마무리
-
-이제 친구들과 함께 즐길 수 있는 마인크래프트 서버가 준비되었습니다! AWS EC2의 Auto Scaling을 활용하면 플레이어 수에 따라 자동으로 인스턴스 크기를 조정할 수도 있습니다.
-
-비용 절감 팁: 아무도 접속하지 않을 때는 인스턴스를 중지하고, 플레이할 때만 시작하면 비용을 크게 줄일 수 있습니다.
-
-즐거운 마인크래프트 라이프 되세요! ⛏️
+실제 운영 중인 AWS EC2 Minecraft 서버에 적용해보시고, 더 나은 게임 경험을 만들어보세요!
