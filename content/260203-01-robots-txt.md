@@ -26,21 +26,6 @@ Sitemap: https://blog.changki123.click/sitemap.xml
 - **Allow**: 크롤링 허용 경로 (Disallow 안에 있어도 예외처리)
 - **Sitemap**: 사이트맵 위치 알려주기
 
-## 실제 사용 예시
-```txt
-# 구글만 허용
-User-agent: Googlebot
-Allow: /
-
-# 나머지 봇들은 특정 경로만 차단
-User-agent: *
-Disallow: /draft/
-Disallow: /temp/
-Disallow: /*.json$
-
-Sitemap: https://blog.changki123.click/sitemap.xml
-```
-
 ## 주의사항
 
 ### 보안 수단 아님
@@ -69,6 +54,50 @@ myblog/
 
 빌드하면 `public/robots.txt`로 복사되고, GitHub Pages에 배포하면 `https://blog.changki123.click/robots.txt`로 접근 가능.
 
+## Cloudflare 자동 설정 예시
+
+Cloudflare를 사용하면 AI 봇 차단 설정이 자동으로 추가됨:
+```txt
+# BEGIN Cloudflare Managed content
+User-agent: *
+Content-Signal: search=yes,ai-train=no
+Allow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+# END Cloudflare Managed Content
+
+Sitemap: https://changki123.github.io/blog/sitemap.xml
+```
+
+이 설정의 의미:
+- **검색엔진 크롤링은 허용** (`search=yes`)
+- **AI 학습용 크롤링은 차단** (`ai-train=no`)
+- OpenAI GPTBot, Anthropic ClaudeBot, Google Extended 등 AI 봇들 개별 차단
+
+Cloudflare 대시보드에서 **Security > Bots** 메뉴의 "AI Scrapers and Crawlers" 옵션을 켜면 자동으로 관리됨.
+
 ## 확인 방법
 
 ### 커맨드라인
@@ -84,16 +113,6 @@ curl https://blog.changki123.click/robots.txt
 
 제대로 설정됐는지 구글 서치 콘솔에서도 테스트 가능함.
 
-## 내 블로그 설정 예시
-```txt
-User-agent: *
-Allow: /
-
-Sitemap: https://blog.changki123.click/sitemap.xml
-```
-
-단순하게 모든 봇 허용하고 사이트맵만 알려주는 설정. 개인 블로그는 이 정도면 충분함.
-
 ## 결론
 
-robots.txt는 검색엔진 최적화(SEO)의 기본. 크롤러한테 친절하게 가이드 제공하는 거라고 보면 됨. Zola는 `static/` 폴더에 넣기만 하면 되니까 진짜 쉬움.
+robots.txt는 검색엔진 최적화(SEO)의 기본. 크롤러한테 친절하게 가이드 제공하는 거라고 보면 됨. Cloudflare 사용하면 AI 봇 차단까지 자동으로 해주니까 편함.
