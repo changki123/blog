@@ -28,15 +28,15 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8843211354454320"
          crossorigin="anonymous"></script>
 
-    <meta name="description" content="AWS EC2 인스턴스를 활용한 마인크래프트 Java Edition 서버 구축 및 운영 가이드">
+    <meta name="description" content="Minecraft 서버에 SRV DNS 레코드를 설정하여 포트 없이 깔끔하게 접속하는 방법">
 
-    <meta property="og:description" content="AWS EC2 인스턴스를 활용한 마인크래프트 Java Edition 서버 구축 및 운영 가이드">
+    <meta property="og:description" content="Minecraft 서버에 SRV DNS 레코드를 설정하여 포트 없이 깔끔하게 접속하는 방법">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://changki123.github.io/blog/260131-01-srv-record/">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:description" content="AWS EC2 인스턴스를 활용한 마인크래프트 Java Edition 서버 구축 및 운영 가이드">
+    <meta name="twitter:description" content="Minecraft 서버에 SRV DNS 레코드를 설정하여 포트 없이 깔끔하게 접속하는 방법">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
     <meta property="twitter:url" content="https://changki123.github.io/blog/260131-01-srv-record/">
@@ -74,11 +74,11 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260131-01-srv-record/">AWS EC2로 마인크래프트 서버 구축하기</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260131-01-srv-record/">Minecraft 서버를 위한 SRV 레코드 완벽 가이드</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-01-27
+            2026-01-31
         </span>
 
     </div>
@@ -86,177 +86,120 @@
     
         <span class="post-tags-inline">
                 :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#aws</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/cloud/">#cloud</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/ec2/">#ec2</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/gaming/">#gaming</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/minecraft/">#minecraft</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/server/">#server</a></span>
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#AWS</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/cloudflare/">#Cloudflare</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/dns/">#DNS</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/minecraft/">#Minecraft</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/srvrekodeu/">#SRV레코드</a></span>
     
 
         <div class="post-content">
-            <h2 id="gaeyo">개요</h2>
-<p>AWS EC2를 활용해 마인크래프트 Java Edition 1.21.11 서버를 구축하는 과정을 정리했습니다. 친구들과 함께 플레이할 수 있는 안정적인 멀티플레이 환경을 만들어봅시다.</p>
-<h2 id="sajeon-junbi">사전 준비</h2>
-<h3 id="pilyohan-geosdeul">필요한 것들</h3>
+            <h2 id="srv-rekodeuran">SRV 레코드란?</h2>
+<p>SRV(Service) 레코드는 특정 서비스의 위치 정보를 제공하는 DNS 레코드 타입임. 일반적인 A 레코드가 도메인을 IP 주소로 연결한다면, SRV 레코드는 서비스의 호스트명과 포트 정보까지 함께 제공할 수 있음.</p>
+<span id="continue-reading"></span><h2 id="wae-minecraft-seobeoeseo-srv-rekodeureul-sayonghalgga">왜 Minecraft 서버에서 SRV 레코드를 사용할까?</h2>
+<p>Minecraft Java Edition 서버는 기본적으로 25565 포트를 사용함. 일반적으로 서버에 접속하려면 다음과 같이 입력해야 함:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>mc.example.com:25565
+</span></code></pre>
+<p>하지만 SRV 레코드를 설정하면 포트 번호 없이 깔끔하게 접속 가능:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>play.example.com
+</span></code></pre>
+<p>특히 다음과 같은 상황에서 유용함:</p>
 <ul>
-<li>AWS 계정</li>
-<li>EC2 인스턴스 (권장: t3.medium 이상, 2GB RAM 이상)</li>
-<li>보안 그룹 설정 (25565 포트 개방)</li>
-<li>기본적인 Linux 명령어 지식</li>
+<li>비표준 포트(예: 25566, 25567)를 사용하는 경우</li>
+<li>여러 Minecraft 서버를 운영하면서 각각 다른 서브도메인으로 접속하고 싶은 경우</li>
+<li>사용자 친화적인 접속 주소를 제공하고 싶은 경우</li>
 </ul>
-<h3 id="sayang">사양</h3>
+<h2 id="srv-rekodeuyi-gujo">SRV 레코드의 구조</h2>
+<p>SRV 레코드는 다음과 같은 형식을 가짐:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_service._protocol.name TTL class SRV priority weight port target
+</span></code></pre>
+<p>각 필드의 의미:</p>
 <ul>
-<li><strong>최소</strong>?: t3.small (2GB RAM)</li>
-<li><strong>적용</strong>: t3.medium (4GB RAM) - 5~10명 동시 접속</li>
+<li><strong>_service</strong>: 서비스 이름 (Minecraft는 <code>_minecraft</code>)</li>
+<li><strong>_protocol</strong>: 프로토콜 (TCP 사용, <code>_tcp</code>)</li>
+<li><strong>name</strong>: 서비스 도메인 이름</li>
+<li><strong>priority</strong>: 우선순위 (낮을수록 우선, 0-65535)</li>
+<li><strong>weight</strong>: 같은 우선순위 내에서의 가중치 (부하 분산용)</li>
+<li><strong>port</strong>: 서비스 포트 번호</li>
+<li><strong>target</strong>: 실제 서버 주소</li>
 </ul>
-<h2 id="1dangye-siseutem-hwangyeong-seoljeong">1단계: 시스템 환경 설정</h2>
-<p>먼저 EC2 인스턴스에 접속한 후 시스템을 업데이트하고 필요한 패키지를 설치합니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 시스템 업데이트
-</span><span style="color:#bf616a;">sudo</span><span> dnf update</span><span style="color:#bf616a;"> -y
-</span><span>
-</span><span style="color:#65737e;"># Java 21 설치 (마인크래프트 1.21+ 필수)
-</span><span style="color:#bf616a;">sudo</span><span> dnf install java-21-amazon-corretto-headless</span><span style="color:#bf616a;"> -y
-</span><span>
-</span><span style="color:#65737e;"># 설치 확인
-</span><span style="color:#bf616a;">java -version
-</span><span style="color:#65737e;"># openjdk version &quot;21.0.x&quot; 출력되면 성공
-</span><span>
-</span><span style="color:#65737e;"># 필수 도구 설치
-</span><span style="color:#bf616a;">sudo</span><span> dnf install wget screen</span><span style="color:#bf616a;"> -y
+<h2 id="minecraft-seobeo-srv-rekodeu-seoljeong-yesi">Minecraft 서버 SRV 레코드 설정 예시</h2>
+<h3 id="sinario-1-gibon-seoljeong">시나리오 1: 기본 설정</h3>
+<p>실제 서버 주소가 <code>mc.example.com</code>이고 포트 <code>25565</code>를 사용하는 경우:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
 </span></code></pre>
-<blockquote>
-<p><strong>참고</strong>: 마인크래프트 1.21 이상 버전은 Java 21이 필수입니다. 이전 버전의 Java를 사용하면 서버가 시작되지 않습니다.</p>
-</blockquote>
-<h2 id="2dangye-mainkeuraepeuteu-seobeo-pail-daunrodeu">2단계: 마인크래프트 서버 파일 다운로드</h2>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 서버 디렉토리 생성
-</span><span style="color:#bf616a;">sudo</span><span> mkdir</span><span style="color:#bf616a;"> -p</span><span> /opt/minecraft
-</span><span style="color:#bf616a;">sudo</span><span> chown</span><span style="color:#bf616a;"> -R</span><span> ec2-user:ec2-user /opt/minecraft/
-</span><span style="color:#96b5b4;">cd</span><span> /opt/minecraft
-</span><span>
-</span><span style="color:#65737e;"># 마인크래프트 1.21.11 서버 파일 다운로드 (최신버전은 알아서 변경해서 다운필요합니다.)
-</span><span style="color:#bf616a;">wget</span><span> https://piston-data.mojang.com/v1/objects/64bb6d763bed0a9f1d632ec347938594144943ed/server.jar</span><span style="color:#bf616a;"> -O</span><span> minecraft_server.1.21.11.jar
-</span><span>
-</span><span style="color:#65737e;"># EULA 동의 (필수)
-</span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">eula=true</span><span>&quot; &gt; eula.txt
-</span><span>
-</span><span style="color:#65737e;"># 첫 실행으로 설정 파일 생성
-</span><span style="color:#bf616a;">java -Xmx2G -Xms1G -jar</span><span> minecraft_server.1.21.11.jar nogui
-</span><span style="color:#65737e;"># 월드 생성이 완료되면 Ctrl+C로 중지
+<p>이제 사용자는 <code>play.example.com</code>만 입력하면 자동으로 <code>mc.example.com:25565</code>로 연결됨.</p>
+<h3 id="sinario-2-bipyojun-poteu-sayong">시나리오 2: 비표준 포트 사용</h3>
+<p>AWS EC2에서 포트 <code>25570</code>을 사용하는 경우:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25570 ec2-server.example.com.
 </span></code></pre>
-<h2 id="3dangye-seobeo-seoljeong-keoseuteomaijing-seontaeg">3단계: 서버 설정 커스터마이징 (선택)</h2>
-<p>생성된 <code>server.properties</code> 파일을 수정해서 서버를 커스터마이징할 수 있습니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">vi</span><span> server.properties
+<p>사용자는 <code>survival.example.com</code> 입력만으로 포트 25570으로 자동 접속됨.</p>
+<h3 id="sinario-3-yeoreo-seobeo-unyeong">시나리오 3: 여러 서버 운영</h3>
+<p>생존 서버와 크리에이티브 서버를 각각 다른 포트로 운영하는 경우:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span># 생존 서버 (포트 25565)
+</span><span>_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25565 mc1.example.com.
+</span><span>
+</span><span># 크리에이티브 서버 (포트 25566)
+</span><span>_minecraft._tcp.creative.example.com. 300 IN SRV 0 5 25566 mc2.example.com.
 </span></code></pre>
-<p>주요 설정 항목:</p>
-<pre data-lang="properties" style="background-color:#2b303b;color:#c0c5ce;" class="language-properties "><code class="language-properties" data-lang="properties"><span style="color:#65737e;"># 서버 이름
-</span><span>motd=</span><span style="color:#a3be8c;">changki123&#39;s Minecraft Server
-</span><span>
-</span><span style="color:#65737e;"># 최대 플레이어 수
-</span><span>max-players=</span><span style="color:#a3be8c;">10
-</span><span>
-</span><span style="color:#65737e;"># 난이도 (peaceful, easy, normal, hard)
-</span><span>difficulty=</span><span style="color:#a3be8c;">normal
-</span><span>
-</span><span style="color:#65737e;"># 게임 모드 (survival, creative, adventure)
-</span><span>gamemode=</span><span style="color:#a3be8c;">survival
-</span><span>
-</span><span style="color:#65737e;"># PvP 활성화
-</span><span>pvp=</span><span style="color:#a3be8c;">true
-</span><span>
-</span><span style="color:#65737e;"># 화이트리스트 사용
-</span><span>white-list=</span><span style="color:#a3be8c;">false
-</span><span>
-</span><span style="color:#65737e;"># 뷰 거리 (청크 단위, 높을수록 부하 증가)
-</span><span>view-distance=</span><span style="color:#a3be8c;">10
+<h2 id="cloudflareeseo-srv-rekodeu-seoljeonghagi">Cloudflare에서 SRV 레코드 설정하기</h2>
+<p>Cloudflare DNS 관리 페이지에서 다음과 같이 설정:</p>
+<ol>
+<li><strong>Type</strong>: SRV</li>
+<li><strong>Name</strong>: <code>_minecraft._tcp.play</code> (play는 원하는 서브도메인)</li>
+<li><strong>Service</strong>: <code>_minecraft</code></li>
+<li><strong>Protocol</strong>: <code>TCP</code></li>
+<li><strong>Priority</strong>: <code>0</code></li>
+<li><strong>Weight</strong>: <code>5</code></li>
+<li><strong>Port</strong>: <code>25565</code> (실제 서버 포트)</li>
+<li><strong>Target</strong>: <code>mc.example.com</code> (실제 서버 주소)</li>
+<li><strong>TTL</strong>: Auto 또는 300</li>
+</ol>
+<p><strong>주의사항</strong>: Cloudflare의 프록시 기능(주황색 구름)은 SRV 레코드에 적용되지 않으므로 회색(DNS only)으로 설정됨.</p>
+<h2 id="seoljeong-hwagin-bangbeob">설정 확인 방법</h2>
+<h3 id="windowseseo-hwagin">Windows에서 확인</h3>
+<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>nslookup -type=SRV </span><span style="color:#96b5b4;">_minecraft._tcp.play.example.com
 </span></code></pre>
-<h2 id="4dangye-systemd-seobiseuro-jadonghwa">4단계: systemd 서비스로 자동화</h2>
-<p>서버를 안정적으로 운영하기 위해 systemd 서비스로 등록합니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> vi /etc/systemd/system/minecraft.service
+<h3 id="linux-macoseseo-hwagin">Linux/macOS에서 확인</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">dig</span><span> SRV _minecraft._tcp.play.example.com
 </span></code></pre>
-<p>서비스 파일 내용:</p>
-<pre data-lang="ini" style="background-color:#2b303b;color:#c0c5ce;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#b48ead;">[Unit]
-</span><span style="color:#bf616a;">Description</span><span>=Minecraft Server </span><span style="color:#d08770;">1</span><span>.</span><span style="color:#d08770;">21</span><span>.</span><span style="color:#d08770;">11
-</span><span style="color:#bf616a;">After</span><span>=network.target
-</span><span>
-</span><span style="color:#b48ead;">[Service]
-</span><span style="color:#bf616a;">Type</span><span>=simple
-</span><span style="color:#bf616a;">User</span><span>=ec2-user
-</span><span style="color:#bf616a;">WorkingDirectory</span><span>=/opt/minecraft
-</span><span style="color:#bf616a;">ExecStart</span><span>=/usr/bin/java -Xmx3G -Xms1G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=</span><span style="color:#d08770;">200 </span><span>-jar minecraft_server.</span><span style="color:#d08770;">1</span><span>.</span><span style="color:#d08770;">21</span><span>.</span><span style="color:#d08770;">11</span><span>.jar nogui
-</span><span style="color:#bf616a;">Restart</span><span>=on-failure
-</span><span style="color:#bf616a;">RestartSec</span><span>=</span><span style="color:#d08770;">10
-</span><span>
-</span><span style="color:#b48ead;">[Install]
-</span><span style="color:#bf616a;">WantedBy</span><span>=multi-user.target
+<p>올바르게 설정되었다면 다음과 같은 결과가 나옴:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
 </span></code></pre>
-<p><strong>JVM 옵션 설명</strong>:</p>
+<h2 id="siljeon-jeogyong-tib">실전 적용 팁</h2>
+<h3 id="dns-jeonpa-sigan-goryeo">DNS 전파 시간 고려</h3>
+<p>SRV 레코드 설정 후 전파까지 최대 24-48시간이 걸릴 수 있음. TTL을 낮게 설정하면(300초 권장) 변경사항이 더 빠르게 반영됨.</p>
+<h3 id="yeoreo-seobeo-gan-buha-bunsan">여러 서버 간 부하 분산</h3>
+<p>동일한 Priority에서 Weight 값을 조정하여 트래픽을 분산할 수 있음:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 70 25565 mc1.example.com.
+</span><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 30 25565 mc2.example.com.
+</span></code></pre>
+<p>이 경우 약 70%는 mc1으로, 30%는 mc2로 분산됨.</p>
+<h3 id="jangae-joci-failover-guseong">장애 조치(Failover) 구성</h3>
+<p>Priority를 다르게 설정하여 메인 서버 장애 시 백업 서버로 자동 전환:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc-main.example.com.
+</span><span>_minecraft._tcp.play.example.com. 300 IN SRV 10 5 25565 mc-backup.example.com.
+</span></code></pre>
+<h2 id="munje-haegyeol">문제 해결</h2>
+<h3 id="srv-rekodeuga-jagdonghaji-anheul-ddae">SRV 레코드가 작동하지 않을 때</h3>
+<h4 id="dns-kaesi-cogihwa">DNS 캐시 초기화</h4>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Windows
+</span><span style="color:#bf616a;">ipconfig</span><span> /flushdns
+</span><span>
+</span><span style="color:#65737e;"># Linux
+</span><span style="color:#bf616a;">sudo</span><span> systemd-resolve</span><span style="color:#bf616a;"> --flush-caches
+</span><span>
+</span><span style="color:#65737e;"># macOS
+</span><span style="color:#bf616a;">sudo</span><span> dscacheutil</span><span style="color:#bf616a;"> -flushcache
+</span></code></pre>
+<h4 id="banghwabyeog-hwagin">방화벽 확인</h4>
 <ul>
-<li><code>-Xmx3G</code>: 최대 메모리 3GB (인스턴스 메모리의 75% 정도 권장)</li>
-<li><code>-Xms1G</code>: 초기 메모리 1GB</li>
-<li><code>-XX:+UseG1GC</code>: G1 가비지 컬렉터 사용 (성능 최적화)</li>
-<li><code>-XX:MaxGCPauseMillis=200</code>: GC 일시정지 시간 최대 200ms로 제한</li>
+<li>AWS Security Group에서 해당 포트 개방 확인</li>
+<li>서버 방화벽(firewalld, ufw)에서 포트 허용 확인</li>
 </ul>
-<p>서비스 등록 및 시작:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># systemd 데몬 리로드
-</span><span style="color:#bf616a;">sudo</span><span> systemctl daemon-reload
-</span><span>
-</span><span style="color:#65737e;"># 서버 시작
-</span><span style="color:#bf616a;">sudo</span><span> systemctl start minecraft
-</span><span>
-</span><span style="color:#65737e;"># 부팅 시 자동 시작 설정
-</span><span style="color:#bf616a;">sudo</span><span> systemctl enable minecraft
-</span><span>
-</span><span style="color:#65737e;"># 서버 상태 확인
-</span><span style="color:#bf616a;">sudo</span><span> systemctl status minecraft
-</span></code></pre>
-<h2 id="5dangye-rogeu-mic-gwanri">5단계: 로그 및 관리</h2>
-<h3 id="rogeu-hwagin">로그 확인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 실시간 로그 보기 (실행시키고 정상작동 하는지 확인 필요)
-</span><span style="color:#bf616a;">sudo</span><span> journalctl</span><span style="color:#bf616a;"> -u</span><span> minecraft</span><span style="color:#bf616a;"> -f
-</span><span>
-</span><span style="color:#65737e;"># 최근 100줄 보기
-</span><span style="color:#bf616a;">sudo</span><span> journalctl</span><span style="color:#bf616a;"> -u</span><span> minecraft</span><span style="color:#bf616a;"> -n</span><span> 100
-</span></code></pre>
-<h3 id="seobeo-gwanri-myeongryeongeo">서버 관리 명령어</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 서버 중지
-</span><span style="color:#bf616a;">sudo</span><span> systemctl stop minecraft
-</span><span>
-</span><span style="color:#65737e;"># 서버 재시작
-</span><span style="color:#bf616a;">sudo</span><span> systemctl restart minecraft
-</span><span>
-</span><span style="color:#65737e;"># 서버 상태 확인
-</span><span style="color:#bf616a;">sudo</span><span> systemctl status minecraft
-</span></code></pre>
-<h2 id="boan-geurub-seoljeong">보안 그룹 설정</h2>
-<p>AWS 콘솔에서 EC2 보안 그룹에 다음 규칙을 추가해야 합니다:</p>
-<table><thead><tr><th>타입</th><th>프로토콜</th><th>포트 범위</th><th>소스</th></tr></thead><tbody>
-<tr><td>사용자 지정 TCP</td><td>TCP</td><td>25565</td><td>myip/0</td></tr>
-</tbody></table>
-<blockquote>
-<p><strong>보안 팁</strong>: 특정 IP만 접속하도록 제한하려면 소스에 허용할 IP 주소를 입력하세요.</p>
-</blockquote>
-<h2 id="jeobsog-bangbeob">접속 방법</h2>
-<p>마인크래프트 클라이언트에서 멀티플레이 → 서버 추가 → 서버 주소에 EC2의 퍼블릭 IP 입력:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>your-ec2-public-ip:25565
-</span></code></pre>
-<p>도메인이 있다면 A 레코드로 연결해서 사용할 수 있습니다.</p>
-<h1 id="service-paileseo-xmx3greul-xmx2gro-byeongyeong-haeseo-jeogyongdo-ganeunghaeboineunde-teseuteu-pilyohaeboibnida">service 파일에서 -Xmx3G를 -Xmx2G로 변경 해서 적용도 가능해보이는데 테스트 필요해보입니다.</h1>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>
-</span><span>## 성능 최적화 팁
-</span><span>
-</span><span>1. **Spigot/Paper 사용**: 바닐라 서버보다 최적화된 Paper 서버 사용 고려
-</span><span>2. **플러그인 최소화**: 필요한 플러그인만 설치
-</span><span>3. **청크 미리 생성**: 플레이 전에 월드 경계 미리 생성
-</span><span>4. **정기적인 재시작**: 매일 새벽에 자동 재시작 설정
-</span><span>
-</span><span>## 마무리
-</span><span>
-</span><span>이제 친구들과 함께 즐길 수 있는 마인크래프트 서버가 준비되었습니다! AWS EC2의 Auto Scaling을 활용하면 플레이어 수에 따라 자동으로 인스턴스 크기를 조정할 수도 있습니다.
-</span><span>
-</span><span>비용 절감 팁: 아무도 접속하지 않을 때는 인스턴스를 중지하고, 플레이할 때만 시작하면 비용을 크게 줄일 수 있습니다.
-</span><span>
-</span><span>즐거운 마인크래프트 라이프 되세요! ⛏️</span></code></pre>
+<h2 id="macimyeo">마치며</h2>
+<p>SRV 레코드를 활용하면 Minecraft 서버를 더 전문적이고 사용자 친화적으로 운영할 수 있음. 특히 여러 서버를 운영하거나 비표준 포트를 사용하는 경우 필수적인 설정임.</p>
+<p>실제 운영 중인 AWS EC2 Minecraft 서버에 적용해보고, 더 나은 게임 경험을 만들어보자!</p>
 
         </div>
 
@@ -268,19 +211,12 @@
                 </div>
                 <div class="pagination__buttons">
                         <span class="button previous">
-                            <a href="https://changki123.github.io/blog/260121-01-analytics/">
-                                <span class="button__icon">←</span>&nbsp;
-                                <span class="button__text">서버리스의 실질적인 시스템 이점 - 유저 편의성을 넘어서</span>
-                            </a>
-                        </span>
-                    
-                    
-                        <span class="button next">
                             <a href="https://changki123.github.io/blog/260126-01-minecraftserver/">
-                                <span class="button__text">AWS EC2로 마인크래프트 서버 구축하기</span>&nbsp;
-                                <span class="button__icon">→</span>
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">AWS EC2로 마인크래프트 서버 구축하기</span>
                             </a>
                         </span>
+                    
                     </div>
             </div>
         
@@ -300,13 +236,33 @@
                         <span class="tag-count">(4)</span>
                     </a>
                 
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;cloudflare&#x2F;" class="tag-link">
+                        <span class="tag-name">#Cloudflare</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;dns&#x2F;" class="tag-link">
+                        <span class="tag-name">#DNS</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;hands-on&#x2F;" class="tag-link">
                         <span class="tag-name">#Hands-on</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;minecraft&#x2F;" class="tag-link">
+                        <span class="tag-name">#Minecraft</span>
+                        <span class="tag-count">(2)</span>
+                    </a>
+                
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;s3&#x2F;" class="tag-link">
                         <span class="tag-name">#S3</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;srvrekodeu&#x2F;" class="tag-link">
+                        <span class="tag-name">#SRV레코드</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
@@ -342,17 +298,17 @@
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;cloud&#x2F;" class="tag-link">
                         <span class="tag-name">#cloud</span>
-                        <span class="tag-count">(3)</span>
+                        <span class="tag-count">(2)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;ec2&#x2F;" class="tag-link">
                         <span class="tag-name">#ec2</span>
-                        <span class="tag-count">(2)</span>
+                        <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;gaming&#x2F;" class="tag-link">
                         <span class="tag-name">#gaming</span>
-                        <span class="tag-count">(2)</span>
+                        <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;github-pages&#x2F;" class="tag-link">
@@ -370,11 +326,6 @@
                         <span class="tag-count">(1)</span>
                     </a>
                 
-                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;minecraft&#x2F;" class="tag-link">
-                        <span class="tag-name">#minecraft</span>
-                        <span class="tag-count">(2)</span>
-                    </a>
-                
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;monitoring&#x2F;" class="tag-link">
                         <span class="tag-name">#monitoring</span>
                         <span class="tag-count">(1)</span>
@@ -385,14 +336,24 @@
                         <span class="tag-count">(1)</span>
                     </a>
                 
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;robots-txt&#x2F;" class="tag-link">
+                        <span class="tag-name">#robots-txt</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;rust&#x2F;" class="tag-link">
                         <span class="tag-name">#rust</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;seo&#x2F;" class="tag-link">
+                        <span class="tag-name">#seo</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;server&#x2F;" class="tag-link">
                         <span class="tag-name">#server</span>
-                        <span class="tag-count">(2)</span>
+                        <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;serverless&#x2F;" class="tag-link">
@@ -412,6 +373,11 @@
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;video&#x2F;" class="tag-link">
                         <span class="tag-name">#video</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;web&#x2F;" class="tag-link">
+                        <span class="tag-name">#web</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 

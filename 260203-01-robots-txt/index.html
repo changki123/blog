@@ -33,13 +33,13 @@
     <meta property="og:description" content="">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://changki123.github.io/blog/260101-01-first-post/">
+    <meta property="og:url" content="https://changki123.github.io/blog/260203-01-robots-txt/">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:description" content="">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
-    <meta property="twitter:url" content="https://changki123.github.io/blog/260101-01-first-post/">
+    <meta property="twitter:url" content="https://changki123.github.io/blog/260203-01-robots-txt/">
 
 <link rel="stylesheet" href="/custom.css">
 </head>
@@ -74,24 +74,108 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260101-01-first-post/">첫 번째 포스트</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260203-01-robots-txt/">robots.txt가 뭔지 알아보자</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-01-01
+            2025-02-03
         </span>
 
     </div>
 
     
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/robots-txt/">#robots-txt</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/seo/">#seo</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/web/">#web</a></span>
+    
 
         <div class="post-content">
-            <p>안녕하세요! Rust로 만든 Zola 블로그입니다.</p>
-<p>## Zola + terminimal 테마</p>
-<p>터미널 스타일의 깔끔한 블로그를 만들었습니다.</p>
-<p>- Rust로 작성된 초고속 정적 사이트 생성기</p>
-<p>- GitHub Pages 배포 예정</p>
-<p>- 인프라 엔지니어의 기술 블로그</p>
+            <p>웹사이트 루트에 놓는 텍스트 파일인데, 검색엔진 크롤러한테 "여기는 긁어가도 되고, 여기는 긁어가지 마" 하고 알려주는 용도임.</p>
+<span id="continue-reading"></span><h2 id="gibon-gujo">기본 구조</h2>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>User-agent: *
+</span><span>Disallow: /admin/
+</span><span>Disallow: /private/
+</span><span>Allow: /public/
+</span><span>
+</span><span>Sitemap: https://blog.changki123.click/sitemap.xml
+</span></code></pre>
+<p>각 항목의 의미:</p>
+<ul>
+<li><strong>User-agent</strong>: 어떤 봇한테 규칙 적용할건지 (Googlebot, Bingbot 등)</li>
+<li><strong>Disallow</strong>: 크롤링 금지 경로</li>
+<li><strong>Allow</strong>: 크롤링 허용 경로 (Disallow 안에 있어도 예외처리)</li>
+<li><strong>Sitemap</strong>: 사이트맵 위치 알려주기</li>
+</ul>
+<h2 id="juyisahang">주의사항</h2>
+<h3 id="boan-sudan-anim">보안 수단 아님</h3>
+<p>robots.txt는 "부탁"이지 강제가 아님. 악의적인 봇은 무시함.</p>
+<h3 id="mingamjeongbo-nocul-juyi">민감정보 노출 주의</h3>
+<p><code>/secret/</code> 이런 거 쓰면 오히려 "여기 뭔가 있구나" 하고 타겟팅됨.</p>
+<h3 id="wici-jungyo">위치 중요</h3>
+<p>반드시 루트 디렉토리에 위치해야 함 (<code>https://example.com/robots.txt</code>)</p>
+<h2 id="zola-beulrogeue-jeogyonghagi">Zola 블로그에 적용하기</h2>
+<p>Zola 같은 정적 사이트 생성기 쓸 때는 <code>static/</code> 폴더에 넣으면 빌드할 때 자동으로 루트로 복사됨:</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>myblog/
+</span><span>├── content/
+</span><span>├── static/
+</span><span>│   └── robots.txt  &lt;- 여기에 넣기
+</span><span>├── templates/
+</span><span>└── config.toml
+</span></code></pre>
+<p>빌드하면 <code>public/robots.txt</code>로 복사되고, GitHub Pages에 배포하면 <code>https://blog.changki123.click/robots.txt</code>로 접근 가능.</p>
+<h2 id="cloudflare-jadong-seoljeong-yesi">Cloudflare 자동 설정 예시</h2>
+<p>Cloudflare를 사용하면 AI 봇 차단 설정이 자동으로 추가됨:</p>
+<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span># BEGIN Cloudflare Managed content
+</span><span>User-agent: *
+</span><span>Content-Signal: search=yes,ai-train=no
+</span><span>Allow: /
+</span><span>
+</span><span>User-agent: Amazonbot
+</span><span>Disallow: /
+</span><span>
+</span><span>User-agent: Applebot-Extended
+</span><span>Disallow: /
+</span><span>
+</span><span>User-agent: Bytespider
+</span><span>Disallow: /
+</span><span>
+</span><span>User-agent: CCBot
+</span><span>Disallow: /
+</span><span>
+</span><span>User-agent: ClaudeBot
+</span><span>Disallow: /
+</span><span>
+</span><span>User-agent: Google-Extended
+</span><span>Disallow: /
+</span><span>
+</span><span>User-agent: GPTBot
+</span><span>Disallow: /
+</span><span>
+</span><span>User-agent: meta-externalagent
+</span><span>Disallow: /
+</span><span># END Cloudflare Managed Content
+</span><span>
+</span><span>Sitemap: https://changki123.github.io/blog/sitemap.xml
+</span></code></pre>
+<p>이 설정의 의미:</p>
+<ul>
+<li><strong>검색엔진 크롤링은 허용</strong> (<code>search=yes</code>)</li>
+<li><strong>AI 학습용 크롤링은 차단</strong> (<code>ai-train=no</code>)</li>
+<li>OpenAI GPTBot, Anthropic ClaudeBot, Google Extended 등 AI 봇들 개별 차단</li>
+</ul>
+<p>Cloudflare 대시보드에서 <strong>Security &gt; Bots</strong> 메뉴의 "AI Scrapers and Crawlers" 옵션을 켜면 자동으로 관리됨.</p>
+<h2 id="hwagin-bangbeob">확인 방법</h2>
+<h3 id="keomaendeurain">커맨드라인</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">curl</span><span> https://blog.changki123.click/robots.txt
+</span></code></pre>
+<h3 id="beuraujeo">브라우저</h3>
+<p>주소창에 <code>https://blog.changki123.click/robots.txt</code> 입력</p>
+<h3 id="google-search-console">Google Search Console</h3>
+<p>제대로 설정됐는지 구글 서치 콘솔에서도 테스트 가능함.</p>
+<h2 id="gyeolron">결론</h2>
+<p>robots.txt는 검색엔진 최적화(SEO)의 기본. 크롤러한테 친절하게 가이드 제공하는 거라고 보면 됨. Cloudflare 사용하면 AI 봇 차단까지 자동으로 해주니까 편함.</p>
 
         </div>
 
@@ -102,17 +186,10 @@
                     <hr />
                 </div>
                 <div class="pagination__buttons">
-                        <span class="button previous">
-                            <a href="https://changki123.github.io/blog/260203-01-robots-txt/">
-                                <span class="button__icon">←</span>&nbsp;
-                                <span class="button__text">robots.txt가 뭔지 알아보자</span>
-                            </a>
-                        </span>
-                    
                     
                         <span class="button next">
-                            <a href="https://changki123.github.io/blog/260102-01-zola-blog-setup/">
-                                <span class="button__text">Windows에서 Zola + GitHub Pages로 블로그 만들기</span>&nbsp;
+                            <a href="https://changki123.github.io/blog/260101-01-first-post/">
+                                <span class="button__text">첫 번째 포스트</span>&nbsp;
                                 <span class="button__icon">→</span>
                             </a>
                         </span>

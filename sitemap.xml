@@ -41,10 +41,17 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/260131-01-srv-record/</loc>
-        <lastmod>2026-01-27</lastmod>
+        <lastmod>2026-01-31</lastmod>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/260203-01-robots-txt/</loc>
+        <lastmod>2025-02-03</lastmod>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/page/2/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/</loc>
@@ -69,6 +76,12 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/cloud/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/cloudflare/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/dns/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/ec2/</loc>
@@ -98,6 +111,9 @@
         <loc>https://changki123.github.io/blog/tags/rasbora/</loc>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/tags/robots-txt/</loc>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/tags/rust/</loc>
     </url>
     <url>
@@ -107,10 +123,16 @@
         <loc>https://changki123.github.io/blog/tags/security/</loc>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/tags/seo/</loc>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/tags/server/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/serverless/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/srvrekodeu/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/tropical-fish/</loc>
@@ -120,6 +142,9 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/video/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/web/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/zola/</loc>
