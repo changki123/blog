@@ -12,6 +12,8 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
 
 ## Google Analytics 설정
 
+<!-- more -->
+
 ### 1. GA4 속성 생성
 
 1. [Google Analytics](https://analytics.google.com) 접속

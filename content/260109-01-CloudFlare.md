@@ -14,6 +14,8 @@ GitHub Pages는 기본적으로 `username.github.io` 형태의 도메인을 제�
 - 포트폴리오 가치 상승
 - 실무 DNS 관리 경험
 
+<!-- more -->
+
 ## 도메인 선택 과정
 
 ### TLD 비교

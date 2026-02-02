@@ -15,6 +15,8 @@ Rust로 만든 정적 사이트 생성기 Zola를 사용해서 GitHub Pages 블�
 
 ## 설치 과정
 
+<!-- more -->
+
 ### 1. Zola 설치 (Windows)
 
 GitHub 릴리즈에서 직접 다운로드하는 방식을 사용했다.
