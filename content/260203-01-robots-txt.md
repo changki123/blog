@@ -1,6 +1,6 @@
 +++
 title = "robots.txt가 뭔지 알아보자"
-date = 2025-02-03
+date = 2026-02-03
 [taxonomies]
 tags = ["web", "seo", "robots-txt"]
 +++
