@@ -22,7 +22,7 @@ C:\\zola\\zola.exe build
 
 
 
-\# 로컬에서 확인
+\# 로컬에서 확인 
 
 C:\\zola\\zola.exe serve
 
