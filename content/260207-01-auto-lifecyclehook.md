@@ -7,7 +7,7 @@ description = "Lifecycle Hook과 systemd를 활용한 Scale-in 이벤트 데이�
 tags = ["AWS", "Auto Scaling", "S3", "Backup", "Lifecycle Hook", "systemd"]
 +++
 
-## 🎯 프로젝트 배경
+## 프로젝트 배경
 
 Auto Scaling 환경에서 Scale-in(인스턴스 축소) 발생 시 **인스턴스가 삭제되면서 로그와 데이터가 함께 소실**되는 문제가 있었습니다. 
 
@@ -21,7 +21,7 @@ Auto Scaling 환경에서 Scale-in(인스턴스 축소) 발생 시 **인스턴�
 
 ---
 
-## 🏗️ 아키텍처 개요
+## 아키텍처 개요
 ```
 Auto Scaling Group
     ↓
@@ -40,7 +40,7 @@ Lifecycle Action Complete
 
 ---
 
-## 🔧 핵심 구성 요소
+## 핵심 구성 요소
 
 ### 1. ASG Lifecycle Watcher (systemd 서비스)
 
@@ -146,7 +146,7 @@ WantedBy=multi-user.target
 
 ---
 
-## 📊 백업 대상
+## 백업 대상 예시
 
 - nginx 로그
 - 각 애플리케이션 서버 로그
@@ -155,7 +155,7 @@ WantedBy=multi-user.target
 
 ---
 
-## 🎬 동작 흐름
+## 동작 흐름
 
 ### 정상 운영 시
 ```
@@ -188,7 +188,7 @@ complete-lifecycle-action 호출
 
 ---
 
-## 💡 핵심 포인트
+## 핵심 포인트
 
 ### 1. Lifecycle Hook의 중요성
 일반적인 Auto Scaling 종료는 **즉시 강제 종료**됩니다.  
@@ -208,18 +208,18 @@ S3_BUCKET="s3://my-backup-bucket/servers/$INSTANCE_ID/LOG/$DATE/"
 
 ---
 
-## 🚀 적용 효과
+## 적용 효과
 
 | 항목 | Before | After |
 |------|--------|-------|
 | Scale-in 시 데이터 | ❌ 소실 | ✅ S3 보관 |
-| 백업 방식 | 👨 수동 | 🤖 완전 자동 |
+| 백업 방식 | 수동 | 완전 자동 |
 | 복구 가능 여부 | ❌ 불가능 | ✅ 가능 |
 | 운영 부담 | 높음 | 거의 없음 |
 
 ---
 
-## 🔍 트러블슈팅 팁
+## 트러블슈팅 팁
 
 ### Watcher가 동작하지 않을 때
 ```bash
