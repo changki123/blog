@@ -212,9 +212,9 @@ S3_BUCKET="s3://my-backup-bucket/servers/$INSTANCE_ID/LOG/$DATE/"
 
 | 항목 | Before | After |
 |------|--------|-------|
-| Scale-in 시 데이터 | ❌ 소실 | ✅ S3 보관 |
+| Scale-in 시 데이터 | 소실 | S3 보관 |
 | 백업 방식 | 수동 | 완전 자동 |
-| 복구 가능 여부 | ❌ 불가능 | ✅ 가능 |
+| 복구 가능 여부 | 불가능 | 가능 |
 | 운영 부담 | 높음 | 거의 없음 |
 
 ---
