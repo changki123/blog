@@ -95,7 +95,7 @@
     
 
         <div class="post-content">
-            <h2 id="dart-peurojegteu-baegyeong">🎯 프로젝트 배경</h2>
+            <h2 id="peurojegteu-baegyeong">프로젝트 배경</h2>
 <p>Auto Scaling 환경에서 Scale-in(인스턴스 축소) 발생 시 <strong>인스턴스가 삭제되면서 로그와 데이터가 함께 소실</strong>되는 문제가 있었습니다.</p>
 <p>고객사 요구사항:</p>
 <ul>
@@ -106,7 +106,7 @@
 </ul>
 <span id="continue-reading"></span>
 <hr />
-<h2 id="construction-site-akitegceo-gaeyo">🏗️ 아키텍처 개요</h2>
+<h2 id="akitegceo-gaeyo">아키텍처 개요</h2>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Auto Scaling Group
 </span><span>    ↓
 </span><span>Lifecycle Hook (Terminating:Wait)
@@ -122,7 +122,7 @@
 </span><span>인스턴스 종료
 </span></code></pre>
 <hr />
-<h2 id="wrench-haegsim-guseong-yoso">🔧 핵심 구성 요소</h2>
+<h2 id="haegsim-guseong-yoso">핵심 구성 요소</h2>
 <h3 id="1-asg-lifecycle-watcher-systemd-seobiseu">1. ASG Lifecycle Watcher (systemd 서비스)</h3>
 <p>인스턴스가 부팅되면 자동으로 시작되어 <strong>5초마다 Auto Scaling 상태를 체크</strong>합니다.</p>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># /usr/local/bin/asg-lifecycle-watcher.sh
@@ -216,7 +216,7 @@
 </span></code></pre>
 <p><code>Restart=always</code> 덕분에 스크립트가 비정상 종료되어도 자동 재시작됩니다.</p>
 <hr />
-<h2 id="bar-chart-baegeob-daesang">📊 백업 대상</h2>
+<h2 id="baegeob-daesang-yesi">백업 대상 예시</h2>
 <ul>
 <li>nginx 로그</li>
 <li>각 애플리케이션 서버 로그</li>
@@ -224,7 +224,7 @@
 <li>웹 패키지 파일</li>
 </ul>
 <hr />
-<h2 id="clapper-dongjag-heureum">🎬 동작 흐름</h2>
+<h2 id="dongjag-heureum">동작 흐름</h2>
 <h3 id="jeongsang-unyeong-si">정상 운영 시</h3>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>인스턴스 부팅
 </span><span>    ↓
@@ -251,7 +251,7 @@
 </span><span>인스턴스 종료
 </span></code></pre>
 <hr />
-<h2 id="bulb-haegsim-pointeu">💡 핵심 포인트</h2>
+<h2 id="haegsim-pointeu">핵심 포인트</h2>
 <h3 id="1-lifecycle-hookyi-jungyoseong">1. Lifecycle Hook의 중요성</h3>
 <p>일반적인 Auto Scaling 종료는 <strong>즉시 강제 종료</strong>됩니다.<br />
 Lifecycle Hook을 사용하면 <strong>종료 전 대기 시간 확보</strong> 가능!</p>
@@ -267,15 +267,15 @@ Lifecycle Hook을 사용하면 <strong>종료 전 대기 시간 확보</strong> 
 <li>부팅 시 자동 시작으로 사람 개입 불필요</li>
 </ul>
 <hr />
-<h2 id="rocket-jeogyong-hyogwa">🚀 적용 효과</h2>
+<h2 id="jeogyong-hyogwa">적용 효과</h2>
 <table><thead><tr><th>항목</th><th>Before</th><th>After</th></tr></thead><tbody>
 <tr><td>Scale-in 시 데이터</td><td>❌ 소실</td><td>✅ S3 보관</td></tr>
-<tr><td>백업 방식</td><td>👨 수동</td><td>🤖 완전 자동</td></tr>
+<tr><td>백업 방식</td><td>수동</td><td>완전 자동</td></tr>
 <tr><td>복구 가능 여부</td><td>❌ 불가능</td><td>✅ 가능</td></tr>
 <tr><td>운영 부담</td><td>높음</td><td>거의 없음</td></tr>
 </tbody></table>
 <hr />
-<h2 id="mag-teureobeulsyuting-tib">🔍 트러블슈팅 팁</h2>
+<h2 id="teureobeulsyuting-tib">트러블슈팅 팁</h2>
 <h3 id="watcherga-dongjaghaji-anheul-ddae">Watcher가 동작하지 않을 때</h3>
 <pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 서비스 상태 확인
 </span><span style="color:#bf616a;">systemctl</span><span> status asg-watcher.service

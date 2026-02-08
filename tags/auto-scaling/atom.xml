@@ -23,7 +23,7 @@
         <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260207-01-auto-lifecyclehook/"/>
         <id>https://changki123.github.io/blog/260207-01-auto-lifecyclehook/</id>
         
-        <summary type="html">&lt;h2 id=&quot;dart-peurojegteu-baegyeong&quot;&gt;🎯 프로젝트 배경&lt;&#x2F;h2&gt;
+        <summary type="html">&lt;h2 id=&quot;peurojegteu-baegyeong&quot;&gt;프로젝트 배경&lt;&#x2F;h2&gt;
 &lt;p&gt;Auto Scaling 환경에서 Scale-in(인스턴스 축소) 발생 시 &lt;strong&gt;인스턴스가 삭제되면서 로그와 데이터가 함께 소실&lt;&#x2F;strong&gt;되는 문제가 있었습니다.&lt;&#x2F;p&gt;
 &lt;p&gt;고객사 요구사항:&lt;&#x2F;p&gt;
 &lt;ul&gt;
