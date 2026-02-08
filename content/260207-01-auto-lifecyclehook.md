@@ -255,13 +255,3 @@ aws s3 ls s3://my-backup-bucket/
 - [systemd 서비스 작성 가이드](https://www.freedesktop.org/software/systemd/man/systemd.service.html)
 
 ---
-
-## 💭 후기
-
-처음엔 "Scale-in 감지를 어떻게 하지?" 고민이 많았는데,  
-**Lifecycle Hook + systemd watcher 조합**이 생각보다 깔끔하게 해결해줬습니다.
-
-Lambda로도 할 수 있지만, **인스턴스 내부에서 직접 감지하는 방식**이  
-네트워크 단절 상황에서도 더 안정적이었어요.
-
-Auto Scaling 환경에서 데이터 유실 걱정 없이 운영할 수 있게 되었습니다! 🎉
