@@ -5,7 +5,6 @@ description = "Lifecycle Hook과 systemd를 활용한 Scale-in 이벤트 데이�
 
 [taxonomies]
 tags = ["AWS", "Auto Scaling", "S3", "Backup", "Lifecycle Hook", "systemd"]
-categories = ["Infrastructure", "Automation"]
 +++
 
 ## 🎯 프로젝트 배경
