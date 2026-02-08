@@ -20,7 +20,7 @@ local build
 
 C:\\zola\\zola.exe build
 
-123
+
 
 \# 로컬에서 확인
 
