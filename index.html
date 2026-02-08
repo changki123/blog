@@ -75,6 +75,93 @@
         <div class="posts">
                 <div class="post on-list">
                     
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260208-01-aws-drs/">AWS DRS 기반 재해복구 환경 구축 (진행 중)</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-02-08
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#AWS</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/drs/">#DRS</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/disaster-recovery/">#Disaster Recovery</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/windows/">#Windows</a></span>
+    
+
+
+                    
+        <div class="post-content">
+            <blockquote>
+<p>⚠️ <strong>진행 중인 프로젝트입니다.</strong><br />
+현재 DRS 에이전트 설치 및 1:1 복제 테스트까지 완료했습니다.</p>
+</blockquote>
+<h2 id="dart-mogpyo">🎯 목표</h2>
+<p>AWS DRS(Disaster Recovery Service)를 사용해 서울 리전의 Windows 서버를 홍콩 리전으로 재해복구 환경 구축</p>
+        </div>
+        <div>
+            <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
+            <a class="read-more button" href="https://changki123.github.io/blog/260208-01-aws-drs/">
+                <span class="button__text">Read more</span>&nbsp;
+                <span class="button__icon">&#8617;&#xFE0E;</span>
+            </a>
+        </div>
+    
+
+                </div>
+            
+                <div class="post on-list">
+                    
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260207-01-auto-lifecyclehook/">AWS Auto Scaling 인스턴스 종료 시 S3 자동 백업 시스템 구축</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-02-07
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#AWS</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/auto-scaling/">#Auto Scaling</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/backup/">#Backup</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/lifecycle-hook/">#Lifecycle Hook</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/s3/">#S3</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/systemd/">#systemd</a></span>
+    
+
+
+                    
+        <div class="post-content">
+            <h2 id="dart-peurojegteu-baegyeong">🎯 프로젝트 배경</h2>
+<p>Auto Scaling 환경에서 Scale-in(인스턴스 축소) 발생 시 <strong>인스턴스가 삭제되면서 로그와 데이터가 함께 소실</strong>되는 문제가 있었습니다.</p>
+<p>고객사 요구사항:</p>
+<ul>
+<li>✅ 인스턴스 종료 전 로그 및 웹 패키지 자동 백업</li>
+<li>✅ S3에 안전하게 저장</li>
+<li>✅ 백업 완료 후 정상 종료</li>
+<li>✅ 사람 개입 없이 완전 자동화</li>
+</ul>
+        </div>
+        <div>
+            <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
+            <a class="read-more button" href="https://changki123.github.io/blog/260207-01-auto-lifecyclehook/">
+                <span class="button__text">Read more</span>&nbsp;
+                <span class="button__icon">&#8617;&#xFE0E;</span>
+            </a>
+        </div>
+    
+
+                </div>
+            
+                <div class="post on-list">
+                    
     <h1 class="post-title"><a href="https://changki123.github.io/blog/260203-01-robots-txt/">robots.txt가 뭔지 알아보자</a></h1>
     <div class="post-meta-inline">
         
@@ -378,134 +465,6 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
     
 
                 </div>
-            
-                <div class="post on-list">
-                    
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260105-02-ascii/">ASCII 동영상</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-01-05
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/ascii/">#ascii</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/video/">#video</a></span>
-    
-
-
-                    <div class="post-content">
-            <style>
-  .video-wrapper {
-    background: #000;
-    text-align: center;
-    padding: 20px;
-  }
-  #ascii-output {
-    font-size: 5px;
-    line-height: 2.5px;
-    background: #000;
-    color: #0f0;
-    font-family: monospace;
-    white-space: pre;
-    overflow-x: auto;
-    letter-spacing: 0;
-    padding: 30px 50px;
-  }
-</style>
-<div class="video-wrapper">
-  <video id="sourceVideo" width="640" height="360" autoplay loop muted>
-    <source src="/video/sample.mp4" type="video/mp4">
-  </video>
-  <div id="ascii-output"></div>
-</div>
-<script>
-(function() {
-  const video = document.getElementById('sourceVideo');
-  const output = document.getElementById('ascii-output');
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  
-  canvas.width = 240;
-  canvas.height = 135;
-  
-  const chars = ' .:-=+*#%@';
-  
-  function convert() {
-    if (!video.paused && !video.ended) {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      let ascii = '';
-      
-      for (let i = 0; i < imgData.data.length; i += 4) {
-        const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
-        const charIdx = Math.floor(avg / 255 * (chars.length - 1));
-        ascii += chars[charIdx];
-        if ((i/4 + 1) % canvas.width === 0) ascii += '\n';
-      }
-      
-      output.textContent = ascii;
-      requestAnimationFrame(convert);
-    }
-  }
-  
-  video.addEventListener('playing', convert);
-})();
-</script>
-<hr />
-<p><strong>원본 영상:</strong> <a href="https://youtu.be/jy2aZHUI-6A?si=EdLWyIsgQw3kib5r">YouTube에서 보기</a></p>
-
-        </div>
-
-                </div>
-            
-                <div class="post on-list">
-                    
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260102-01-zola-blog-setup/">Windows에서 Zola + GitHub Pages로 블로그 만들기</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-01-02
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/blog/">#blog</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/github-pages/">#github-pages</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/rust/">#rust</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/tutorial/">#tutorial</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/zola/">#zola</a></span>
-    
-
-
-                    
-        <div class="post-content">
-            <p>Rust로 만든 정적 사이트 생성기 Zola를 사용해서 GitHub Pages 블로그를 만들어봤다.</p>
-<h2 id="wae-zolainga">왜 Zola인가?</h2>
-<ul>
-<li><strong>빠름</strong>: Rust로 작성되어 빌드 속도가 매우 빠르다</li>
-<li><strong>간단함</strong>: Hugo나 Jekyll보다 설정이 심플하다</li>
-<li><strong>GitHub 언어 통계</strong>: Zola 테마를 사용하면 레포에 Rust 비율이 나온다</li>
-</ul>
-<h2 id="seolci-gwajeong">설치 과정</h2>
-        </div>
-        <div>
-            <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
-            <a class="read-more button" href="https://changki123.github.io/blog/260102-01-zola-blog-setup/">
-                <span class="button__text">Read more</span>&nbsp;
-                <span class="button__icon">&#8617;&#xFE0E;</span>
-            </a>
-        </div>
-    
-
-                </div>
             <div class="pagination">
                 <div class="pagination__buttons">
                     <span class="button next">
@@ -529,7 +488,17 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;aws&#x2F;" class="tag-link">
                         <span class="tag-name">#AWS</span>
-                        <span class="tag-count">(4)</span>
+                        <span class="tag-count">(6)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;auto-scaling&#x2F;" class="tag-link">
+                        <span class="tag-name">#Auto Scaling</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;backup&#x2F;" class="tag-link">
+                        <span class="tag-name">#Backup</span>
+                        <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;cloudflare&#x2F;" class="tag-link">
@@ -542,8 +511,23 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
                         <span class="tag-count">(1)</span>
                     </a>
                 
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;drs&#x2F;" class="tag-link">
+                        <span class="tag-name">#DRS</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;disaster-recovery&#x2F;" class="tag-link">
+                        <span class="tag-name">#Disaster Recovery</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;hands-on&#x2F;" class="tag-link">
                         <span class="tag-name">#Hands-on</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;lifecycle-hook&#x2F;" class="tag-link">
+                        <span class="tag-name">#Lifecycle Hook</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
@@ -554,7 +538,7 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;s3&#x2F;" class="tag-link">
                         <span class="tag-name">#S3</span>
-                        <span class="tag-count">(1)</span>
+                        <span class="tag-count">(2)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;srvrekodeu&#x2F;" class="tag-link">
@@ -564,6 +548,11 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;security&#x2F;" class="tag-link">
                         <span class="tag-name">#Security</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;windows&#x2F;" class="tag-link">
+                        <span class="tag-name">#Windows</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
@@ -654,6 +643,11 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;serverless&#x2F;" class="tag-link">
                         <span class="tag-name">#serverless</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;systemd&#x2F;" class="tag-link">
+                        <span class="tag-name">#systemd</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 

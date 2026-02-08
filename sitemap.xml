@@ -48,6 +48,14 @@
         <lastmod>2026-02-03</lastmod>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/260207-01-auto-lifecyclehook/</loc>
+        <lastmod>2026-02-07</lastmod>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/260208-01-aws-drs/</loc>
+        <lastmod>2026-02-08</lastmod>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/page/1/</loc>
     </url>
     <url>
@@ -66,7 +74,13 @@
         <loc>https://changki123.github.io/blog/tags/ascii/</loc>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/tags/auto-scaling/</loc>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/tags/aws/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/backup/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/beginner-guide/</loc>
@@ -81,7 +95,13 @@
         <loc>https://changki123.github.io/blog/tags/cloudflare/</loc>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/tags/disaster-recovery/</loc>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/tags/dns/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/drs/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/ec2/</loc>
@@ -100,6 +120,9 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/lambda/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/lifecycle-hook/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/minecraft/</loc>
@@ -135,6 +158,9 @@
         <loc>https://changki123.github.io/blog/tags/srvrekodeu/</loc>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/tags/systemd/</loc>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/tags/tropical-fish/</loc>
     </url>
     <url>
@@ -145,6 +171,9 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/web/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/windows/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/zola/</loc>

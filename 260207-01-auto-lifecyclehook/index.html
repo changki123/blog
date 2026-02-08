@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>changki123&#x27;s blog</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://changki123.github.io/blog/style.css">
+    <link rel="stylesheet" href="https://changki123.github.io/blog/color/orange.css">
+
+        <link rel="stylesheet" href="https://changki123.github.io/blog/color/background_blue.css">
+    
+    <link rel="stylesheet" href="https://changki123.github.io/blog/font-hack-subset.css">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XCEVWK26M4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XCEVWK26M4');
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8843211354454320"
+         crossorigin="anonymous"></script>
+
+    <meta name="description" content="Lifecycle Hook과 systemd를 활용한 Scale-in 이벤트 데이터 백업 자동화">
+
+    <meta property="og:description" content="Lifecycle Hook과 systemd를 활용한 Scale-in 이벤트 데이터 백업 자동화">
+    <meta property="og:title" content="changki123's blog">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://changki123.github.io/blog/260207-01-auto-lifecyclehook/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Lifecycle Hook과 systemd를 활용한 Scale-in 이벤트 데이터 백업 자동화">
+    <meta name="twitter:title" content="changki123's blog">
+    <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
+    <meta property="twitter:url" content="https://changki123.github.io/blog/260207-01-auto-lifecyclehook/">
+
+<link rel="stylesheet" href="/custom.css">
+</head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://changki123.github.io/blog" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            changki123
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        
+        
+    </header>
+    
+
+    <div class="content">
+        
+<div class="content-with-sidebar">
+    <main class="main-content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260207-01-auto-lifecyclehook/">AWS Auto Scaling 인스턴스 종료 시 S3 자동 백업 시스템 구축</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-02-07
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#AWS</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/auto-scaling/">#Auto Scaling</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/backup/">#Backup</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/lifecycle-hook/">#Lifecycle Hook</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/s3/">#S3</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/systemd/">#systemd</a></span>
+    
+
+        <div class="post-content">
+            <h2 id="dart-peurojegteu-baegyeong">🎯 프로젝트 배경</h2>
+<p>Auto Scaling 환경에서 Scale-in(인스턴스 축소) 발생 시 <strong>인스턴스가 삭제되면서 로그와 데이터가 함께 소실</strong>되는 문제가 있었습니다.</p>
+<p>고객사 요구사항:</p>
+<ul>
+<li>✅ 인스턴스 종료 전 로그 및 웹 패키지 자동 백업</li>
+<li>✅ S3에 안전하게 저장</li>
+<li>✅ 백업 완료 후 정상 종료</li>
+<li>✅ 사람 개입 없이 완전 자동화</li>
+</ul>
+<span id="continue-reading"></span>
+<hr />
+<h2 id="construction-site-akitegceo-gaeyo">🏗️ 아키텍처 개요</h2>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Auto Scaling Group
+</span><span>    ↓
+</span><span>Lifecycle Hook (Terminating:Wait)
+</span><span>    ↓
+</span><span>systemd watcher 감지
+</span><span>    ↓
+</span><span>백업 스크립트 실행
+</span><span>    ↓
+</span><span>S3 업로드 완료
+</span><span>    ↓
+</span><span>Lifecycle Action Complete
+</span><span>    ↓
+</span><span>인스턴스 종료
+</span></code></pre>
+<hr />
+<h2 id="wrench-haegsim-guseong-yoso">🔧 핵심 구성 요소</h2>
+<h3 id="1-asg-lifecycle-watcher-systemd-seobiseu">1. ASG Lifecycle Watcher (systemd 서비스)</h3>
+<p>인스턴스가 부팅되면 자동으로 시작되어 <strong>5초마다 Auto Scaling 상태를 체크</strong>합니다.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># /usr/local/bin/asg-lifecycle-watcher.sh
+</span><span style="color:#b48ead;">while </span><span style="color:#bf616a;">true</span><span>; </span><span style="color:#b48ead;">do
+</span><span>    </span><span style="color:#bf616a;">RESULT</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">aws</span><span style="color:#a3be8c;"> autoscaling describe-auto-scaling-instances \
+</span><span style="color:#bf616a;">        --instance-ids </span><span>$</span><span style="color:#bf616a;">INSTANCE_ID </span><span style="color:#a3be8c;">\
+</span><span style="color:#bf616a;">        --region </span><span>$</span><span style="color:#bf616a;">REGION </span><span style="color:#a3be8c;">\
+</span><span style="color:#bf616a;">        --query </span><span>&#39;</span><span style="color:#a3be8c;">AutoScalingInstances[0].[LifecycleState,AutoScalingGroupName]</span><span>&#39; </span><span style="color:#a3be8c;">\
+</span><span style="color:#bf616a;">        --output</span><span style="color:#a3be8c;"> text </span><span style="color:#d08770;">2</span><span>&gt;</span><span style="color:#a3be8c;">/dev/null)
+</span><span>    
+</span><span>    </span><span style="color:#bf616a;">LIFECYCLE_STATE</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#96b5b4;">echo </span><span>&quot;$</span><span style="color:#bf616a;">RESULT</span><span>&quot; | </span><span style="color:#bf616a;">awk </span><span>&#39;</span><span style="color:#a3be8c;">{print $1}</span><span>&#39;</span><span style="color:#a3be8c;">)
+</span><span>    
+</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span>&quot;$</span><span style="color:#bf616a;">LIFECYCLE_STATE</span><span>&quot; == &quot;</span><span style="color:#a3be8c;">Terminating:Wait</span><span>&quot; </span><span style="color:#96b5b4;">]</span><span>; </span><span style="color:#b48ead;">then
+</span><span>        </span><span style="color:#65737e;"># 백업 실행!
+</span><span>        </span><span style="color:#bf616a;">/usr/local/bin/s3-backup-shutdown.sh
+</span><span>        
+</span><span>        </span><span style="color:#65737e;"># 백업 완료 신호
+</span><span>        </span><span style="color:#bf616a;">aws</span><span> autoscaling complete-lifecycle-action \
+</span><span style="color:#bf616a;">            --lifecycle-action-result</span><span> CONTINUE \
+</span><span style="color:#bf616a;">            --lifecycle-hook-name</span><span> backup-on-terminate \
+</span><span style="color:#bf616a;">            --auto-scaling-group-name </span><span>$</span><span style="color:#bf616a;">ASG_NAME </span><span>\
+</span><span style="color:#bf616a;">            --instance-id </span><span>$</span><span style="color:#bf616a;">INSTANCE_ID </span><span>\
+</span><span style="color:#bf616a;">            --region </span><span>$</span><span style="color:#bf616a;">REGION
+</span><span>        
+</span><span>        </span><span style="color:#b48ead;">break
+</span><span>    </span><span style="color:#b48ead;">fi
+</span><span>    
+</span><span>    </span><span style="color:#bf616a;">sleep</span><span> 5
+</span><span style="color:#b48ead;">done
+</span></code></pre>
+<p><strong>핵심 로직:</strong></p>
+<ul>
+<li><code>Terminating:Wait</code> 상태 감지 시 백업 스크립트 실행</li>
+<li>백업 완료 후 <code>complete-lifecycle-action</code> 호출</li>
+<li>Auto Scaling에 "백업 끝났으니 종료해도 됨" 신호 전송</li>
+</ul>
+<hr />
+<h3 id="2-rogeu-akaibeu-seukeuribteu">2. 로그 아카이브 스크립트</h3>
+<p>각 애플리케이션별 로그를 압축하여 S3에 업로드합니다.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># /data/backup/scripts/log_archive_to_s3.sh
+</span><span style="color:#bf616a;">DATE</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">date</span><span style="color:#a3be8c;"> +</span><span>%</span><span style="color:#bf616a;">Y</span><span>%</span><span style="color:#bf616a;">m</span><span>%</span><span style="color:#bf616a;">d</span><span style="color:#a3be8c;">)
+</span><span style="color:#bf616a;">INSTANCE_ID</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">curl -s</span><span style="color:#a3be8c;"> http://169.254.169.254/latest/meta-data/instance-id)
+</span><span style="color:#bf616a;">BACKUP_DIR</span><span>=</span><span style="color:#a3be8c;">/data/backup/LOG_ARCHIVED
+</span><span style="color:#bf616a;">S3_BUCKET</span><span>=&quot;</span><span style="color:#a3be8c;">s3://my-backup-bucket/web-servers/</span><span>$</span><span style="color:#bf616a;">INSTANCE_ID</span><span style="color:#a3be8c;">/LOG/</span><span>$</span><span style="color:#bf616a;">DATE</span><span style="color:#a3be8c;">/</span><span>&quot;
+</span><span style="color:#bf616a;">LOG_SOURCE</span><span>=</span><span style="color:#a3be8c;">/data/backup/LOG
+</span><span>
+</span><span style="color:#bf616a;">mkdir -p </span><span>$</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE
+</span><span style="color:#96b5b4;">cd </span><span>$</span><span style="color:#bf616a;">LOG_SOURCE
+</span><span>
+</span><span style="color:#65737e;"># 각 서비스별 로그 압축
+</span><span style="color:#bf616a;">tar</span><span> czf $</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE</span><span>/nginx_$</span><span style="color:#bf616a;">DATE</span><span>.tar.gz nginx/
+</span><span style="color:#bf616a;">tar</span><span> czf $</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE</span><span>/app1_$</span><span style="color:#bf616a;">DATE</span><span>.tar.gz app1/
+</span><span style="color:#bf616a;">tar</span><span> czf $</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE</span><span>/app2_$</span><span style="color:#bf616a;">DATE</span><span>.tar.gz app2/
+</span><span style="color:#65737e;"># ... (기타 애플리케이션)
+</span><span>
+</span><span style="color:#65737e;"># S3 업로드
+</span><span style="color:#bf616a;">/usr/local/bin/aws</span><span> s3 cp $</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE</span><span>/ $</span><span style="color:#bf616a;">S3_BUCKET --recursive
+</span><span>
+</span><span style="color:#65737e;"># 15일 이상 된 로컬 백업 삭제
+</span><span style="color:#bf616a;">CUTOFF_DATE</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">date -d </span><span>&quot;</span><span style="color:#a3be8c;">15 days ago</span><span>&quot; &quot;</span><span style="color:#a3be8c;">+%Y%m%d</span><span>&quot;</span><span style="color:#a3be8c;">)
+</span><span style="color:#96b5b4;">cd </span><span>$</span><span style="color:#bf616a;">BACKUP_DIR
+</span><span>
+</span><span style="color:#b48ead;">for</span><span> DIR </span><span style="color:#b48ead;">in </span><span>*/; </span><span style="color:#b48ead;">do
+</span><span>    </span><span style="color:#bf616a;">DIR_NAME</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">basename </span><span>&quot;$</span><span style="color:#bf616a;">DIR</span><span>&quot;</span><span style="color:#a3be8c;">)
+</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[[ </span><span>&quot;$</span><span style="color:#bf616a;">DIR_NAME</span><span>&quot; =~ ^</span><span style="color:#b48ead;">[</span><span>0-9</span><span style="color:#b48ead;">]</span><span>{8}$ </span><span style="color:#96b5b4;">]] </span><span>&amp;&amp; </span><span style="color:#96b5b4;">[[ </span><span>&quot;$</span><span style="color:#bf616a;">DIR_NAME</span><span>&quot; </span><span style="color:#bf616a;">-lt </span><span>&quot;$</span><span style="color:#bf616a;">CUTOFF_DATE</span><span>&quot; </span><span style="color:#96b5b4;">]]</span><span>; </span><span style="color:#b48ead;">then
+</span><span>        </span><span style="color:#bf616a;">rm -rf </span><span>&quot;$</span><span style="color:#bf616a;">DIR_NAME</span><span>&quot;
+</span><span>    </span><span style="color:#b48ead;">fi
+</span><span style="color:#b48ead;">done
+</span></code></pre>
+<p><strong>특징:</strong></p>
+<ul>
+<li>인스턴스 ID 기반 경로로 구분 (여러 인스턴스 백업 혼선 방지)</li>
+<li>날짜별 디렉토리 생성</li>
+<li>15일 이상 로컬 백업 자동 삭제 (디스크 관리)</li>
+</ul>
+<hr />
+<h3 id="3-systemd-seobiseu-deungrog">3. systemd 서비스 등록</h3>
+<p>부팅 시 자동으로 watcher 시작:</p>
+<pre data-lang="ini" style="background-color:#2b303b;color:#c0c5ce;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#b48ead;">[Unit]
+</span><span style="color:#bf616a;">Description</span><span>=ASG Lifecycle State Watcher
+</span><span style="color:#bf616a;">After</span><span>=network.target
+</span><span>
+</span><span style="color:#b48ead;">[Service]
+</span><span style="color:#bf616a;">Type</span><span>=simple
+</span><span style="color:#bf616a;">ExecStart</span><span>=/usr/local/bin/asg-lifecycle-watcher.sh
+</span><span style="color:#bf616a;">Restart</span><span>=always
+</span><span style="color:#bf616a;">RestartSec</span><span>=</span><span style="color:#d08770;">10
+</span><span>
+</span><span style="color:#b48ead;">[Install]
+</span><span style="color:#bf616a;">WantedBy</span><span>=multi-user.target
+</span></code></pre>
+<p><code>Restart=always</code> 덕분에 스크립트가 비정상 종료되어도 자동 재시작됩니다.</p>
+<hr />
+<h2 id="bar-chart-baegeob-daesang">📊 백업 대상</h2>
+<ul>
+<li>nginx 로그</li>
+<li>각 애플리케이션 서버 로그</li>
+<li>압축된 오래된 로그</li>
+<li>웹 패키지 파일</li>
+</ul>
+<hr />
+<h2 id="clapper-dongjag-heureum">🎬 동작 흐름</h2>
+<h3 id="jeongsang-unyeong-si">정상 운영 시</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>인스턴스 부팅
+</span><span>    ↓
+</span><span>systemd가 asg-watcher.service 시작
+</span><span>    ↓
+</span><span>5초마다 Lifecycle 상태 체크 (InService 유지)
+</span><span>    ↓
+</span><span>애플리케이션 서비스들 정상 운영
+</span></code></pre>
+<h3 id="scale-in-balsaeng-si">Scale-in 발생 시</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Auto Scaling: Scale-in 결정
+</span><span>    ↓
+</span><span>Lifecycle Hook 발동 (Terminating:Wait)
+</span><span>    ↓
+</span><span>Watcher 감지
+</span><span>    ↓
+</span><span>백업 스크립트 실행
+</span><span>  - 로그 압축
+</span><span>  - 웹 패키지 백업
+</span><span>  - S3 업로드
+</span><span>    ↓
+</span><span>complete-lifecycle-action 호출
+</span><span>    ↓
+</span><span>인스턴스 종료
+</span></code></pre>
+<hr />
+<h2 id="bulb-haegsim-pointeu">💡 핵심 포인트</h2>
+<h3 id="1-lifecycle-hookyi-jungyoseong">1. Lifecycle Hook의 중요성</h3>
+<p>일반적인 Auto Scaling 종료는 <strong>즉시 강제 종료</strong>됩니다.<br />
+Lifecycle Hook을 사용하면 <strong>종료 전 대기 시간 확보</strong> 가능!</p>
+<h3 id="2-inseuteonseu-id-giban-gyeongro">2. 인스턴스 ID 기반 경로</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">S3_BUCKET</span><span>=&quot;</span><span style="color:#a3be8c;">s3://my-backup-bucket/servers/</span><span>$</span><span style="color:#bf616a;">INSTANCE_ID</span><span style="color:#a3be8c;">/LOG/</span><span>$</span><span style="color:#bf616a;">DATE</span><span style="color:#a3be8c;">/</span><span>&quot;
+</span></code></pre>
+<p>하드코딩된 경로 대신 <strong>EC2 메타데이터에서 인스턴스 ID를 동적으로 가져와</strong> 사용.<br />
+→ 어떤 인스턴스가 종료되든 자동으로 올바른 경로에 백업!</p>
+<h3 id="3-systemdyi-anjeongseong">3. systemd의 안정성</h3>
+<ul>
+<li><code>Restart=always</code>: 스크립트 오류 시 자동 재시작</li>
+<li><code>After=network.target</code>: 네트워크 준비 후 실행</li>
+<li>부팅 시 자동 시작으로 사람 개입 불필요</li>
+</ul>
+<hr />
+<h2 id="rocket-jeogyong-hyogwa">🚀 적용 효과</h2>
+<table><thead><tr><th>항목</th><th>Before</th><th>After</th></tr></thead><tbody>
+<tr><td>Scale-in 시 데이터</td><td>❌ 소실</td><td>✅ S3 보관</td></tr>
+<tr><td>백업 방식</td><td>👨 수동</td><td>🤖 완전 자동</td></tr>
+<tr><td>복구 가능 여부</td><td>❌ 불가능</td><td>✅ 가능</td></tr>
+<tr><td>운영 부담</td><td>높음</td><td>거의 없음</td></tr>
+</tbody></table>
+<hr />
+<h2 id="mag-teureobeulsyuting-tib">🔍 트러블슈팅 팁</h2>
+<h3 id="watcherga-dongjaghaji-anheul-ddae">Watcher가 동작하지 않을 때</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 서비스 상태 확인
+</span><span style="color:#bf616a;">systemctl</span><span> status asg-watcher.service
+</span><span>
+</span><span style="color:#65737e;"># 로그 확인
+</span><span style="color:#bf616a;">journalctl -u</span><span> asg-watcher.service</span><span style="color:#bf616a;"> -f
+</span></code></pre>
+<h3 id="iam-gweonhan-hwagin">IAM 권한 확인</h3>
+<p>EC2 인스턴스 Role에 필요한 권한:</p>
+<ul>
+<li><code>autoscaling:DescribeAutoScalingInstances</code></li>
+<li><code>autoscaling:CompleteLifecycleAction</code></li>
+<li><code>s3:PutObject</code> (백업 버킷)</li>
+</ul>
+<h3 id="baegeob-silpae-si">백업 실패 시</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 수동으로 백업 스크립트 실행해보기
+</span><span style="color:#bf616a;">/usr/local/bin/s3-backup-shutdown.sh
+</span><span>
+</span><span style="color:#65737e;"># S3 접근 테스트
+</span><span style="color:#bf616a;">aws</span><span> s3 ls s3://my-backup-bucket/
+</span></code></pre>
+<hr />
+<h2 id="books-camgo-jaryo">📚 참고 자료</h2>
+<ul>
+<li><a href="https://docs.aws.amazon.com/autoscaling/ec2/userguide/lifecycle-hooks.html">AWS Auto Scaling Lifecycle Hooks 공식 문서</a></li>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html">EC2 Instance Metadata</a></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd 서비스 작성 가이드</a></li>
+</ul>
+<hr />
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://changki123.github.io/blog/260203-01-robots-txt/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">robots.txt가 뭔지 알아보자</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://changki123.github.io/blog/260208-01-aws-drs/">
+                                <span class="button__text">AWS DRS 기반 재해복구 환경 구축 (진행 중)</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </main>
+    
+    <aside class="sidebar">
+    <div class="sidebar-section">
+        <h3>📌 태그</h3>
+        <div class="tags-widget" id="tags-widget">
+            
+            
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;aws&#x2F;" class="tag-link">
+                        <span class="tag-name">#AWS</span>
+                        <span class="tag-count">(6)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;auto-scaling&#x2F;" class="tag-link">
+                        <span class="tag-name">#Auto Scaling</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;backup&#x2F;" class="tag-link">
+                        <span class="tag-name">#Backup</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;cloudflare&#x2F;" class="tag-link">
+                        <span class="tag-name">#Cloudflare</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;dns&#x2F;" class="tag-link">
+                        <span class="tag-name">#DNS</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;drs&#x2F;" class="tag-link">
+                        <span class="tag-name">#DRS</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;disaster-recovery&#x2F;" class="tag-link">
+                        <span class="tag-name">#Disaster Recovery</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;hands-on&#x2F;" class="tag-link">
+                        <span class="tag-name">#Hands-on</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;lifecycle-hook&#x2F;" class="tag-link">
+                        <span class="tag-name">#Lifecycle Hook</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;minecraft&#x2F;" class="tag-link">
+                        <span class="tag-name">#Minecraft</span>
+                        <span class="tag-count">(2)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;s3&#x2F;" class="tag-link">
+                        <span class="tag-name">#S3</span>
+                        <span class="tag-count">(2)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;srvrekodeu&#x2F;" class="tag-link">
+                        <span class="tag-name">#SRV레코드</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;security&#x2F;" class="tag-link">
+                        <span class="tag-name">#Security</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;windows&#x2F;" class="tag-link">
+                        <span class="tag-name">#Windows</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;analytics&#x2F;" class="tag-link">
+                        <span class="tag-name">#analytics</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;aquarium&#x2F;" class="tag-link">
+                        <span class="tag-name">#aquarium</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;ascii&#x2F;" class="tag-link">
+                        <span class="tag-name">#ascii</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;beginner-guide&#x2F;" class="tag-link">
+                        <span class="tag-name">#beginner-guide</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;blog&#x2F;" class="tag-link">
+                        <span class="tag-name">#blog</span>
+                        <span class="tag-count">(2)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;cloud&#x2F;" class="tag-link">
+                        <span class="tag-name">#cloud</span>
+                        <span class="tag-count">(2)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;ec2&#x2F;" class="tag-link">
+                        <span class="tag-name">#ec2</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;gaming&#x2F;" class="tag-link">
+                        <span class="tag-name">#gaming</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;github-pages&#x2F;" class="tag-link">
+                        <span class="tag-name">#github-pages</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;infrastructure&#x2F;" class="tag-link">
+                        <span class="tag-name">#infrastructure</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;lambda&#x2F;" class="tag-link">
+                        <span class="tag-name">#lambda</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;monitoring&#x2F;" class="tag-link">
+                        <span class="tag-name">#monitoring</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;rasbora&#x2F;" class="tag-link">
+                        <span class="tag-name">#rasbora</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;robots-txt&#x2F;" class="tag-link">
+                        <span class="tag-name">#robots-txt</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;rust&#x2F;" class="tag-link">
+                        <span class="tag-name">#rust</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;seo&#x2F;" class="tag-link">
+                        <span class="tag-name">#seo</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;server&#x2F;" class="tag-link">
+                        <span class="tag-name">#server</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;serverless&#x2F;" class="tag-link">
+                        <span class="tag-name">#serverless</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;systemd&#x2F;" class="tag-link">
+                        <span class="tag-name">#systemd</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;tropical-fish&#x2F;" class="tag-link">
+                        <span class="tag-name">#tropical-fish</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;tutorial&#x2F;" class="tag-link">
+                        <span class="tag-name">#tutorial</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;video&#x2F;" class="tag-link">
+                        <span class="tag-name">#video</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;web&#x2F;" class="tag-link">
+                        <span class="tag-name">#web</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;zola&#x2F;" class="tag-link">
+                        <span class="tag-name">#zola</span>
+                        <span class="tag-count">(2)</span>
+                    </a>
+                
+            
+        </div>
+        <button id="toggle-tags" class="toggle-button">더보기 ▼</button>
+    </div>
+</aside>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tagsWidget = document.getElementById('tags-widget');
+    const toggleButton = document.getElementById('toggle-tags');
+    const tags = tagsWidget.querySelectorAll('.tag-link');
+    const showCount = 8; // 처음에 보여줄 태그 개수
+    
+    // 태그가 적으면 버튼 숨기기
+    if (tags.length <= showCount) {
+        toggleButton.style.display = 'none';
+        return;
+    }
+    
+    // 처음에 일부만 보이기
+    tags.forEach((tag, index) => {
+        if (index >= showCount) {
+            tag.style.display = 'none';
+        }
+    });
+    
+    // 버튼 클릭 이벤트
+    let isExpanded = false;
+    toggleButton.addEventListener('click', function() {
+        isExpanded = !isExpanded;
+        
+        tags.forEach((tag, index) => {
+            if (index >= showCount) {
+                tag.style.display = isExpanded ? 'flex' : 'none';
+            }
+        });
+        
+        toggleButton.textContent = isExpanded ? '접기 ▲' : '더보기 ▼';
+    });
+});
+</script>
+</div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2026
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>
