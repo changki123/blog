@@ -28,18 +28,18 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8843211354454320"
          crossorigin="anonymous"></script>
 
-    <meta name="description" content="">
+    <meta name="description" content="AWS Elastic Disaster Recovery 초기 설정 및 테스트">
 
-    <meta property="og:description" content="">
+    <meta property="og:description" content="AWS Elastic Disaster Recovery 초기 설정 및 테스트">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://changki123.github.io/blog/260124-01-serverless/">
+    <meta property="og:url" content="https://changki123.github.io/blog/260211-01-aws-mgn/">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:description" content="">
+    <meta name="twitter:description" content="AWS Elastic Disaster Recovery 초기 설정 및 테스트">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
-    <meta property="twitter:url" content="https://changki123.github.io/blog/260124-01-serverless/">
+    <meta property="twitter:url" content="https://changki123.github.io/blog/260211-01-aws-mgn/">
 
 <link rel="stylesheet" href="/custom.css">
 </head>
@@ -74,11 +74,11 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260124-01-serverless/">Zola 정적 사이트에 Google Analytics 적용하기</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260211-01-aws-mgn/">AWS 온프레미스 마이그레이션 MGN (진행 중)</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-01-21
+            2026-02-11
         </span>
 
     </div>
@@ -86,96 +86,72 @@
     
         <span class="post-tags-inline">
                 :: tags:&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/analytics/">#analytics</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/blog/">#blog</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/monitoring/">#monitoring</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/zola/">#zola</a></span>
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#AWS</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/disaster-recovery/">#Disaster Recovery</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/mgn/">#MGN</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/windows/">#Windows</a></span>
     
 
         <div class="post-content">
-            <h2 id="baegyeong">배경</h2>
-<p>블로그 방문자 통계를 확인하고 싶어서 Google Analytics 4(GA4)를 적용하기로 했다.
-Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정한 과정을 기록한다.</p>
-<h2 id="google-analytics-seoljeong">Google Analytics 설정</h2>
-<span id="continue-reading"></span><h3 id="1-ga4-sogseong-saengseong">1. GA4 속성 생성</h3>
-<ol>
-<li><a href="https://analytics.google.com">Google Analytics</a> 접속</li>
-<li>관리 → 계정 만들기</li>
-<li>속성 추가 → 속성 이름 입력</li>
-<li>데이터 스트림 → 웹 선택</li>
-<li>웹사이트 URL과 스트림 이름 입력</li>
-<li>측정 ID(G-XXXXXXXXXX) 복사</li>
-</ol>
-<h3 id="2-deiteo-sujib-hwalseonghwa-hwagin">2. 데이터 수집 활성화 확인</h3>
-<p>관리 → 데이터 수집 및 수정 → 데이터 수집에서 토글이 활성화되어 있는지 확인한다.</p>
-<h2 id="zola-beulrogeue-ga-kodeu-cuga">Zola 블로그에 GA 코드 추가</h2>
-<p>Terminimal 테마는 기본적으로 Google Analytics를 지원하지 않아 템플릿 오버라이드를 통해 직접 추가해야 한다.</p>
-<h3 id="1-config-toml-seoljeong">1. config.toml 설정</h3>
-<p>먼저 <code>config.toml</code> 파일의 <code>[extra]</code> 섹션에 측정 ID를 추가한다.</p>
-<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span>[extra]
-</span><span style="color:#bf616a;">accent_color </span><span>= &quot;</span><span style="color:#a3be8c;">orange</span><span>&quot;
-</span><span style="color:#bf616a;">logo_text </span><span>= &quot;</span><span style="color:#a3be8c;">changki123</span><span>&quot;
-</span><span style="color:#bf616a;">google_analytics </span><span>= &quot;</span><span style="color:#a3be8c;">G-XXXXXXXXXX</span><span>&quot;  </span><span style="color:#65737e;"># 실제 측정 ID로 변경
+            <blockquote>
+<p><strong>진행 중인 프로젝트입니다.</strong><br />
+현재 DRS 에이전트 설치 및 1:1 복제 테스트까지 완료했습니다.</p>
+</blockquote>
+<h2 id="mogpyo">목표</h2>
+<p>AWS DRS(Disaster Recovery Service)를 사용해 서울 리전의 Windows 서버를 홍콩 리전으로 재해복구 환경 구축</p>
+<span id="continue-reading"></span>
+<hr />
+<h2 id="guseong">구성</h2>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Source Region: ap-northeast-2 (서울)
+</span><span>  └─ Windows Server
+</span><span>        │
+</span><span>        │ DRS 실시간 복제
+</span><span>        ▼
+</span><span>Target Region: ap-east-1 (홍콩)
+</span><span>  └─ Staging Server (대기 중)
 </span></code></pre>
-<h3 id="2-rokeol-tempeulris-obeoraideu">2. 로컬 템플릿 오버라이드</h3>
-<p>테마 파일을 직접 수정하지 않고 로컬에 복사하여 커스터마이징한다.</p>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span style="color:#65737e;"># 로컬 templates 디렉토리 생성
-</span><span>mkdir templates\macros -Force
-</span><span>
-</span><span style="color:#65737e;"># 테마의 head.html 파일 복사
-</span><span>copy themes\terminimal\templates\macros\head.html templates\macros\head.html
-</span></code></pre>
-<h3 id="3-ga-kodeu-sabib">3. GA 코드 삽입</h3>
-<p>복사한 <code>templates\macros\head.html</code> 파일을 열어 <code>{% endmacro head %}</code> 바로 위에 다음 코드를 추가한다.</p>
-<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>{%- if config.extra.google_analytics %}
-</span><span>    </span><span style="color:#65737e;">&lt;!-- Google tag (gtag.js) --&gt;
-</span><span>    &lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">async src</span><span>=&quot;</span><span style="color:#a3be8c;">https://www.googletagmanager.com/gtag/js?id={{ config.extra.google_analytics }}</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
-</span><span>    &lt;</span><span style="color:#bf616a;">script</span><span>&gt;
-</span><span>      window.dataLayer = window.dataLayer || [];
-</span><span>      </span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">gtag</span><span>(){</span><span style="color:#bf616a;">dataLayer</span><span>.</span><span style="color:#bf616a;">push</span><span>(</span><span style="color:#bf616a;">arguments</span><span>);}
-</span><span>      </span><span style="color:#bf616a;">gtag</span><span>(&#39;</span><span style="color:#a3be8c;">js</span><span>&#39;, new </span><span style="color:#ebcb8b;">Date</span><span>());
-</span><span>      </span><span style="color:#bf616a;">gtag</span><span>(&#39;</span><span style="color:#a3be8c;">config</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">{{ config.extra.google_analytics }}</span><span>&#39;);
-</span><span>    &lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
-</span><span>{% endif -%}
-</span></code></pre>
-<h2 id="baepo-mic-hwagin">배포 및 확인</h2>
-<h3 id="1-rokeol-bildeu-teseuteu">1. 로컬 빌드 테스트</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>zola build
-</span><span style="color:#96b5b4;">Select-String </span><span>-Path public\index.html -Pattern &quot;</span><span style="color:#a3be8c;">gtag</span><span>&quot;
-</span></code></pre>
-<p>gtag 스크립트가 검색되면 정상적으로 삽입된 것이다.</p>
-<h3 id="2-git-keomis-mic-baepo">2. Git 커밋 및 배포</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>git add templates\macros\head.html config.toml
-</span><span>git commit -m &quot;</span><span style="color:#a3be8c;">Add Google Analytics tracking</span><span>&quot;
-</span><span>git push
-</span></code></pre>
-<h3 id="3-silsigan-deiteo-hwagin">3. 실시간 데이터 확인</h3>
-<p>배포 후 5-10분 뒤 다음 방법으로 확인한다.</p>
-<p><strong>브라우저 개발자 도구 확인:</strong></p>
-<ol>
-<li>블로그 접속 후 F12</li>
-<li>Network 탭에서 <code>gtag</code> 검색</li>
-<li><code>gtag/js?id=G-XXXXXXXXXX</code> 요청 확인</li>
-</ol>
-<p><strong>Google Analytics 실시간 보고서:</strong></p>
-<ol>
-<li>GA 관리 페이지 → 실시간 메뉴</li>
-<li>블로그 접속 상태로 대기</li>
-<li>활성 사용자 1명 표시 확인</li>
-</ol>
-<h2 id="teureobeulsyuting">트러블슈팅</h2>
-<h3 id="deiteo-sujibi-hwalseonghwadoeji-anheum">데이터 수집이 활성화되지 않음</h3>
-<p>GA 관리 → 데이터 수집 및 수정 → 데이터 수집에서 토글을 활성화한다.</p>
-<h3 id="beuraujeoeseo-gtag-seukeuribteuga-rodeudoeji-anheum">브라우저에서 gtag 스크립트가 로드되지 않음</h3>
+<hr />
+<h2 id="wanryodoen-jageob">완료된 작업</h2>
+<h3 id="1-drs-cogi-seoljeong">1. DRS 초기 설정</h3>
 <ul>
-<li>GitHub Actions에서 배포가 정상 완료되었는지 확인</li>
-<li>브라우저 캐시를 지우고 시크릿 모드로 재접속</li>
+<li>AWS DRS 콘솔에서 서비스 활성화</li>
+<li>Source Region: 서울 (ap-northeast-2)</li>
+<li>Target Region: 홍콩 (ap-east-1)</li>
 </ul>
-<h2 id="camgo">참고</h2>
+<h3 id="2-eijeonteu-seolci">2. 에이전트 설치</h3>
 <ul>
-<li><a href="https://www.getzola.org/documentation/">Zola 공식 문서</a></li>
-<li><a href="https://support.google.com/analytics/">Google Analytics 설정 가이드</a></li>
+<li>Windows Server에 AWS Replication Agent 설치</li>
+<li>자동으로 데이터 복제 시작</li>
+<li>초기 동기화 완료</li>
 </ul>
+<h3 id="3-1-1-seuteijing-seobeo-saengseong-seonggong">3. 1:1 스테이징 서버 생성 성공</h3>
+<ul>
+<li>홍콩 리전에 복제된 서버 생성 확인</li>
+<li>데이터 복제 정상 동작 확인</li>
+</ul>
+<hr />
+<h2 id="daeum-dangye">다음 단계</h2>
+<ul>
+<li><input disabled="" type="checkbox"/>
+N:N 다중 서버 동시 복구 테스트</li>
+<li><input disabled="" type="checkbox"/>
+리전별 IP/네트워크 설정 자동화</li>
+<li><input disabled="" type="checkbox"/>
+Launch Template 구성 (초기화 스크립트)</li>
+<li><input disabled="" type="checkbox"/>
+실제 Failover 테스트</li>
+</ul>
+<hr />
+<h2 id="aws-drsran">AWS DRS란?</h2>
+<p><strong>AWS Elastic Disaster Recovery</strong>는 온프레미스 또는 클라우드 서버를 다른 리전으로 <strong>실시간 복제</strong>하여 재해 발생 시 빠르게 복구할 수 있게 해주는 서비스입니다.</p>
+<p><strong>특징:</strong></p>
+<ul>
+<li>실시간 블록 레벨 복제</li>
+<li>RPO: 초 단위 (데이터 손실 최소화)</li>
+<li>RTO: 10-15분 (빠른 복구)</li>
+</ul>
+<hr />
+<p><em>진행률: 20% (에이전트 설치 및 1:1 복제 완료)</em></p>
 
         </div>
 
@@ -187,19 +163,12 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
                 </div>
                 <div class="pagination__buttons">
                         <span class="button previous">
-                            <a href="https://changki123.github.io/blog/260114-01-presigned-url/">
+                            <a href="https://changki123.github.io/blog/260208-01-aws-drs/">
                                 <span class="button__icon">←</span>&nbsp;
-                                <span class="button__text">S3 Pre-signed URL 실전 실습 가이드: 10분 만에 마스터하기</span>
+                                <span class="button__text">AWS DRS 기반 재해복구 환경 구축 (진행 중)</span>
                             </a>
                         </span>
                     
-                    
-                        <span class="button next">
-                            <a href="https://changki123.github.io/blog/260121-01-analytics/">
-                                <span class="button__text">서버리스의 실질적인 시스템 이점 - 유저 편의성을 넘어서</span>&nbsp;
-                                <span class="button__icon">→</span>
-                            </a>
-                        </span>
                     </div>
             </div>
         
