@@ -28,15 +28,15 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8843211354454320"
          crossorigin="anonymous"></script>
 
-    <meta name="description" content="AWS Elastic Disaster Recovery 초기 설정 및 테스트">
+    <meta name="description" content="AWS Application Migration Service 초기 설정 및 테스트">
 
-    <meta property="og:description" content="AWS Elastic Disaster Recovery 초기 설정 및 테스트">
+    <meta property="og:description" content="AWS Application Migration Service 초기 설정 및 테스트">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://changki123.github.io/blog/260211-01-aws-mgn/">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:description" content="AWS Elastic Disaster Recovery 초기 설정 및 테스트">
+    <meta name="twitter:description" content="AWS Application Migration Service 초기 설정 및 테스트">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
     <meta property="twitter:url" content="https://changki123.github.io/blog/260211-01-aws-mgn/">
@@ -87,34 +87,34 @@
         <span class="post-tags-inline">
                 :: tags:&nbsp;
                 <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#AWS</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/disaster-recovery/">#Disaster Recovery</a>&nbsp;
                 <a class="post-tag" href="https://changki123.github.io/blog/tags/mgn/">#MGN</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/migration/">#Migration</a>&nbsp;
                 <a class="post-tag" href="https://changki123.github.io/blog/tags/windows/">#Windows</a></span>
     
 
         <div class="post-content">
             <blockquote>
 <p><strong>진행 중인 프로젝트입니다.</strong><br />
-현재 DRS 에이전트 설치 및 1:1 복제 테스트까지 완료했습니다.</p>
+현재 MGN 에이전트 설치 및 1:1 복제 테스트까지 완료했습니다.</p>
 </blockquote>
 <h2 id="mogpyo">목표</h2>
-<p>AWS DRS(Disaster Recovery Service)를 사용해 서울 리전의 Windows 서버를 홍콩 리전으로 재해복구 환경 구축</p>
+<p>AWS MGN(Application Migration Service)을 사용해 서울 리전의 Windows 서버를 홍콩 리전으로 마이그레이션</p>
 <span id="continue-reading"></span>
 <hr />
 <h2 id="guseong">구성</h2>
 <pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Source Region: ap-northeast-2 (서울)
 </span><span>  └─ Windows Server
 </span><span>        │
-</span><span>        │ DRS 실시간 복제
+</span><span>        │ MGN 실시간 복제
 </span><span>        ▼
 </span><span>Target Region: ap-east-1 (홍콩)
 </span><span>  └─ Staging Server (대기 중)
 </span></code></pre>
 <hr />
 <h2 id="wanryodoen-jageob">완료된 작업</h2>
-<h3 id="1-drs-cogi-seoljeong">1. DRS 초기 설정</h3>
+<h3 id="1-mgn-cogi-seoljeong">1. MGN 초기 설정</h3>
 <ul>
-<li>AWS DRS 콘솔에서 서비스 활성화</li>
+<li>AWS MGN 콘솔에서 서비스 활성화</li>
 <li>Source Region: 서울 (ap-northeast-2)</li>
 <li>Target Region: 홍콩 (ap-east-1)</li>
 </ul>
@@ -133,22 +133,22 @@
 <h2 id="daeum-dangye">다음 단계</h2>
 <ul>
 <li><input disabled="" type="checkbox"/>
-N:N 다중 서버 동시 복구 테스트</li>
+N:N 다중 서버 동시 마이그레이션 테스트</li>
 <li><input disabled="" type="checkbox"/>
 리전별 IP/네트워크 설정 자동화</li>
 <li><input disabled="" type="checkbox"/>
 Launch Template 구성 (초기화 스크립트)</li>
 <li><input disabled="" type="checkbox"/>
-실제 Failover 테스트</li>
+실제 Cutover 테스트</li>
 </ul>
 <hr />
-<h2 id="aws-drsran">AWS DRS란?</h2>
-<p><strong>AWS Elastic Disaster Recovery</strong>는 온프레미스 또는 클라우드 서버를 다른 리전으로 <strong>실시간 복제</strong>하여 재해 발생 시 빠르게 복구할 수 있게 해주는 서비스입니다.</p>
+<h2 id="aws-mgniran">AWS MGN이란?</h2>
+<p><strong>AWS Application Migration Service</strong>는 온프레미스 또는 클라우드 서버를 AWS로 <strong>실시간 복제</strong>하여 다운타임 없이 마이그레이션할 수 있게 해주는 서비스입니다.</p>
 <p><strong>특징:</strong></p>
 <ul>
 <li>실시간 블록 레벨 복제</li>
-<li>RPO: 초 단위 (데이터 손실 최소화)</li>
-<li>RTO: 10-15분 (빠른 복구)</li>
+<li>최소한의 다운타임으로 마이그레이션</li>
+<li>자동화된 전환 프로세스</li>
 </ul>
 <hr />
 <p><em>진행률: 20% (에이전트 설치 및 1:1 복제 완료)</em></p>
@@ -215,7 +215,7 @@ Launch Template 구성 (초기화 스크립트)</li>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;disaster-recovery&#x2F;" class="tag-link">
                         <span class="tag-name">#Disaster Recovery</span>
-                        <span class="tag-count">(2)</span>
+                        <span class="tag-count">(1)</span>
                     </a>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;hands-on&#x2F;" class="tag-link">
@@ -230,6 +230,11 @@ Launch Template 구성 (초기화 스크립트)</li>
                 
                     <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;mgn&#x2F;" class="tag-link">
                         <span class="tag-name">#MGN</span>
+                        <span class="tag-count">(1)</span>
+                    </a>
+                
+                    <a href="https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;tags&#x2F;migration&#x2F;" class="tag-link">
+                        <span class="tag-name">#Migration</span>
                         <span class="tag-count">(1)</span>
                     </a>
                 
