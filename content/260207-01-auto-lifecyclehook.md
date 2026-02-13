@@ -247,7 +247,7 @@ aws s3 ls s3://my-backup-bucket/
 
 ---
 
-## 📚 참고 자료
+## 참고 자료
 
 - [AWS Auto Scaling Lifecycle Hooks 공식 문서](https://docs.aws.amazon.com/autoscaling/ec2/userguide/lifecycle-hooks.html)
 - [EC2 Instance Metadata](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)
