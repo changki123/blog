@@ -60,6 +60,10 @@
         <lastmod>2026-02-11</lastmod>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/260215-01-ssl-tls/</loc>
+        <lastmod>2025-02-15</lastmod>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/page/1/</loc>
     </url>
     <url>
@@ -93,6 +97,9 @@
         <loc>https://changki123.github.io/blog/tags/blog/</loc>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/tags/boan/</loc>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/tags/cloud/</loc>
     </url>
     <url>
@@ -121,6 +128,9 @@
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/infrastructure/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/injeungseo/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/lambda/</loc>
@@ -168,7 +178,13 @@
         <loc>https://changki123.github.io/blog/tags/srvrekodeu/</loc>
     </url>
     <url>
+        <loc>https://changki123.github.io/blog/tags/ssl/</loc>
+    </url>
+    <url>
         <loc>https://changki123.github.io/blog/tags/systemd/</loc>
+    </url>
+    <url>
+        <loc>https://changki123.github.io/blog/tags/tls/</loc>
     </url>
     <url>
         <loc>https://changki123.github.io/blog/tags/tropical-fish/</loc>
