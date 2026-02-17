@@ -28,18 +28,18 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8843211354454320"
          crossorigin="anonymous"></script>
 
-    <meta name="description" content="Minecraft 서버에 SRV DNS 레코드를 설정하여 포트 없이 깔끔하게 접속하는 방법">
+    <meta name="description" content="">
 
-    <meta property="og:description" content="Minecraft 서버에 SRV DNS 레코드를 설정하여 포트 없이 깔끔하게 접속하는 방법">
+    <meta property="og:description" content="">
     <meta property="og:title" content="changki123's blog">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://changki123.github.io/blog/260131-01-srv-record/">
+    <meta property="og:url" content="https://changki123.github.io/blog/260216-01-ad-ing/">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:description" content="Minecraft 서버에 SRV DNS 레코드를 설정하여 포트 없이 깔끔하게 접속하는 방법">
+    <meta name="twitter:description" content="">
     <meta name="twitter:title" content="changki123's blog">
     <meta property="twitter:domain" content="changki123.github.io&#x2F;blog">
-    <meta property="twitter:url" content="https://changki123.github.io/blog/260131-01-srv-record/">
+    <meta property="twitter:url" content="https://changki123.github.io/blog/260216-01-ad-ing/">
 
 <link rel="stylesheet" href="/custom.css">
 </head>
@@ -74,11 +74,11 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://changki123.github.io/blog/260131-01-srv-record/">Minecraft 서버를 위한 SRV 레코드 완벽 가이드</a></h1>
+    <h1 class="post-title"><a href="https://changki123.github.io/blog/260216-01-ad-ing/">TLS와 SSL, 그리고 AWS에서의 활용</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-01-31
+            2025-02-15
         </span>
 
     </div>
@@ -87,119 +87,206 @@
         <span class="post-tags-inline">
                 :: tags:&nbsp;
                 <a class="post-tag" href="https://changki123.github.io/blog/tags/aws/">#AWS</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/cloudflare/">#Cloudflare</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/dns/">#DNS</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/minecraft/">#Minecraft</a>&nbsp;
-                <a class="post-tag" href="https://changki123.github.io/blog/tags/srvrekodeu/">#SRV레코드</a></span>
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/ssl/">#SSL</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/tls/">#TLS</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/boan/">#보안</a>&nbsp;
+                <a class="post-tag" href="https://changki123.github.io/blog/tags/injeungseo/">#인증서</a></span>
     
 
         <div class="post-content">
-            <h2 id="srv-rekodeuran">SRV 레코드란?</h2>
-<p>SRV(Service) 레코드는 특정 서비스의 위치 정보를 제공하는 DNS 레코드 타입임. 일반적인 A 레코드가 도메인을 IP 주소로 연결한다면, SRV 레코드는 서비스의 호스트명과 포트 정보까지 함께 제공할 수 있음.</p>
-<span id="continue-reading"></span><h2 id="wae-minecraft-seobeoeseo-srv-rekodeureul-sayonghalgga">왜 Minecraft 서버에서 SRV 레코드를 사용할까?</h2>
-<p>Minecraft Java Edition 서버는 기본적으로 25565 포트를 사용함. 일반적으로 서버에 접속하려면 다음과 같이 입력해야 함:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>mc.example.com:25565
-</span></code></pre>
-<p>하지만 SRV 레코드를 설정하면 포트 번호 없이 깔끔하게 접속 가능:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>play.example.com
-</span></code></pre>
-<p>특히 다음과 같은 상황에서 유용함:</p>
+            <h2 id="tl-dr">TL;DR</h2>
 <ul>
-<li>비표준 포트(예: 25566, 25567)를 사용하는 경우</li>
-<li>여러 Minecraft 서버를 운영하면서 각각 다른 서브도메인으로 접속하고 싶은 경우</li>
-<li>사용자 친화적인 접속 주소를 제공하고 싶은 경우</li>
+<li>SSL과 TLS는 기술적으로 다른 버전이지만, 실무에서는 같은 의미로 사용</li>
+<li>SSL 3.0 → TLS 1.0 → TLS 1.2/1.3으로 발전</li>
+<li>AWS에서는 ACM, ALB, CloudFront 등 다양한 서비스에서 TLS 적용</li>
 </ul>
-<h2 id="srv-rekodeuyi-gujo">SRV 레코드의 구조</h2>
-<p>SRV 레코드는 다음과 같은 형식을 가짐:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_service._protocol.name TTL class SRV priority weight port target
+<span id="continue-reading"></span><h2 id="ssl-vs-tls-mueosi-dareunga">SSL vs TLS: 무엇이 다른가?</h2>
+<h3 id="yeogsajeog-baegyeong">역사적 배경</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>SSL 1.0 (출시 안됨)
+</span><span>  ↓
+</span><span>SSL 2.0 (1995, 넷스케이프)
+</span><span>  ↓
+</span><span>SSL 3.0 (1996, 넷스케이프)
+</span><span>  ↓
+</span><span>TLS 1.0 (1999, IETF) ← 이름 변경!
+</span><span>  ↓
+</span><span>TLS 1.1 (2006)
+</span><span>  ↓
+</span><span>TLS 1.2 (2008)
+</span><span>  ↓
+</span><span>TLS 1.3 (2018)
 </span></code></pre>
-<p>각 필드의 의미:</p>
+<p><strong>SSL (Secure Sockets Layer)</strong></p>
 <ul>
-<li><strong>_service</strong>: 서비스 이름 (Minecraft는 <code>_minecraft</code>)</li>
-<li><strong>_protocol</strong>: 프로토콜 (TCP 사용, <code>_tcp</code>)</li>
-<li><strong>name</strong>: 서비스 도메인 이름</li>
-<li><strong>priority</strong>: 우선순위 (낮을수록 우선, 0-65535)</li>
-<li><strong>weight</strong>: 같은 우선순위 내에서의 가중치 (부하 분산용)</li>
-<li><strong>port</strong>: 서비스 포트 번호</li>
-<li><strong>target</strong>: 실제 서버 주소</li>
+<li>넷스케이프(Netscape Communications)가 개발한 암호화 프로토콜</li>
+<li>웹 브라우저와 서버 간 안전한 통신을 위해 만들어짐</li>
+<li>SSL 3.0은 2015년 POODLE 취약점으로 공식 폐기</li>
 </ul>
-<h2 id="minecraft-seobeo-srv-rekodeu-seoljeong-yesi">Minecraft 서버 SRV 레코드 설정 예시</h2>
-<h3 id="sinario-1-gibon-seoljeong">시나리오 1: 기본 설정</h3>
-<p>실제 서버 주소가 <code>mc.example.com</code>이고 포트 <code>25565</code>를 사용하는 경우:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
-</span></code></pre>
-<p>이제 사용자는 <code>play.example.com</code>만 입력하면 자동으로 <code>mc.example.com:25565</code>로 연결됨.</p>
-<h3 id="sinario-2-bipyojun-poteu-sayong">시나리오 2: 비표준 포트 사용</h3>
-<p>AWS EC2에서 포트 <code>25570</code>을 사용하는 경우:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25570 ec2-server.example.com.
-</span></code></pre>
-<p>사용자는 <code>survival.example.com</code> 입력만으로 포트 25570으로 자동 접속됨.</p>
-<h3 id="sinario-3-yeoreo-seobeo-unyeong">시나리오 3: 여러 서버 운영</h3>
-<p>생존 서버와 크리에이티브 서버를 각각 다른 포트로 운영하는 경우:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span># 생존 서버 (포트 25565)
-</span><span>_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25565 mc1.example.com.
-</span><span>
-</span><span># 크리에이티브 서버 (포트 25566)
-</span><span>_minecraft._tcp.creative.example.com. 300 IN SRV 0 5 25566 mc2.example.com.
-</span></code></pre>
-<h2 id="cloudflareeseo-srv-rekodeu-seoljeonghagi">Cloudflare에서 SRV 레코드 설정하기</h2>
-<p>Cloudflare DNS 관리 페이지에서 다음과 같이 설정:</p>
+<p><strong>TLS (Transport Layer Security)</strong></p>
+<ul>
+<li>IETF(Internet Engineering Task Force)가 SSL 3.0을 기반으로 표준화</li>
+<li>넷스케이프 상표권 문제로 이름을 TLS로 변경</li>
+<li>현재는 TLS 1.2 이상 사용 권장 (PCI DSS 등 컴플라이언스 요구사항)</li>
+</ul>
+<h3 id="wae-ajigdo-sslirago-bureulgga">왜 아직도 SSL이라고 부를까?</h3>
+<p>실무에서는 이렇게 말합니다:</p>
+<ul>
+<li>"SSL 인증서 발급해주세요"</li>
+<li>"SSL 설정 좀 확인해봐"</li>
+<li>"HTTPS는 SSL 적용한 거잖아"</li>
+</ul>
+<p>하지만 실제로는 TLS 1.2나 1.3을 사용하고 있습니다.</p>
+<p><strong>이유는 간단합니다:</strong></p>
 <ol>
-<li><strong>Type</strong>: SRV</li>
-<li><strong>Name</strong>: <code>_minecraft._tcp.play</code> (play는 원하는 서브도메인)</li>
-<li><strong>Service</strong>: <code>_minecraft</code></li>
-<li><strong>Protocol</strong>: <code>TCP</code></li>
-<li><strong>Priority</strong>: <code>0</code></li>
-<li><strong>Weight</strong>: <code>5</code></li>
-<li><strong>Port</strong>: <code>25565</code> (실제 서버 포트)</li>
-<li><strong>Target</strong>: <code>mc.example.com</code> (실제 서버 주소)</li>
-<li><strong>TTL</strong>: Auto 또는 300</li>
+<li>SSL이 먼저 유명해져서 용어가 굳어짐</li>
+<li>마케팅 용어로 "SSL 인증서"가 더 친숙함</li>
+<li>검색 키워드도 "SSL"이 더 많이 사용됨</li>
 </ol>
-<p><strong>주의사항</strong>: Cloudflare의 프록시 기능(주황색 구름)은 SRV 레코드에 적용되지 않으므로 회색(DNS only)으로 설정됨.</p>
-<h2 id="seoljeong-hwagin-bangbeob">설정 확인 방법</h2>
-<h3 id="windowseseo-hwagin">Windows에서 확인</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>nslookup -type=SRV </span><span style="color:#96b5b4;">_minecraft._tcp.play.example.com
+<blockquote>
+<p>마치 "티슈"라고 하면 브랜드 상관없이 모두 휴지를 가리키는 것처럼, "SSL"은 암호화 통신 전반을 가리키는 일반 명사가 되었습니다.</p>
+</blockquote>
+<h2 id="awseseoyi-tls-hwalyong">AWS에서의 TLS 활용</h2>
+<p>AWS에서는 다양한 서비스에서 TLS를 지원하며, 통합 관리가 가능합니다.</p>
+<h3 id="1-acm-aws-certificate-manager">1. ACM (AWS Certificate Manager)</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># ACM의 핵심 장점
+</span><span style="color:#bf616a;">-</span><span> 무료 인증서 발급 및 자동 갱신
+</span><span style="color:#bf616a;">-</span><span> AWS 서비스와 완벽한 통합
+</span><span style="color:#bf616a;">-</span><span> 관리 부담 최소화
 </span></code></pre>
-<h3 id="linux-macoseseo-hwagin">Linux/macOS에서 확인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">dig</span><span> SRV _minecraft._tcp.play.example.com
-</span></code></pre>
-<p>올바르게 설정되었다면 다음과 같은 결과가 나옴:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
-</span></code></pre>
-<h2 id="siljeon-jeogyong-tib">실전 적용 팁</h2>
-<h3 id="dns-jeonpa-sigan-goryeo">DNS 전파 시간 고려</h3>
-<p>SRV 레코드 설정 후 전파까지 최대 24-48시간이 걸릴 수 있음. TTL을 낮게 설정하면(300초 권장) 변경사항이 더 빠르게 반영됨.</p>
-<h3 id="yeoreo-seobeo-gan-buha-bunsan">여러 서버 간 부하 분산</h3>
-<p>동일한 Priority에서 Weight 값을 조정하여 트래픽을 분산할 수 있음:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 70 25565 mc1.example.com.
-</span><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 30 25565 mc2.example.com.
-</span></code></pre>
-<p>이 경우 약 70%는 mc1으로, 30%는 mc2로 분산됨.</p>
-<h3 id="jangae-joci-failover-guseong">장애 조치(Failover) 구성</h3>
-<p>Priority를 다르게 설정하여 메인 서버 장애 시 백업 서버로 자동 전환:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc-main.example.com.
-</span><span>_minecraft._tcp.play.example.com. 300 IN SRV 10 5 25565 mc-backup.example.com.
-</span></code></pre>
-<h2 id="munje-haegyeol">문제 해결</h2>
-<h3 id="srv-rekodeuga-jagdonghaji-anheul-ddae">SRV 레코드가 작동하지 않을 때</h3>
-<h4 id="dns-kaesi-cogihwa">DNS 캐시 초기화</h4>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Windows
-</span><span style="color:#bf616a;">ipconfig</span><span> /flushdns
-</span><span>
-</span><span style="color:#65737e;"># Linux
-</span><span style="color:#bf616a;">sudo</span><span> systemd-resolve</span><span style="color:#bf616a;"> --flush-caches
-</span><span>
-</span><span style="color:#65737e;"># macOS
-</span><span style="color:#bf616a;">sudo</span><span> dscacheutil</span><span style="color:#bf616a;"> -flushcache
-</span></code></pre>
-<h4 id="banghwabyeog-hwagin">방화벽 확인</h4>
+<p><strong>지원 서비스:</strong></p>
 <ul>
-<li>AWS Security Group에서 해당 포트 개방 확인</li>
-<li>서버 방화벽(firewalld, ufw)에서 포트 허용 확인</li>
+<li>Elastic Load Balancer (ALB, NLB, CLB)</li>
+<li>CloudFront</li>
+<li>API Gateway</li>
+<li>Elastic Beanstalk</li>
 </ul>
+<p>Let's Encrypt처럼 수동 갱신할 필요 없이, ACM이 자동으로 갱신해줍니다. 다만 외부에서 임포트한 인증서는 수동 관리가 필요하므로 Zabbix 등으로 만료일 모니터링이 중요합니다.</p>
+<h3 id="2-application-load-balancer-alb">2. Application Load Balancer (ALB)</h3>
+<pre data-lang="yaml" style="background-color:#2b303b;color:#c0c5ce;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#65737e;"># ALB TLS 설정 예시
+</span><span style="color:#bf616a;">Listeners</span><span>:
+</span><span>  - </span><span style="color:#bf616a;">Protocol</span><span>: </span><span style="color:#a3be8c;">HTTPS
+</span><span>    </span><span style="color:#bf616a;">Port</span><span>: </span><span style="color:#d08770;">443
+</span><span>    </span><span style="color:#bf616a;">Certificates</span><span>:
+</span><span>      - </span><span style="color:#bf616a;">CertificateArn</span><span>: </span><span style="color:#a3be8c;">arn:aws:acm:...
+</span><span>    </span><span style="color:#bf616a;">SslPolicy</span><span>: </span><span style="color:#a3be8c;">ELBSecurityPolicy-TLS-1-2-2017-01
+</span></code></pre>
+<p><strong>주요 기능:</strong></p>
+<ul>
+<li>TLS 종료(Termination): 클라이언트와의 TLS 연결을 ALB에서 처리</li>
+<li>SSL Policy: TLS 버전과 암호화 스위트 조합 선택 가능</li>
+<li>SNI (Server Name Indication): 하나의 ALB에 여러 도메인 인증서 적용</li>
+</ul>
+<h3 id="3-cloudfront">3. CloudFront</h3>
+<p>엣지 로케이션에서 TLS를 처리하여 전 세계적으로 빠른 HTTPS 서비스를 제공합니다.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>사용자 → CloudFront (TLS 종료)
+</span><span>           ↓
+</span><span>         Origin (선택적 재암호화)
+</span></code></pre>
+<p><strong>구성 옵션:</strong></p>
+<ul>
+<li>Viewer Protocol Policy: HTTP/HTTPS 리다이렉션 정책</li>
+<li>Origin Protocol Policy: CloudFront → Origin 간 암호화 여부</li>
+<li>Custom SSL Certificate: ACM 인증서 연결 (us-east-1 리전 필수)</li>
+</ul>
+<h3 id="4-rds-aurora">4. RDS/Aurora</h3>
+<p>데이터베이스 연결도 TLS로 암호화할 수 있습니다.</p>
+<pre data-lang="sql" style="background-color:#2b303b;color:#c0c5ce;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#65737e;">-- MySQL/MariaDB에서 SSL 강제
+</span><span style="color:#b48ead;">SET</span><span> GLOBAL require_secure_transport = ON;
+</span></code></pre>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#65737e;"># Python에서 RDS SSL 연결
+</span><span style="color:#b48ead;">import </span><span>pymysql
+</span><span>
+</span><span>connection = pymysql.</span><span style="color:#bf616a;">connect</span><span>(
+</span><span>    </span><span style="color:#bf616a;">host</span><span>=&#39;</span><span style="color:#a3be8c;">db.example.com</span><span>&#39;,
+</span><span>    </span><span style="color:#bf616a;">user</span><span>=&#39;</span><span style="color:#a3be8c;">admin</span><span>&#39;,
+</span><span>    </span><span style="color:#bf616a;">password</span><span>=&#39;</span><span style="color:#a3be8c;">password</span><span>&#39;,
+</span><span>    </span><span style="color:#bf616a;">database</span><span>=&#39;</span><span style="color:#a3be8c;">mydb</span><span>&#39;,
+</span><span>    </span><span style="color:#bf616a;">ssl</span><span>={&#39;</span><span style="color:#a3be8c;">ca</span><span>&#39;: &#39;</span><span style="color:#a3be8c;">/path/to/rds-ca-bundle.pem</span><span>&#39;}
+</span><span>)
+</span></code></pre>
+<h3 id="5-api-gateway">5. API Gateway</h3>
+<p>REST API나 WebSocket API에 커스텀 도메인 적용 시 TLS 설정이 필요합니다.</p>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># mTLS (Mutual TLS) 지원
+</span><span style="color:#bf616a;">-</span><span> 클라이언트 인증서 검증
+</span><span style="color:#bf616a;">-</span><span> 양방향 인증으로 보안 강화
+</span><span style="color:#bf616a;">-</span><span> IoT 디바이스 인증 등에 활용
+</span></code></pre>
+<h2 id="silmu-akitegceo-paeteon">실무 아키텍처 패턴</h2>
+<h3 id="end-to-end-amhohwa">End-to-End 암호화</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Client 
+</span><span>  ↓ (TLS 1.3)
+</span><span>CloudFront 
+</span><span>  ↓ (TLS 1.2)
+</span><span>ALB 
+</span><span>  ↓ (TLS 1.2)
+</span><span>EC2/ECS
+</span></code></pre>
+<p>보안 요구사항이 높은 경우, 모든 구간에서 암호화를 유지합니다.</p>
+<h3 id="tls-offloading">TLS Offloading</h3>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Client 
+</span><span>  ↓ (HTTPS)
+</span><span>ALB 
+</span><span>  ↓ (HTTP - 내부 네트워크)
+</span><span>EC2/ECS
+</span></code></pre>
+<p>VPC 내부는 암호화하지 않아 백엔드 서버의 CPU 부담을 줄입니다. 대신 네트워크 보안(Security Group, NACL)으로 보호합니다.</p>
+<h2 id="moniteoringgwa-gwanri">모니터링과 관리</h2>
+<h3 id="zabbixeseo-ssl-injeungseo-moniteoring">Zabbix에서 SSL 인증서 모니터링</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Web Scenario로 인증서 만료일 체크
+</span><span style="color:#bf616a;">web.test.error[SSL</span><span> 인증서 체크]
+</span><span style="color:#bf616a;">web.test.time[SSL</span><span> 인증서 체크,,resp]
+</span></code></pre>
+<p>ACM 인증서는 자동 갱신되지만, 외부 임포트 인증서나 EC2에 직접 설치한 인증서는 반드시 모니터링해야 합니다.</p>
+<h3 id="openssl-myeongryeongeoro-hwagin">OpenSSL 명령어로 확인</h3>
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># TLS 버전 확인
+</span><span style="color:#bf616a;">openssl</span><span> s_client</span><span style="color:#bf616a;"> -connect</span><span> example.com:443</span><span style="color:#bf616a;"> -tls1_2
+</span><span>
+</span><span style="color:#65737e;"># 인증서 정보 확인
+</span><span style="color:#bf616a;">openssl</span><span> s_client</span><span style="color:#bf616a;"> -connect</span><span> example.com:443 </span><span style="color:#d08770;">2</span><span>&gt;/dev/null | \
+</span><span>  </span><span style="color:#bf616a;">openssl</span><span> x509</span><span style="color:#bf616a;"> -noout -dates
+</span><span>
+</span><span style="color:#65737e;"># 암호화 스위트 확인
+</span><span style="color:#bf616a;">nmap --script</span><span> ssl-enum-ciphers</span><span style="color:#bf616a;"> -p</span><span> 443 example.com
+</span></code></pre>
+<h2 id="boan-best-practices">보안 Best Practices</h2>
+<ol>
+<li>
+<p><strong>최신 TLS 버전 사용</strong></p>
+<ul>
+<li>TLS 1.3 우선 (가능한 경우)</li>
+<li>최소 TLS 1.2 이상</li>
+</ul>
+</li>
+<li>
+<p><strong>강력한 암호화 스위트</strong></p>
+<ul>
+<li>Forward Secrecy 지원 (ECDHE)</li>
+<li>AES-GCM 같은 AEAD 암호화</li>
+</ul>
+</li>
+<li>
+<p><strong>인증서 관리</strong></p>
+<ul>
+<li>자동 갱신 설정 (ACM 활용)</li>
+<li>만료일 모니터링 (수동 관리 인증서)</li>
+<li>Private Key 보안 관리</li>
+</ul>
+</li>
+<li>
+<p><strong>HSTS (HTTP Strict Transport Security)</strong></p>
+</li>
+</ol>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>   Strict-Transport-Security: max-age=31536000; includeSubDomains
+</span></code></pre>
 <h2 id="macimyeo">마치며</h2>
-<p>SRV 레코드를 활용하면 Minecraft 서버를 더 전문적이고 사용자 친화적으로 운영할 수 있음. 특히 여러 서버를 운영하거나 비표준 포트를 사용하는 경우 필수적인 설정임.</p>
-<p>실제 운영 중인 AWS EC2 Minecraft 서버에 적용해보고, 더 나은 게임 경험을 만들어보자!</p>
+<p>실무에서는 "SSL"이라는 용어를 계속 사용하지만, 실제로는 TLS 기술을 사용하고 있다는 점을 이해하는 것이 중요합니다. AWS 환경에서는 ACM과 다양한 서비스의 통합으로 인증서 관리가 매우 편리해졌지만, 외부 인증서나 EC2 직접 설치의 경우 여전히 모니터링과 수동 관리가 필요합니다.</p>
+<p>보안은 한 번 설정하고 끝나는 것이 아니라 지속적인 관리와 업데이트가 필요한 영역입니다. TLS 버전 업데이트, 취약한 암호화 스위트 제거, 인증서 만료 관리 등을 체계적으로 관리해야 안전한 서비스를 운영할 수 있습니다.</p>
+<h2 id="camgo-jaryo">참고 자료</h2>
+<ul>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc8446">RFC 8446 - TLS 1.3</a></li>
+<li><a href="https://docs.aws.amazon.com/acm/">AWS Certificate Manager 문서</a></li>
+<li><a href="https://ssl-config.mozilla.org/">Mozilla SSL Configuration Generator</a></li>
+</ul>
 
         </div>
 
@@ -210,17 +297,10 @@
                     <hr />
                 </div>
                 <div class="pagination__buttons">
-                        <span class="button previous">
-                            <a href="https://changki123.github.io/blog/260126-01-minecraftserver/">
-                                <span class="button__icon">←</span>&nbsp;
-                                <span class="button__text">AWS EC2로 마인크래프트 서버 구축하기</span>
-                            </a>
-                        </span>
-                    
                     
                         <span class="button next">
-                            <a href="https://changki123.github.io/blog/260203-01-robots-txt/">
-                                <span class="button__text">robots.txt가 뭔지 알아보자</span>&nbsp;
+                            <a href="https://changki123.github.io/blog/260215-01-ssl-tls/">
+                                <span class="button__text">TLS와 SSL, 그리고 AWS에서의 활용</span>&nbsp;
                                 <span class="button__icon">→</span>
                             </a>
                         </span>

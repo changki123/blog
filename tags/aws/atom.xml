@@ -191,4 +191,28 @@
 &lt;&#x2F;ul&gt;</summary>
         
     </entry>
+    <entry xml:lang="en">
+        <title>TLS와 SSL, 그리고 AWS에서의 활용</title>
+        <published>2025-02-15T00:00:00+00:00</published>
+        <updated>2025-02-15T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260216-01-ad-ing/"/>
+        <id>https://changki123.github.io/blog/260216-01-ad-ing/</id>
+        
+        <summary type="html">&lt;h2 id=&quot;tl-dr&quot;&gt;TL;DR&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;SSL과 TLS는 기술적으로 다른 버전이지만, 실무에서는 같은 의미로 사용&lt;&#x2F;li&gt;
+&lt;li&gt;SSL 3.0 → TLS 1.0 → TLS 1.2&#x2F;1.3으로 발전&lt;&#x2F;li&gt;
+&lt;li&gt;AWS에서는 ACM, ALB, CloudFront 등 다양한 서비스에서 TLS 적용&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;</summary>
+        
+    </entry>
 </feed>
