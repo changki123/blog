@@ -2,11 +2,11 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
     <title>changki123&#x27;s blog - DRS</title>
     <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
-    <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/drs/atom.xml"/>
-    <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/drs/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
     <updated>2026-02-08T00:00:00+00:00</updated>
-    <id>https://changki123.github.io/blog/tags/drs/atom.xml</id>
+    <id>https://blog.changki123.click/tags/drs/atom.xml</id>
     <entry xml:lang="en">
         <title>AWS DRS 기반 재해복구 환경 구축 (진행 중)</title>
         <published>2026-02-08T00:00:00+00:00</published>
@@ -20,8 +20,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260208-01-aws-drs/"/>
-        <id>https://changki123.github.io/blog/260208-01-aws-drs/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260208-01-aws-drs/"/>
+        <id>https://blog.changki123.click/260208-01-aws-drs/</id>
         
         <summary type="html">&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;진행 중인 프로젝트입니다.&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;

@@ -2,11 +2,11 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
     <title>changki123&#x27;s blog - AWS</title>
     <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
-    <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/aws/atom.xml"/>
-    <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/aws/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
     <updated>2026-02-18T00:00:00+00:00</updated>
-    <id>https://changki123.github.io/blog/tags/aws/atom.xml</id>
+    <id>https://blog.changki123.click/tags/aws/atom.xml</id>
     <entry xml:lang="en">
         <title>AD 서버에 대한 간단한 고찰</title>
         <published>2026-02-18T00:00:00+00:00</published>
@@ -20,8 +20,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260216-01-ad-ing/"/>
-        <id>https://changki123.github.io/blog/260216-01-ad-ing/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260216-01-ad-ing/"/>
+        <id>https://blog.changki123.click/260216-01-ad-ing/</id>
         
         <summary type="html">&lt;h2 id=&quot;tl-dr&quot;&gt;TL;DR&lt;&#x2F;h2&gt;</summary>
         
@@ -39,8 +39,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260215-01-ssl-tls/"/>
-        <id>https://changki123.github.io/blog/260215-01-ssl-tls/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260215-01-ssl-tls/"/>
+        <id>https://blog.changki123.click/260215-01-ssl-tls/</id>
         
         <summary type="html">&lt;h2 id=&quot;tl-dr&quot;&gt;TL;DR&lt;&#x2F;h2&gt;
 &lt;ul&gt;
@@ -63,8 +63,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260211-01-aws-mgn/"/>
-        <id>https://changki123.github.io/blog/260211-01-aws-mgn/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260211-01-aws-mgn/"/>
+        <id>https://blog.changki123.click/260211-01-aws-mgn/</id>
         
         <summary type="html">&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;진행 중인 프로젝트입니다.&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
@@ -87,8 +87,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260208-01-aws-drs/"/>
-        <id>https://changki123.github.io/blog/260208-01-aws-drs/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260208-01-aws-drs/"/>
+        <id>https://blog.changki123.click/260208-01-aws-drs/</id>
         
         <summary type="html">&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;진행 중인 프로젝트입니다.&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
@@ -111,8 +111,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260207-01-auto-lifecyclehook/"/>
-        <id>https://changki123.github.io/blog/260207-01-auto-lifecyclehook/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260207-01-auto-lifecyclehook/"/>
+        <id>https://blog.changki123.click/260207-01-auto-lifecyclehook/</id>
         
         <summary type="html">&lt;h2 id=&quot;peurojegteu-baegyeong&quot;&gt;프로젝트 배경&lt;&#x2F;h2&gt;
 &lt;p&gt;Auto Scaling 환경에서 Scale-in(인스턴스 축소) 발생 시 &lt;strong&gt;인스턴스가 삭제되면서 로그와 데이터가 함께 소실&lt;&#x2F;strong&gt;되는 문제가 있었습니다.&lt;&#x2F;p&gt;
@@ -138,8 +138,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260131-01-srv-record/"/>
-        <id>https://changki123.github.io/blog/260131-01-srv-record/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260131-01-srv-record/"/>
+        <id>https://blog.changki123.click/260131-01-srv-record/</id>
         
         <summary type="html">&lt;h2 id=&quot;srv-rekodeuran&quot;&gt;SRV 레코드란?&lt;&#x2F;h2&gt;
 &lt;p&gt;SRV(Service) 레코드는 특정 서비스의 위치 정보를 제공하는 DNS 레코드 타입임. 일반적인 A 레코드가 도메인을 IP 주소로 연결한다면, SRV 레코드는 서비스의 호스트명과 포트 정보까지 함께 제공할 수 있음.&lt;&#x2F;p&gt;</summary>
@@ -158,8 +158,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260126-01-minecraftserver/"/>
-        <id>https://changki123.github.io/blog/260126-01-minecraftserver/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260126-01-minecraftserver/"/>
+        <id>https://blog.changki123.click/260126-01-minecraftserver/</id>
         
         <summary type="html">&lt;h2 id=&quot;gaeyo&quot;&gt;개요&lt;&#x2F;h2&gt;
 &lt;p&gt;AWS EC2를 활용해 마인크래프트 Java Edition 1.21.11 서버를 구축하는 과정을 정리했습니다. 친구들과 함께 플레이할 수 있는 안정적인 멀티플레이 환경을 만들어봅시다.&lt;&#x2F;p&gt;</summary>
@@ -178,8 +178,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260121-01-analytics/"/>
-        <id>https://changki123.github.io/blog/260121-01-analytics/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260121-01-analytics/"/>
+        <id>https://blog.changki123.click/260121-01-analytics/</id>
         
         <summary type="html">&lt;p&gt;서버리스 아키텍처를 도입할 때 흔히 &quot;개발자가 서버 관리 안 해도 된다&quot;는 편의성만 강조되는 경향이 있다. 하지만 시스템 관점에서 봤을 때 서버리스가 가져오는 실질적인 이점들이 명확히 존재한다. 1년 넘게 멀티 클라우드 환경에서 인프라를 관리하면서 체감한 서버리스의 시스템적 장점을 정리해본다.&lt;&#x2F;p&gt;</summary>
         
@@ -197,8 +197,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260114-01-presigned-url/"/>
-        <id>https://changki123.github.io/blog/260114-01-presigned-url/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260114-01-presigned-url/"/>
+        <id>https://blog.changki123.click/260114-01-presigned-url/</id>
         
         <summary type="html">&lt;h2 id=&quot;pre-signed-urliran&quot;&gt;Pre-signed URL이란?&lt;&#x2F;h2&gt;
 &lt;p&gt;S3 버킷을 &lt;strong&gt;private으로 유지&lt;&#x2F;strong&gt;하면서도, 특정 파일에 대해 &lt;strong&gt;임시 접근 권한&lt;&#x2F;strong&gt;을 부여하는 URL입니다.&lt;&#x2F;p&gt;

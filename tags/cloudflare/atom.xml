@@ -2,11 +2,11 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
     <title>changki123&#x27;s blog - Cloudflare</title>
     <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
-    <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/cloudflare/atom.xml"/>
-    <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/cloudflare/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
     <updated>2026-01-31T00:00:00+00:00</updated>
-    <id>https://changki123.github.io/blog/tags/cloudflare/atom.xml</id>
+    <id>https://blog.changki123.click/tags/cloudflare/atom.xml</id>
     <entry xml:lang="en">
         <title>Minecraft 서버를 위한 SRV 레코드 완벽 가이드</title>
         <published>2026-01-31T00:00:00+00:00</published>
@@ -20,8 +20,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260131-01-srv-record/"/>
-        <id>https://changki123.github.io/blog/260131-01-srv-record/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260131-01-srv-record/"/>
+        <id>https://blog.changki123.click/260131-01-srv-record/</id>
         
         <summary type="html">&lt;h2 id=&quot;srv-rekodeuran&quot;&gt;SRV 레코드란?&lt;&#x2F;h2&gt;
 &lt;p&gt;SRV(Service) 레코드는 특정 서비스의 위치 정보를 제공하는 DNS 레코드 타입임. 일반적인 A 레코드가 도메인을 IP 주소로 연결한다면, SRV 레코드는 서비스의 호스트명과 포트 정보까지 함께 제공할 수 있음.&lt;&#x2F;p&gt;</summary>

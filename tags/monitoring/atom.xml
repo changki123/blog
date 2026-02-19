@@ -2,11 +2,11 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
     <title>changki123&#x27;s blog - monitoring</title>
     <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
-    <link rel="self" type="application/atom+xml" href="https://changki123.github.io/blog/tags/monitoring/atom.xml"/>
-    <link rel="alternate" type="text/html" href="https://changki123.github.io/blog"/>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/monitoring/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
     <updated>2026-01-21T00:00:00+00:00</updated>
-    <id>https://changki123.github.io/blog/tags/monitoring/atom.xml</id>
+    <id>https://blog.changki123.click/tags/monitoring/atom.xml</id>
     <entry xml:lang="en">
         <title>Zola 정적 사이트에 Google Analytics 적용하기</title>
         <published>2026-01-21T00:00:00+00:00</published>
@@ -20,8 +20,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://changki123.github.io/blog/260124-01-serverless/"/>
-        <id>https://changki123.github.io/blog/260124-01-serverless/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260124-01-serverless/"/>
+        <id>https://blog.changki123.click/260124-01-serverless/</id>
         
         <summary type="html">&lt;h2 id=&quot;baegyeong&quot;&gt;배경&lt;&#x2F;h2&gt;
 &lt;p&gt;블로그 방문자 통계를 확인하고 싶어서 Google Analytics 4(GA4)를 적용하기로 했다.
