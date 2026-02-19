@@ -10,10 +10,8 @@ taxonomies = [
     {name = "tags", feed = true},
 ]
 
-[markdown]
-
 [markdown.highlighting]
-theme = "base16-ocean-dark"
+theme = "ayu-dark"
 
 [extra]
 # terminimal 테마 설정
