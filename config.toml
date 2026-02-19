@@ -11,7 +11,7 @@ taxonomies = [
 ]
 
 [markdown]
-highlight_code = true
+highlighting = {}
 
 [extra]
 # terminimal 테마 설정
