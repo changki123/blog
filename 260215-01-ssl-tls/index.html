@@ -102,20 +102,20 @@
 </ul>
 <span id="continue-reading"></span><h2 id="ssl-vs-tls-mueosi-dareunga">SSL vs TLS: 무엇이 다른가?</h2>
 <h3 id="yeogsajeog-baegyeong">역사적 배경</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>SSL 1.0 (출시 안됨)
-</span><span>  ↓
-</span><span>SSL 2.0 (1995, 넷스케이프)
-</span><span>  ↓
-</span><span>SSL 3.0 (1996, 넷스케이프)
-</span><span>  ↓
-</span><span>TLS 1.0 (1999, IETF) ← 이름 변경!
-</span><span>  ↓
-</span><span>TLS 1.1 (2006)
-</span><span>  ↓
-</span><span>TLS 1.2 (2008)
-</span><span>  ↓
-</span><span>TLS 1.3 (2018)
-</span></code></pre>
+<pre><code>SSL 1.0 (출시 안됨)
+  ↓
+SSL 2.0 (1995, 넷스케이프)
+  ↓
+SSL 3.0 (1996, 넷스케이프)
+  ↓
+TLS 1.0 (1999, IETF) ← 이름 변경!
+  ↓
+TLS 1.1 (2006)
+  ↓
+TLS 1.2 (2008)
+  ↓
+TLS 1.3 (2018)
+</code></pre>
 <p><strong>SSL (Secure Sockets Layer)</strong></p>
 <ul>
 <li>넷스케이프(Netscape Communications)가 개발한 암호화 프로토콜</li>
@@ -148,11 +148,11 @@
 <h2 id="awseseoyi-tls-hwalyong">AWS에서의 TLS 활용</h2>
 <p>AWS에서는 다양한 서비스에서 TLS를 지원하며, 통합 관리가 가능합니다.</p>
 <h3 id="1-acm-aws-certificate-manager">1. ACM (AWS Certificate Manager)</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># ACM의 핵심 장점
-</span><span style="color:#bf616a;">-</span><span> 무료 인증서 발급 및 자동 갱신
-</span><span style="color:#bf616a;">-</span><span> AWS 서비스와 완벽한 통합
-</span><span style="color:#bf616a;">-</span><span> 관리 부담 최소화
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># ACM의 핵심 장점
+- 무료 인증서 발급 및 자동 갱신
+- AWS 서비스와 완벽한 통합
+- 관리 부담 최소화
+</code></pre>
 <p><strong>지원 서비스:</strong></p>
 <ul>
 <li>Elastic Load Balancer (ALB, NLB, CLB)</li>
@@ -162,14 +162,14 @@
 </ul>
 <p>Let's Encrypt처럼 수동 갱신할 필요 없이, ACM이 자동으로 갱신해줍니다. 다만 외부에서 임포트한 인증서는 수동 관리가 필요하므로 Zabbix 등으로 만료일 모니터링이 중요합니다.</p>
 <h3 id="2-application-load-balancer-alb">2. Application Load Balancer (ALB)</h3>
-<pre data-lang="yaml" style="background-color:#2b303b;color:#c0c5ce;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#65737e;"># ALB TLS 설정 예시
-</span><span style="color:#bf616a;">Listeners</span><span>:
-</span><span>  - </span><span style="color:#bf616a;">Protocol</span><span>: </span><span style="color:#a3be8c;">HTTPS
-</span><span>    </span><span style="color:#bf616a;">Port</span><span>: </span><span style="color:#d08770;">443
-</span><span>    </span><span style="color:#bf616a;">Certificates</span><span>:
-</span><span>      - </span><span style="color:#bf616a;">CertificateArn</span><span>: </span><span style="color:#a3be8c;">arn:aws:acm:...
-</span><span>    </span><span style="color:#bf616a;">SslPolicy</span><span>: </span><span style="color:#a3be8c;">ELBSecurityPolicy-TLS-1-2-2017-01
-</span></code></pre>
+<pre data-lang="yaml" class="language-yaml "><code class="language-yaml" data-lang="yaml"># ALB TLS 설정 예시
+Listeners:
+  - Protocol: HTTPS
+    Port: 443
+    Certificates:
+      - CertificateArn: arn:aws:acm:...
+    SslPolicy: ELBSecurityPolicy-TLS-1-2-2017-01
+</code></pre>
 <p><strong>주요 기능:</strong></p>
 <ul>
 <li>TLS 종료(Termination): 클라이언트와의 TLS 연결을 ALB에서 처리</li>
@@ -178,10 +178,10 @@
 </ul>
 <h3 id="3-cloudfront">3. CloudFront</h3>
 <p>엣지 로케이션에서 TLS를 처리하여 전 세계적으로 빠른 HTTPS 서비스를 제공합니다.</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>사용자 → CloudFront (TLS 종료)
-</span><span>           ↓
-</span><span>         Origin (선택적 재암호화)
-</span></code></pre>
+<pre><code>사용자 → CloudFront (TLS 종료)
+           ↓
+         Origin (선택적 재암호화)
+</code></pre>
 <p><strong>구성 옵션:</strong></p>
 <ul>
 <li>Viewer Protocol Policy: HTTP/HTTPS 리다이렉션 정책</li>
@@ -190,64 +190,64 @@
 </ul>
 <h3 id="4-rds-aurora">4. RDS/Aurora</h3>
 <p>데이터베이스 연결도 TLS로 암호화할 수 있습니다.</p>
-<pre data-lang="sql" style="background-color:#2b303b;color:#c0c5ce;" class="language-sql "><code class="language-sql" data-lang="sql"><span style="color:#65737e;">-- MySQL/MariaDB에서 SSL 강제
-</span><span style="color:#b48ead;">SET</span><span> GLOBAL require_secure_transport = ON;
-</span></code></pre>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#65737e;"># Python에서 RDS SSL 연결
-</span><span style="color:#b48ead;">import </span><span>pymysql
-</span><span>
-</span><span>connection = pymysql.</span><span style="color:#bf616a;">connect</span><span>(
-</span><span>    </span><span style="color:#bf616a;">host</span><span>=&#39;</span><span style="color:#a3be8c;">db.example.com</span><span>&#39;,
-</span><span>    </span><span style="color:#bf616a;">user</span><span>=&#39;</span><span style="color:#a3be8c;">admin</span><span>&#39;,
-</span><span>    </span><span style="color:#bf616a;">password</span><span>=&#39;</span><span style="color:#a3be8c;">password</span><span>&#39;,
-</span><span>    </span><span style="color:#bf616a;">database</span><span>=&#39;</span><span style="color:#a3be8c;">mydb</span><span>&#39;,
-</span><span>    </span><span style="color:#bf616a;">ssl</span><span>={&#39;</span><span style="color:#a3be8c;">ca</span><span>&#39;: &#39;</span><span style="color:#a3be8c;">/path/to/rds-ca-bundle.pem</span><span>&#39;}
-</span><span>)
-</span></code></pre>
+<pre data-lang="sql" class="language-sql "><code class="language-sql" data-lang="sql">-- MySQL&#x2F;MariaDB에서 SSL 강제
+SET GLOBAL require_secure_transport = ON;
+</code></pre>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python"># Python에서 RDS SSL 연결
+import pymysql
+
+connection = pymysql.connect(
+    host=&#x27;db.example.com&#x27;,
+    user=&#x27;admin&#x27;,
+    password=&#x27;password&#x27;,
+    database=&#x27;mydb&#x27;,
+    ssl={&#x27;ca&#x27;: &#x27;&#x2F;path&#x2F;to&#x2F;rds-ca-bundle.pem&#x27;}
+)
+</code></pre>
 <h3 id="5-api-gateway">5. API Gateway</h3>
 <p>REST API나 WebSocket API에 커스텀 도메인 적용 시 TLS 설정이 필요합니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># mTLS (Mutual TLS) 지원
-</span><span style="color:#bf616a;">-</span><span> 클라이언트 인증서 검증
-</span><span style="color:#bf616a;">-</span><span> 양방향 인증으로 보안 강화
-</span><span style="color:#bf616a;">-</span><span> IoT 디바이스 인증 등에 활용
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># mTLS (Mutual TLS) 지원
+- 클라이언트 인증서 검증
+- 양방향 인증으로 보안 강화
+- IoT 디바이스 인증 등에 활용
+</code></pre>
 <h2 id="silmu-akitegceo-paeteon">실무 아키텍처 패턴</h2>
 <h3 id="end-to-end-amhohwa">End-to-End 암호화</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Client 
-</span><span>  ↓ (TLS 1.3)
-</span><span>CloudFront 
-</span><span>  ↓ (TLS 1.2)
-</span><span>ALB 
-</span><span>  ↓ (TLS 1.2)
-</span><span>EC2/ECS
-</span></code></pre>
+<pre><code>Client 
+  ↓ (TLS 1.3)
+CloudFront 
+  ↓ (TLS 1.2)
+ALB 
+  ↓ (TLS 1.2)
+EC2&#x2F;ECS
+</code></pre>
 <p>보안 요구사항이 높은 경우, 모든 구간에서 암호화를 유지합니다.</p>
 <h3 id="tls-offloading">TLS Offloading</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Client 
-</span><span>  ↓ (HTTPS)
-</span><span>ALB 
-</span><span>  ↓ (HTTP - 내부 네트워크)
-</span><span>EC2/ECS
-</span></code></pre>
+<pre><code>Client 
+  ↓ (HTTPS)
+ALB 
+  ↓ (HTTP - 내부 네트워크)
+EC2&#x2F;ECS
+</code></pre>
 <p>VPC 내부는 암호화하지 않아 백엔드 서버의 CPU 부담을 줄입니다. 대신 네트워크 보안(Security Group, NACL)으로 보호합니다.</p>
 <h2 id="moniteoringgwa-gwanri">모니터링과 관리</h2>
 <h3 id="zabbixeseo-ssl-injeungseo-moniteoring">Zabbix에서 SSL 인증서 모니터링</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Web Scenario로 인증서 만료일 체크
-</span><span style="color:#bf616a;">web.test.error[SSL</span><span> 인증서 체크]
-</span><span style="color:#bf616a;">web.test.time[SSL</span><span> 인증서 체크,,resp]
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># Web Scenario로 인증서 만료일 체크
+web.test.error[SSL 인증서 체크]
+web.test.time[SSL 인증서 체크,,resp]
+</code></pre>
 <p>ACM 인증서는 자동 갱신되지만, 외부 임포트 인증서나 EC2에 직접 설치한 인증서는 반드시 모니터링해야 합니다.</p>
 <h3 id="openssl-myeongryeongeoro-hwagin">OpenSSL 명령어로 확인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># TLS 버전 확인
-</span><span style="color:#bf616a;">openssl</span><span> s_client</span><span style="color:#bf616a;"> -connect</span><span> example.com:443</span><span style="color:#bf616a;"> -tls1_2
-</span><span>
-</span><span style="color:#65737e;"># 인증서 정보 확인
-</span><span style="color:#bf616a;">openssl</span><span> s_client</span><span style="color:#bf616a;"> -connect</span><span> example.com:443 </span><span style="color:#d08770;">2</span><span>&gt;/dev/null | \
-</span><span>  </span><span style="color:#bf616a;">openssl</span><span> x509</span><span style="color:#bf616a;"> -noout -dates
-</span><span>
-</span><span style="color:#65737e;"># 암호화 스위트 확인
-</span><span style="color:#bf616a;">nmap --script</span><span> ssl-enum-ciphers</span><span style="color:#bf616a;"> -p</span><span> 443 example.com
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># TLS 버전 확인
+openssl s_client -connect example.com:443 -tls1_2
+
+# 인증서 정보 확인
+openssl s_client -connect example.com:443 2&gt;&#x2F;dev&#x2F;null | \
+  openssl x509 -noout -dates
+
+# 암호화 스위트 확인
+nmap --script ssl-enum-ciphers -p 443 example.com
+</code></pre>
 <h2 id="boan-best-practices">보안 Best Practices</h2>
 <ol>
 <li>
@@ -276,8 +276,8 @@
 <p><strong>HSTS (HTTP Strict Transport Security)</strong></p>
 </li>
 </ol>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>   Strict-Transport-Security: max-age=31536000; includeSubDomains
-</span></code></pre>
+<pre><code>   Strict-Transport-Security: max-age=31536000; includeSubDomains
+</code></pre>
 <h2 id="macimyeo">마치며</h2>
 <p>실무에서는 "SSL"이라는 용어를 계속 사용하지만, 실제로는 TLS 기술을 사용하고 있다는 점을 이해하는 것이 중요합니다. AWS 환경에서는 ACM과 다양한 서비스의 통합으로 인증서 관리가 매우 편리해졌지만, 외부 인증서나 EC2 직접 설치의 경우 여전히 모니터링과 수동 관리가 필요합니다.</p>
 <p>보안은 한 번 설정하고 끝나는 것이 아니라 지속적인 관리와 업데이트가 필요한 영역입니다. TLS 버전 업데이트, 취약한 암호화 스위트 제거, 인증서 만료 관리 등을 체계적으로 관리해야 안전한 서비스를 운영할 수 있습니다.</p>

@@ -94,13 +94,13 @@
         <div class="post-content">
             <p>웹사이트 루트에 놓는 텍스트 파일인데, 검색엔진 크롤러한테 "여기는 긁어가도 되고, 여기는 긁어가지 마" 하고 알려주는 용도임.</p>
 <span id="continue-reading"></span><h2 id="gibon-gujo">기본 구조</h2>
-<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span>User-agent: *
-</span><span>Disallow: /admin/
-</span><span>Disallow: /private/
-</span><span>Allow: /public/
-</span><span>
-</span><span>Sitemap: https://blog.changki123.click/sitemap.xml
-</span></code></pre>
+<pre data-lang="txt" class="language-txt "><code class="language-txt" data-lang="txt">User-agent: *
+Disallow: &#x2F;admin&#x2F;
+Disallow: &#x2F;private&#x2F;
+Allow: &#x2F;public&#x2F;
+
+Sitemap: https:&#x2F;&#x2F;blog.changki123.click&#x2F;sitemap.xml
+</code></pre>
 <p>각 항목의 의미:</p>
 <ul>
 <li><strong>User-agent</strong>: 어떤 봇한테 규칙 적용할건지 (Googlebot, Bingbot 등)</li>
@@ -117,48 +117,48 @@
 <p>반드시 루트 디렉토리에 위치해야 함 (<code>https://example.com/robots.txt</code>)</p>
 <h2 id="zola-beulrogeue-jeogyonghagi">Zola 블로그에 적용하기</h2>
 <p>Zola 같은 정적 사이트 생성기 쓸 때는 <code>static/</code> 폴더에 넣으면 빌드할 때 자동으로 루트로 복사됨:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>myblog/
-</span><span>├── content/
-</span><span>├── static/
-</span><span>│   └── robots.txt  &lt;- 여기에 넣기
-</span><span>├── templates/
-</span><span>└── config.toml
-</span></code></pre>
+<pre><code>myblog&#x2F;
+├── content&#x2F;
+├── static&#x2F;
+│   └── robots.txt  &lt;- 여기에 넣기
+├── templates&#x2F;
+└── config.toml
+</code></pre>
 <p>빌드하면 <code>public/robots.txt</code>로 복사되고, GitHub Pages에 배포하면 <code>https://blog.changki123.click/robots.txt</code>로 접근 가능.</p>
 <h2 id="cloudflare-jadong-seoljeong-yesi">Cloudflare 자동 설정 예시</h2>
 <p>Cloudflare를 사용하면 AI 봇 차단 설정이 자동으로 추가됨:</p>
-<pre data-lang="txt" style="background-color:#2b303b;color:#c0c5ce;" class="language-txt "><code class="language-txt" data-lang="txt"><span># BEGIN Cloudflare Managed content
-</span><span>User-agent: *
-</span><span>Content-Signal: search=yes,ai-train=no
-</span><span>Allow: /
-</span><span>
-</span><span>User-agent: Amazonbot
-</span><span>Disallow: /
-</span><span>
-</span><span>User-agent: Applebot-Extended
-</span><span>Disallow: /
-</span><span>
-</span><span>User-agent: Bytespider
-</span><span>Disallow: /
-</span><span>
-</span><span>User-agent: CCBot
-</span><span>Disallow: /
-</span><span>
-</span><span>User-agent: ClaudeBot
-</span><span>Disallow: /
-</span><span>
-</span><span>User-agent: Google-Extended
-</span><span>Disallow: /
-</span><span>
-</span><span>User-agent: GPTBot
-</span><span>Disallow: /
-</span><span>
-</span><span>User-agent: meta-externalagent
-</span><span>Disallow: /
-</span><span># END Cloudflare Managed Content
-</span><span>
-</span><span>Sitemap: https://changki123.github.io/blog/sitemap.xml
-</span></code></pre>
+<pre data-lang="txt" class="language-txt "><code class="language-txt" data-lang="txt"># BEGIN Cloudflare Managed content
+User-agent: *
+Content-Signal: search=yes,ai-train=no
+Allow: &#x2F;
+
+User-agent: Amazonbot
+Disallow: &#x2F;
+
+User-agent: Applebot-Extended
+Disallow: &#x2F;
+
+User-agent: Bytespider
+Disallow: &#x2F;
+
+User-agent: CCBot
+Disallow: &#x2F;
+
+User-agent: ClaudeBot
+Disallow: &#x2F;
+
+User-agent: Google-Extended
+Disallow: &#x2F;
+
+User-agent: GPTBot
+Disallow: &#x2F;
+
+User-agent: meta-externalagent
+Disallow: &#x2F;
+# END Cloudflare Managed Content
+
+Sitemap: https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&#x2F;sitemap.xml
+</code></pre>
 <p>이 설정의 의미:</p>
 <ul>
 <li><strong>검색엔진 크롤링은 허용</strong> (<code>search=yes</code>)</li>
@@ -168,8 +168,8 @@
 <p>Cloudflare 대시보드에서 <strong>Security &gt; Bots</strong> 메뉴의 "AI Scrapers and Crawlers" 옵션을 켜면 자동으로 관리됨.</p>
 <h2 id="hwagin-bangbeob">확인 방법</h2>
 <h3 id="keomaendeurain">커맨드라인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">curl</span><span> https://blog.changki123.click/robots.txt
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">curl https:&#x2F;&#x2F;blog.changki123.click&#x2F;robots.txt
+</code></pre>
 <h3 id="beuraujeo">브라우저</h3>
 <p>주소창에 <code>https://blog.changki123.click/robots.txt</code> 입력</p>
 <h3 id="google-search-console">Google Search Console</h3>

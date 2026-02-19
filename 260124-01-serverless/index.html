@@ -112,43 +112,43 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
 <p>Terminimal 테마는 기본적으로 Google Analytics를 지원하지 않아 템플릿 오버라이드를 통해 직접 추가해야 한다.</p>
 <h3 id="1-config-toml-seoljeong">1. config.toml 설정</h3>
 <p>먼저 <code>config.toml</code> 파일의 <code>[extra]</code> 섹션에 측정 ID를 추가한다.</p>
-<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span>[extra]
-</span><span style="color:#bf616a;">accent_color </span><span>= &quot;</span><span style="color:#a3be8c;">orange</span><span>&quot;
-</span><span style="color:#bf616a;">logo_text </span><span>= &quot;</span><span style="color:#a3be8c;">changki123</span><span>&quot;
-</span><span style="color:#bf616a;">google_analytics </span><span>= &quot;</span><span style="color:#a3be8c;">G-XXXXXXXXXX</span><span>&quot;  </span><span style="color:#65737e;"># 실제 측정 ID로 변경
-</span></code></pre>
+<pre data-lang="toml" class="language-toml "><code class="language-toml" data-lang="toml">[extra]
+accent_color = &quot;orange&quot;
+logo_text = &quot;changki123&quot;
+google_analytics = &quot;G-XXXXXXXXXX&quot;  # 실제 측정 ID로 변경
+</code></pre>
 <h3 id="2-rokeol-tempeulris-obeoraideu">2. 로컬 템플릿 오버라이드</h3>
 <p>테마 파일을 직접 수정하지 않고 로컬에 복사하여 커스터마이징한다.</p>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span style="color:#65737e;"># 로컬 templates 디렉토리 생성
-</span><span>mkdir templates\macros -Force
-</span><span>
-</span><span style="color:#65737e;"># 테마의 head.html 파일 복사
-</span><span>copy themes\terminimal\templates\macros\head.html templates\macros\head.html
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell"># 로컬 templates 디렉토리 생성
+mkdir templates\macros -Force
+
+# 테마의 head.html 파일 복사
+copy themes\terminimal\templates\macros\head.html templates\macros\head.html
+</code></pre>
 <h3 id="3-ga-kodeu-sabib">3. GA 코드 삽입</h3>
 <p>복사한 <code>templates\macros\head.html</code> 파일을 열어 <code>{% endmacro head %}</code> 바로 위에 다음 코드를 추가한다.</p>
-<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>{%- if config.extra.google_analytics %}
-</span><span>    </span><span style="color:#65737e;">&lt;!-- Google tag (gtag.js) --&gt;
-</span><span>    &lt;</span><span style="color:#bf616a;">script </span><span style="color:#d08770;">async src</span><span>=&quot;</span><span style="color:#a3be8c;">https://www.googletagmanager.com/gtag/js?id={{ config.extra.google_analytics }}</span><span>&quot;&gt;&lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
-</span><span>    &lt;</span><span style="color:#bf616a;">script</span><span>&gt;
-</span><span>      window.dataLayer = window.dataLayer || [];
-</span><span>      </span><span style="color:#b48ead;">function </span><span style="color:#8fa1b3;">gtag</span><span>(){</span><span style="color:#bf616a;">dataLayer</span><span>.</span><span style="color:#bf616a;">push</span><span>(</span><span style="color:#bf616a;">arguments</span><span>);}
-</span><span>      </span><span style="color:#bf616a;">gtag</span><span>(&#39;</span><span style="color:#a3be8c;">js</span><span>&#39;, new </span><span style="color:#ebcb8b;">Date</span><span>());
-</span><span>      </span><span style="color:#bf616a;">gtag</span><span>(&#39;</span><span style="color:#a3be8c;">config</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">{{ config.extra.google_analytics }}</span><span>&#39;);
-</span><span>    &lt;/</span><span style="color:#bf616a;">script</span><span>&gt;
-</span><span>{% endif -%}
-</span></code></pre>
+<pre data-lang="html" class="language-html "><code class="language-html" data-lang="html">{%- if config.extra.google_analytics %}
+    &lt;!-- Google tag (gtag.js) --&gt;
+    &lt;script async src=&quot;https:&#x2F;&#x2F;www.googletagmanager.com&#x2F;gtag&#x2F;js?id={{ config.extra.google_analytics }}&quot;&gt;&lt;&#x2F;script&gt;
+    &lt;script&gt;
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag(&#x27;js&#x27;, new Date());
+      gtag(&#x27;config&#x27;, &#x27;{{ config.extra.google_analytics }}&#x27;);
+    &lt;&#x2F;script&gt;
+{% endif -%}
+</code></pre>
 <h2 id="baepo-mic-hwagin">배포 및 확인</h2>
 <h3 id="1-rokeol-bildeu-teseuteu">1. 로컬 빌드 테스트</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>zola build
-</span><span style="color:#96b5b4;">Select-String </span><span>-Path public\index.html -Pattern &quot;</span><span style="color:#a3be8c;">gtag</span><span>&quot;
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell">zola build
+Select-String -Path public\index.html -Pattern &quot;gtag&quot;
+</code></pre>
 <p>gtag 스크립트가 검색되면 정상적으로 삽입된 것이다.</p>
 <h3 id="2-git-keomis-mic-baepo">2. Git 커밋 및 배포</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>git add templates\macros\head.html config.toml
-</span><span>git commit -m &quot;</span><span style="color:#a3be8c;">Add Google Analytics tracking</span><span>&quot;
-</span><span>git push
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell">git add templates\macros\head.html config.toml
+git commit -m &quot;Add Google Analytics tracking&quot;
+git push
+</code></pre>
 <h3 id="3-silsigan-deiteo-hwagin">3. 실시간 데이터 확인</h3>
 <p>배포 후 5-10분 뒤 다음 방법으로 확인한다.</p>
 <p><strong>브라우저 개발자 도구 확인:</strong></p>

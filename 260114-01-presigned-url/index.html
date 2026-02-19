@@ -103,16 +103,16 @@
 </ul>
 <span id="continue-reading"></span><h2 id="wae-pilyohanga">왜 필요한가?</h2>
 <p>실무에서 이런 상황 자주 마주치지 않나요?</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>❌ 문제 상황:
-</span><span>- 고객에게 10GB 백업 파일 전달해야 하는데 이메일 첨부 불가
-</span><span>- S3 버킷을 public으로 열면 보안 위험
-</span><span>- 특정 사람에게만 일시적으로 파일 공유 필요
-</span><span>
-</span><span>✅ Pre-signed URL 해결:
-</span><span>- S3는 private 유지
-</span><span>- URL만 전달하면 다운로드 가능
-</span><span>- 12시간 후 자동 만료
-</span></code></pre>
+<pre><code>❌ 문제 상황:
+- 고객에게 10GB 백업 파일 전달해야 하는데 이메일 첨부 불가
+- S3 버킷을 public으로 열면 보안 위험
+- 특정 사람에게만 일시적으로 파일 공유 필요
+
+✅ Pre-signed URL 해결:
+- S3는 private 유지
+- URL만 전달하면 다운로드 가능
+- 12시간 후 자동 만료
+</code></pre>
 <h2 id="aws-konsoleseo-pre-signed-url-mandeulgi-silseub">AWS 콘솔에서 Pre-signed URL 만들기 (실습)</h2>
 <p>오늘 직접 실습해본 내용입니다. 생각보다 정말 간단합니다!</p>
 <h3 id="silseub-gwajeong">실습 과정</h3>
@@ -139,10 +139,10 @@
 <li>Enter → 파일 다운로드 확인! ✅</li>
 </ul>
 <h3 id="silseub-gyeolgwa">실습 결과</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>✅ 버킷은 private 상태 유지
-</span><span>✅ URL로 AWS 자격증명 없이 다운로드 가능
-</span><span>✅ 설정한 시간 후 자동 만료
-</span></code></pre>
+<pre><code>✅ 버킷은 private 상태 유지
+✅ URL로 AWS 자격증명 없이 다운로드 가능
+✅ 설정한 시간 후 자동 만료
+</code></pre>
 <h3 id="konsol-sayong-si-camgosahang">콘솔 사용 시 참고사항</h3>
 <p><strong>만료 시간 제한:</strong></p>
 <ul>
@@ -159,219 +159,219 @@
 <h2 id="aws-cliro-mandeulgi-deo-gin-manryo-sigan-pilyohal-ddae">AWS CLI로 만들기 (더 긴 만료 시간 필요할 때)</h2>
 <h3 id="cloudshell-sayong-seolci-bulpilyo">CloudShell 사용 (설치 불필요)</h3>
 <p>AWS 콘솔 우측 상단 CloudShell 아이콘 클릭:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 버킷 목록 확인
-</span><span style="color:#bf616a;">aws</span><span> s3 ls
-</span><span>
-</span><span style="color:#65737e;"># 특정 버킷 내용 보기
-</span><span style="color:#bf616a;">aws</span><span> s3 ls s3://your-bucket-name/
-</span><span>
-</span><span style="color:#65737e;"># Pre-signed URL 생성 (1시간)
-</span><span style="color:#bf616a;">aws</span><span> s3 presign s3://your-bucket-name/test.txt</span><span style="color:#bf616a;"> --expires-in</span><span> 3600
-</span><span>
-</span><span style="color:#65737e;"># 7일짜리 URL 생성
-</span><span style="color:#bf616a;">aws</span><span> s3 presign s3://your-bucket-name/backup.tar.gz</span><span style="color:#bf616a;"> --expires-in</span><span> 604800
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 버킷 목록 확인
+aws s3 ls
+
+# 특정 버킷 내용 보기
+aws s3 ls s3:&#x2F;&#x2F;your-bucket-name&#x2F;
+
+# Pre-signed URL 생성 (1시간)
+aws s3 presign s3:&#x2F;&#x2F;your-bucket-name&#x2F;test.txt --expires-in 3600
+
+# 7일짜리 URL 생성
+aws s3 presign s3:&#x2F;&#x2F;your-bucket-name&#x2F;backup.tar.gz --expires-in 604800
+</code></pre>
 <p><strong>생성된 URL 예시:</strong></p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>https://your-bucket.s3.ap-northeast-2.amazonaws.com/test.txt?
-</span><span>X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;
-</span><span>X-Amz-Credential=AKIA...&amp;
-</span><span>X-Amz-Date=20250118T120000Z&amp;
-</span><span>X-Amz-Expires=3600&amp;
-</span><span>X-Amz-SignedHeaders=host&amp;
-</span><span>X-Amz-Signature=abc123...
-</span></code></pre>
+<pre><code>https:&#x2F;&#x2F;your-bucket.s3.ap-northeast-2.amazonaws.com&#x2F;test.txt?
+X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;
+X-Amz-Credential=AKIA...&amp;
+X-Amz-Date=20250118T120000Z&amp;
+X-Amz-Expires=3600&amp;
+X-Amz-SignedHeaders=host&amp;
+X-Amz-Signature=abc123...
+</code></pre>
 <h2 id="siljeon-hwalyong-sinario">실전 활용 시나리오</h2>
 <h3 id="sinario-1-baegeob-pail-slack-gongyu">시나리오 1: 백업 파일 Slack 공유</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>boto3
-</span><span style="color:#b48ead;">import </span><span>requests
-</span><span style="color:#b48ead;">from </span><span>datetime </span><span style="color:#b48ead;">import </span><span>datetime
-</span><span>
-</span><span style="color:#bf616a;">SLACK_WEBHOOK </span><span>= &quot;</span><span style="color:#a3be8c;">https://hooks.slack.com/services/YOUR/WEBHOOK/URL</span><span>&quot;
-</span><span>
-</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">share_backup_to_slack</span><span>(</span><span style="color:#bf616a;">bucket</span><span>, </span><span style="color:#bf616a;">backup_file</span><span>):
-</span><span>    </span><span style="color:#65737e;">&quot;&quot;&quot;백업 완료 시 Slack으로 다운로드 링크 전송&quot;&quot;&quot;
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 1. Pre-signed URL 생성 (24시간)
-</span><span>    s3_client = boto3.</span><span style="color:#bf616a;">client</span><span>(&#39;</span><span style="color:#a3be8c;">s3</span><span>&#39;)
-</span><span>    url = s3_client.</span><span style="color:#bf616a;">generate_presigned_url</span><span>(
-</span><span>        &#39;</span><span style="color:#a3be8c;">get_object</span><span>&#39;,
-</span><span>        </span><span style="color:#bf616a;">Params</span><span>={&#39;</span><span style="color:#a3be8c;">Bucket</span><span>&#39;: bucket, &#39;</span><span style="color:#a3be8c;">Key</span><span>&#39;: backup_file},
-</span><span>        </span><span style="color:#bf616a;">ExpiresIn</span><span>=</span><span style="color:#d08770;">86400  </span><span style="color:#65737e;"># 24시간
-</span><span>    )
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 2. Slack 메시지 작성
-</span><span>    message = {
-</span><span>        &quot;</span><span style="color:#a3be8c;">text</span><span>&quot;: </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">📦 백업 완료: </span><span>{backup_file}&quot;,
-</span><span>        &quot;</span><span style="color:#a3be8c;">attachments</span><span>&quot;: [{
-</span><span>            &quot;</span><span style="color:#a3be8c;">color</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">good</span><span>&quot;,
-</span><span>            &quot;</span><span style="color:#a3be8c;">fields</span><span>&quot;: [
-</span><span>                {&quot;</span><span style="color:#a3be8c;">title</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">다운로드 링크</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: url, &quot;</span><span style="color:#a3be8c;">short</span><span>&quot;: </span><span style="color:#d08770;">False</span><span>},
-</span><span>                {&quot;</span><span style="color:#a3be8c;">title</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">유효 시간</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">24시간</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">short</span><span>&quot;: </span><span style="color:#d08770;">True</span><span>},
-</span><span>                {&quot;</span><span style="color:#a3be8c;">title</span><span>&quot;: &quot;</span><span style="color:#a3be8c;">생성 시각</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">value</span><span>&quot;: datetime.</span><span style="color:#bf616a;">now</span><span>().</span><span style="color:#bf616a;">strftime</span><span>(&quot;</span><span style="color:#d08770;">%Y</span><span style="color:#a3be8c;">-</span><span style="color:#d08770;">%m</span><span style="color:#a3be8c;">-</span><span style="color:#d08770;">%d %H</span><span style="color:#a3be8c;">:</span><span style="color:#d08770;">%M</span><span>&quot;), &quot;</span><span style="color:#a3be8c;">short</span><span>&quot;: </span><span style="color:#d08770;">True</span><span>}
-</span><span>            ]
-</span><span>        }]
-</span><span>    }
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 3. Slack 전송
-</span><span>    response = requests.</span><span style="color:#bf616a;">post</span><span>(</span><span style="color:#bf616a;">SLACK_WEBHOOK</span><span>, </span><span style="color:#bf616a;">json</span><span>=message)
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">if </span><span>response.status_code == </span><span style="color:#d08770;">200</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(&quot;</span><span style="color:#a3be8c;">✅ Slack 알림 전송 완료</span><span>&quot;)
-</span><span>    </span><span style="color:#b48ead;">else</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">❌ Slack 전송 실패: </span><span>{response.status_code}&quot;)
-</span><span>
-</span><span style="color:#65737e;"># 실행
-</span><span style="color:#bf616a;">share_backup_to_slack</span><span>(&#39;</span><span style="color:#a3be8c;">backup-bucket</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">daily/db-backup-2025-01-18.sql.gz</span><span>&#39;)
-</span></code></pre>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">import boto3
+import requests
+from datetime import datetime
+
+SLACK_WEBHOOK = &quot;https:&#x2F;&#x2F;hooks.slack.com&#x2F;services&#x2F;YOUR&#x2F;WEBHOOK&#x2F;URL&quot;
+
+def share_backup_to_slack(bucket, backup_file):
+    &quot;&quot;&quot;백업 완료 시 Slack으로 다운로드 링크 전송&quot;&quot;&quot;
+    
+    # 1. Pre-signed URL 생성 (24시간)
+    s3_client = boto3.client(&#x27;s3&#x27;)
+    url = s3_client.generate_presigned_url(
+        &#x27;get_object&#x27;,
+        Params={&#x27;Bucket&#x27;: bucket, &#x27;Key&#x27;: backup_file},
+        ExpiresIn=86400  # 24시간
+    )
+    
+    # 2. Slack 메시지 작성
+    message = {
+        &quot;text&quot;: f&quot;📦 백업 완료: {backup_file}&quot;,
+        &quot;attachments&quot;: [{
+            &quot;color&quot;: &quot;good&quot;,
+            &quot;fields&quot;: [
+                {&quot;title&quot;: &quot;다운로드 링크&quot;, &quot;value&quot;: url, &quot;short&quot;: False},
+                {&quot;title&quot;: &quot;유효 시간&quot;, &quot;value&quot;: &quot;24시간&quot;, &quot;short&quot;: True},
+                {&quot;title&quot;: &quot;생성 시각&quot;, &quot;value&quot;: datetime.now().strftime(&quot;%Y-%m-%d %H:%M&quot;), &quot;short&quot;: True}
+            ]
+        }]
+    }
+    
+    # 3. Slack 전송
+    response = requests.post(SLACK_WEBHOOK, json=message)
+    
+    if response.status_code == 200:
+        print(&quot;✅ Slack 알림 전송 완료&quot;)
+    else:
+        print(f&quot;❌ Slack 전송 실패: {response.status_code}&quot;)
+
+# 실행
+share_backup_to_slack(&#x27;backup-bucket&#x27;, &#x27;daily&#x2F;db-backup-2025-01-18.sql.gz&#x27;)
+</code></pre>
 <h3 id="sinario-2-moniteoring-ripoteu-jadong-baepo">시나리오 2: 모니터링 리포트 자동 배포</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>boto3
-</span><span style="color:#b48ead;">from </span><span>datetime </span><span style="color:#b48ead;">import </span><span>datetime, timedelta
-</span><span>
-</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">create_daily_report_url</span><span>(</span><span style="color:#bf616a;">bucket</span><span>, </span><span style="color:#bf616a;">report_date</span><span>=</span><span style="color:#d08770;">None</span><span>):
-</span><span>    </span><span style="color:#65737e;">&quot;&quot;&quot;일일 리포트 URL 생성&quot;&quot;&quot;
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">if </span><span>report_date is </span><span style="color:#d08770;">None</span><span>:
-</span><span>        report_date = datetime.</span><span style="color:#bf616a;">now</span><span>().</span><span style="color:#bf616a;">strftime</span><span>(&#39;</span><span style="color:#d08770;">%Y</span><span style="color:#a3be8c;">-</span><span style="color:#d08770;">%m</span><span style="color:#a3be8c;">-</span><span style="color:#d08770;">%d</span><span>&#39;)
-</span><span>    
-</span><span>    report_key = </span><span style="color:#b48ead;">f</span><span>&#39;</span><span style="color:#a3be8c;">reports/daily/monitoring-</span><span>{report_date}</span><span style="color:#a3be8c;">.pdf</span><span>&#39;
-</span><span>    
-</span><span>    s3_client = boto3.</span><span style="color:#bf616a;">client</span><span>(&#39;</span><span style="color:#a3be8c;">s3</span><span>&#39;)
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 리포트가 존재하는지 확인
-</span><span>    </span><span style="color:#b48ead;">try</span><span>:
-</span><span>        s3_client.</span><span style="color:#bf616a;">head_object</span><span>(</span><span style="color:#bf616a;">Bucket</span><span>=bucket, </span><span style="color:#bf616a;">Key</span><span>=report_key)
-</span><span>    </span><span style="color:#b48ead;">except</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">❌ 리포트가 없습니다: </span><span>{report_key}&quot;)
-</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">None
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># URL 생성 (12시간 유효)
-</span><span>    url = s3_client.</span><span style="color:#bf616a;">generate_presigned_url</span><span>(
-</span><span>        &#39;</span><span style="color:#a3be8c;">get_object</span><span>&#39;,
-</span><span>        </span><span style="color:#bf616a;">Params</span><span>={&#39;</span><span style="color:#a3be8c;">Bucket</span><span>&#39;: bucket, &#39;</span><span style="color:#a3be8c;">Key</span><span>&#39;: report_key},
-</span><span>        </span><span style="color:#bf616a;">ExpiresIn</span><span>=</span><span style="color:#d08770;">43200
-</span><span>    )
-</span><span>    
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">✅ 리포트 URL 생성: </span><span>{report_date}&quot;)
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">URL: </span><span>{url}&quot;)
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">return </span><span>url
-</span><span>
-</span><span style="color:#65737e;"># cron으로 매일 오전 9시 실행
-</span><span style="color:#65737e;"># 0 9 * * * python3 /scripts/send_report.py
-</span></code></pre>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">import boto3
+from datetime import datetime, timedelta
+
+def create_daily_report_url(bucket, report_date=None):
+    &quot;&quot;&quot;일일 리포트 URL 생성&quot;&quot;&quot;
+    
+    if report_date is None:
+        report_date = datetime.now().strftime(&#x27;%Y-%m-%d&#x27;)
+    
+    report_key = f&#x27;reports&#x2F;daily&#x2F;monitoring-{report_date}.pdf&#x27;
+    
+    s3_client = boto3.client(&#x27;s3&#x27;)
+    
+    # 리포트가 존재하는지 확인
+    try:
+        s3_client.head_object(Bucket=bucket, Key=report_key)
+    except:
+        print(f&quot;❌ 리포트가 없습니다: {report_key}&quot;)
+        return None
+    
+    # URL 생성 (12시간 유효)
+    url = s3_client.generate_presigned_url(
+        &#x27;get_object&#x27;,
+        Params={&#x27;Bucket&#x27;: bucket, &#x27;Key&#x27;: report_key},
+        ExpiresIn=43200
+    )
+    
+    print(f&quot;✅ 리포트 URL 생성: {report_date}&quot;)
+    print(f&quot;URL: {url}&quot;)
+    
+    return url
+
+# cron으로 매일 오전 9시 실행
+# 0 9 * * * python3 &#x2F;scripts&#x2F;send_report.py
+</code></pre>
 <h3 id="sinario-3-seobeo-rogeu-imsi-gongyu">시나리오 3: 서버 로그 임시 공유</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>boto3
-</span><span style="color:#b48ead;">import </span><span>sys
-</span><span>
-</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">share_server_logs</span><span>(</span><span style="color:#bf616a;">server_name</span><span>, </span><span style="color:#bf616a;">log_date</span><span>, </span><span style="color:#bf616a;">expires_minutes</span><span>=</span><span style="color:#d08770;">30</span><span>):
-</span><span>    </span><span style="color:#65737e;">&quot;&quot;&quot;특정 서버의 로그 파일을 임시로 공유&quot;&quot;&quot;
-</span><span>    
-</span><span>    bucket = &#39;</span><span style="color:#a3be8c;">server-logs</span><span>&#39;
-</span><span>    log_file = </span><span style="color:#b48ead;">f</span><span>&#39;{server_name}</span><span style="color:#a3be8c;">/access-</span><span>{log_date}</span><span style="color:#a3be8c;">.log.gz</span><span>&#39;
-</span><span>    
-</span><span>    s3_client = boto3.</span><span style="color:#bf616a;">client</span><span>(&#39;</span><span style="color:#a3be8c;">s3</span><span>&#39;)
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># 파일 존재 확인
-</span><span>    </span><span style="color:#b48ead;">try</span><span>:
-</span><span>        response = s3_client.</span><span style="color:#bf616a;">head_object</span><span>(</span><span style="color:#bf616a;">Bucket</span><span>=bucket, </span><span style="color:#bf616a;">Key</span><span>=log_file)
-</span><span>        file_size = response[&#39;</span><span style="color:#a3be8c;">ContentLength</span><span>&#39;] / (</span><span style="color:#d08770;">1024</span><span>*</span><span style="color:#d08770;">1024</span><span>)  </span><span style="color:#65737e;"># MB
-</span><span>        
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">📄 로그 파일 찾음: </span><span>{log_file}&quot;)
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">📦 크기: </span><span>{file_size</span><span style="color:#d08770;">:.2f</span><span>}</span><span style="color:#a3be8c;"> MB</span><span>&quot;)
-</span><span>        
-</span><span>    </span><span style="color:#b48ead;">except</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">❌ 로그 파일이 없습니다: </span><span>{log_file}&quot;)
-</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">None
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># Pre-signed URL 생성
-</span><span>    url = s3_client.</span><span style="color:#bf616a;">generate_presigned_url</span><span>(
-</span><span>        &#39;</span><span style="color:#a3be8c;">get_object</span><span>&#39;,
-</span><span>        </span><span style="color:#bf616a;">Params</span><span>={&#39;</span><span style="color:#a3be8c;">Bucket</span><span>&#39;: bucket, &#39;</span><span style="color:#a3be8c;">Key</span><span>&#39;: log_file},
-</span><span>        </span><span style="color:#bf616a;">ExpiresIn</span><span>=expires_minutes * </span><span style="color:#d08770;">60
-</span><span>    )
-</span><span>    
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">✅ 다운로드 링크 (</span><span>{expires_minutes}</span><span style="color:#a3be8c;">분 유효):</span><span>&quot;)
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(url)
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#96b5b4;">\n</span><span style="color:#a3be8c;">다운로드 명령어:</span><span>&quot;)
-</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">curl -o </span><span>{server_name}</span><span style="color:#a3be8c;">-</span><span>{log_date}</span><span style="color:#a3be8c;">.log.gz &#39;</span><span>{url}</span><span style="color:#a3be8c;">&#39;</span><span>&quot;)
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">return </span><span>url
-</span><span>
-</span><span style="color:#65737e;"># 사용 예시
-</span><span style="color:#b48ead;">if </span><span>__name__ == &quot;</span><span style="color:#a3be8c;">__main__</span><span>&quot;:
-</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">len</span><span>(sys.argv) &lt; </span><span style="color:#d08770;">3</span><span>:
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(&quot;</span><span style="color:#a3be8c;">사용법: python share_logs.py &lt;서버명&gt; &lt;날짜&gt;</span><span>&quot;)
-</span><span>        </span><span style="color:#96b5b4;">print</span><span>(&quot;</span><span style="color:#a3be8c;">예시: python share_logs.py web-01 2025-01-18</span><span>&quot;)
-</span><span>        sys.</span><span style="color:#bf616a;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>)
-</span><span>    
-</span><span>    server = sys.argv[</span><span style="color:#d08770;">1</span><span>]
-</span><span>    date = sys.argv[</span><span style="color:#d08770;">2</span><span>]
-</span><span>    
-</span><span>    </span><span style="color:#bf616a;">share_server_logs</span><span>(server, date, </span><span style="color:#bf616a;">expires_minutes</span><span>=</span><span style="color:#d08770;">30</span><span>)
-</span></code></pre>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">import boto3
+import sys
+
+def share_server_logs(server_name, log_date, expires_minutes=30):
+    &quot;&quot;&quot;특정 서버의 로그 파일을 임시로 공유&quot;&quot;&quot;
+    
+    bucket = &#x27;server-logs&#x27;
+    log_file = f&#x27;{server_name}&#x2F;access-{log_date}.log.gz&#x27;
+    
+    s3_client = boto3.client(&#x27;s3&#x27;)
+    
+    # 파일 존재 확인
+    try:
+        response = s3_client.head_object(Bucket=bucket, Key=log_file)
+        file_size = response[&#x27;ContentLength&#x27;] &#x2F; (1024*1024)  # MB
+        
+        print(f&quot;📄 로그 파일 찾음: {log_file}&quot;)
+        print(f&quot;📦 크기: {file_size:.2f} MB&quot;)
+        
+    except:
+        print(f&quot;❌ 로그 파일이 없습니다: {log_file}&quot;)
+        return None
+    
+    # Pre-signed URL 생성
+    url = s3_client.generate_presigned_url(
+        &#x27;get_object&#x27;,
+        Params={&#x27;Bucket&#x27;: bucket, &#x27;Key&#x27;: log_file},
+        ExpiresIn=expires_minutes * 60
+    )
+    
+    print(f&quot;\n✅ 다운로드 링크 ({expires_minutes}분 유효):&quot;)
+    print(url)
+    print(f&quot;\n다운로드 명령어:&quot;)
+    print(f&quot;curl -o {server_name}-{log_date}.log.gz &#x27;{url}&#x27;&quot;)
+    
+    return url
+
+# 사용 예시
+if __name__ == &quot;__main__&quot;:
+    if len(sys.argv) &lt; 3:
+        print(&quot;사용법: python share_logs.py &lt;서버명&gt; &lt;날짜&gt;&quot;)
+        print(&quot;예시: python share_logs.py web-01 2025-01-18&quot;)
+        sys.exit(1)
+    
+    server = sys.argv[1]
+    date = sys.argv[2]
+    
+    share_server_logs(server, date, expires_minutes=30)
+</code></pre>
 <h2 id="boan-goryeosahang">보안 고려사항</h2>
 <h3 id="1-jeogjeolhan-manryo-sigan-seoljeong">1. 적절한 만료 시간 설정</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#65737e;"># 용도별 권장 만료 시간
-</span><span style="color:#bf616a;">EXPIRATION_TIMES </span><span>= {
-</span><span>    &#39;</span><span style="color:#a3be8c;">emergency_share</span><span>&#39;: </span><span style="color:#d08770;">900</span><span>,      </span><span style="color:#65737e;"># 15분 - 긴급 공유
-</span><span>    &#39;</span><span style="color:#a3be8c;">customer_download</span><span>&#39;: </span><span style="color:#d08770;">3600</span><span>,   </span><span style="color:#65737e;"># 1시간 - 고객 다운로드
-</span><span>    &#39;</span><span style="color:#a3be8c;">daily_report</span><span>&#39;: </span><span style="color:#d08770;">43200</span><span>,       </span><span style="color:#65737e;"># 12시간 - 일일 리포트
-</span><span>    &#39;</span><span style="color:#a3be8c;">backup_archive</span><span>&#39;: </span><span style="color:#d08770;">604800     </span><span style="color:#65737e;"># 7일 - 백업 아카이브
-</span><span>}
-</span><span>
-</span><span style="color:#65737e;"># 사용
-</span><span>url = </span><span style="color:#bf616a;">create_presigned_url</span><span>(
-</span><span>    </span><span style="color:#bf616a;">bucket</span><span>=&#39;</span><span style="color:#a3be8c;">my-bucket</span><span>&#39;,
-</span><span>    </span><span style="color:#bf616a;">key</span><span>=&#39;</span><span style="color:#a3be8c;">sensitive-data.zip</span><span>&#39;,
-</span><span>    </span><span style="color:#bf616a;">expires_in</span><span>=</span><span style="color:#bf616a;">EXPIRATION_TIMES</span><span>[&#39;</span><span style="color:#a3be8c;">emergency_share</span><span>&#39;]  </span><span style="color:#65737e;"># 15분만
-</span><span>)
-</span></code></pre>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python"># 용도별 권장 만료 시간
+EXPIRATION_TIMES = {
+    &#x27;emergency_share&#x27;: 900,      # 15분 - 긴급 공유
+    &#x27;customer_download&#x27;: 3600,   # 1시간 - 고객 다운로드
+    &#x27;daily_report&#x27;: 43200,       # 12시간 - 일일 리포트
+    &#x27;backup_archive&#x27;: 604800     # 7일 - 백업 아카이브
+}
+
+# 사용
+url = create_presigned_url(
+    bucket=&#x27;my-bucket&#x27;,
+    key=&#x27;sensitive-data.zip&#x27;,
+    expires_in=EXPIRATION_TIMES[&#x27;emergency_share&#x27;]  # 15분만
+)
+</code></pre>
 <h3 id="2-url-nocul-bangji">2. URL 노출 방지</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">import </span><span>logging
-</span><span>
-</span><span style="color:#65737e;"># ❌ 나쁜 예 - 로그에 URL 노출
-</span><span>logger.</span><span style="color:#bf616a;">info</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">Generated URL: </span><span>{presigned_url}&quot;)
-</span><span>
-</span><span style="color:#65737e;"># ✅ 좋은 예 - URL은 숨기고 메타데이터만
-</span><span>logger.</span><span style="color:#bf616a;">info</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">Generated presigned URL for: </span><span>{bucket}</span><span style="color:#a3be8c;">/</span><span>{key}</span><span style="color:#a3be8c;">, expires in </span><span>{expires_in}</span><span style="color:#a3be8c;">s</span><span>&quot;)
-</span></code></pre>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">import logging
+
+# ❌ 나쁜 예 - 로그에 URL 노출
+logger.info(f&quot;Generated URL: {presigned_url}&quot;)
+
+# ✅ 좋은 예 - URL은 숨기고 메타데이터만
+logger.info(f&quot;Generated presigned URL for: {bucket}&#x2F;{key}, expires in {expires_in}s&quot;)
+</code></pre>
 <h2 id="seongneung-coejeoghwa">성능 최적화</h2>
 <h3 id="daeyongryang-paileun-cloudfront-sayong">대용량 파일은 CloudFront 사용</h3>
-<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">create_cloudfront_url</span><span>(</span><span style="color:#bf616a;">s3_key</span><span>, </span><span style="color:#bf616a;">expires_hours</span><span>=</span><span style="color:#d08770;">24</span><span>):
-</span><span>    </span><span style="color:#65737e;">&quot;&quot;&quot;CloudFront Signed URL 생성 (더 빠른 다운로드)&quot;&quot;&quot;
-</span><span>    
-</span><span>    </span><span style="color:#65737e;"># CloudFront 설정 (한 번만)
-</span><span>    cloudfront_domain = &#39;</span><span style="color:#a3be8c;">d1234567890.cloudfront.net</span><span>&#39;
-</span><span>    key_pair_id = &#39;</span><span style="color:#a3be8c;">APKAEXAMPLE</span><span>&#39;
-</span><span>    private_key_file = &#39;</span><span style="color:#a3be8c;">/path/to/private-key.pem</span><span>&#39;
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">from </span><span>botocore.signers </span><span style="color:#b48ead;">import </span><span>CloudFrontSigner
-</span><span>    </span><span style="color:#b48ead;">from </span><span>cryptography.hazmat.backends </span><span style="color:#b48ead;">import </span><span>default_backend
-</span><span>    </span><span style="color:#b48ead;">from </span><span>cryptography.hazmat.primitives </span><span style="color:#b48ead;">import </span><span>hashes, serialization
-</span><span>    </span><span style="color:#b48ead;">from </span><span>cryptography.hazmat.primitives.asymmetric </span><span style="color:#b48ead;">import </span><span>padding
-</span><span>    </span><span style="color:#b48ead;">from </span><span>datetime </span><span style="color:#b48ead;">import </span><span>datetime, timedelta
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">rsa_signer</span><span>(</span><span style="color:#bf616a;">message</span><span>):
-</span><span>        </span><span style="color:#b48ead;">with </span><span style="color:#96b5b4;">open</span><span>(private_key_file, &#39;</span><span style="color:#a3be8c;">rb</span><span>&#39;) </span><span style="color:#b48ead;">as </span><span>key_file:
-</span><span>            private_key = serialization.</span><span style="color:#bf616a;">load_pem_private_key</span><span>(
-</span><span>                key_file.</span><span style="color:#bf616a;">read</span><span>(),
-</span><span>                </span><span style="color:#bf616a;">password</span><span>=</span><span style="color:#d08770;">None</span><span>,
-</span><span>                </span><span style="color:#bf616a;">backend</span><span>=</span><span style="color:#bf616a;">default_backend</span><span>()
-</span><span>            )
-</span><span>        </span><span style="color:#b48ead;">return </span><span>private_key.</span><span style="color:#bf616a;">sign</span><span>(message, padding.</span><span style="color:#bf616a;">PKCS1v15</span><span>(), hashes.</span><span style="color:#bf616a;">SHA1</span><span>())
-</span><span>    
-</span><span>    cloudfront_signer = </span><span style="color:#bf616a;">CloudFrontSigner</span><span>(key_pair_id, rsa_signer)
-</span><span>    
-</span><span>    url = </span><span style="color:#b48ead;">f</span><span>&quot;</span><span style="color:#a3be8c;">https://</span><span>{cloudfront_domain}</span><span style="color:#a3be8c;">/</span><span>{s3_key}&quot;
-</span><span>    expire_date = datetime.</span><span style="color:#bf616a;">now</span><span>() + </span><span style="color:#bf616a;">timedelta</span><span>(</span><span style="color:#bf616a;">hours</span><span>=expires_hours)
-</span><span>    
-</span><span>    signed_url = cloudfront_signer.</span><span style="color:#bf616a;">generate_presigned_url</span><span>(
-</span><span>        url,
-</span><span>        </span><span style="color:#bf616a;">date_less_than</span><span>=expire_date
-</span><span>    )
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">return </span><span>signed_url
-</span></code></pre>
+<pre data-lang="python" class="language-python "><code class="language-python" data-lang="python">def create_cloudfront_url(s3_key, expires_hours=24):
+    &quot;&quot;&quot;CloudFront Signed URL 생성 (더 빠른 다운로드)&quot;&quot;&quot;
+    
+    # CloudFront 설정 (한 번만)
+    cloudfront_domain = &#x27;d1234567890.cloudfront.net&#x27;
+    key_pair_id = &#x27;APKAEXAMPLE&#x27;
+    private_key_file = &#x27;&#x2F;path&#x2F;to&#x2F;private-key.pem&#x27;
+    
+    from botocore.signers import CloudFrontSigner
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import padding
+    from datetime import datetime, timedelta
+    
+    def rsa_signer(message):
+        with open(private_key_file, &#x27;rb&#x27;) as key_file:
+            private_key = serialization.load_pem_private_key(
+                key_file.read(),
+                password=None,
+                backend=default_backend()
+            )
+        return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
+    
+    cloudfront_signer = CloudFrontSigner(key_pair_id, rsa_signer)
+    
+    url = f&quot;https:&#x2F;&#x2F;{cloudfront_domain}&#x2F;{s3_key}&quot;
+    expire_date = datetime.now() + timedelta(hours=expires_hours)
+    
+    signed_url = cloudfront_signer.generate_presigned_url(
+        url,
+        date_less_than=expire_date
+    )
+    
+    return signed_url
+</code></pre>
 
         </div>
 

@@ -104,50 +104,50 @@
 <h2 id="seolci-gwajeong">설치 과정</h2>
 <span id="continue-reading"></span><h3 id="1-zola-seolci-windows">1. Zola 설치 (Windows)</h3>
 <p>GitHub 릴리즈에서 직접 다운로드하는 방식을 사용했다.</p>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span style="color:#65737e;"># 1. https://github.com/getzola/zola/releases/latest 에서
-</span><span style="color:#65737e;"># zola-v0.21.0-x86_64-pc-windows-msvc.zip 다운로드
-</span><span>
-</span><span style="color:#65737e;"># 2. C:\zola 폴더에 압축 해제
-</span><span>
-</span><span style="color:#65737e;"># 3. 환경 변수 Path에 C:\zola 추가
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell"># 1. https:&#x2F;&#x2F;github.com&#x2F;getzola&#x2F;zola&#x2F;releases&#x2F;latest 에서
+# zola-v0.21.0-x86_64-pc-windows-msvc.zip 다운로드
+
+# 2. C:\zola 폴더에 압축 해제
+
+# 3. 환경 변수 Path에 C:\zola 추가
+</code></pre>
 <h3 id="2-beulrogeu-peurojegteu-saengseong">2. 블로그 프로젝트 생성</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>cd C:\Users\player\Documents
-</span><span>zola init myblog
-</span><span>
-</span><span style="color:#65737e;"># 질문에 답변:
-</span><span style="color:#65737e;"># URL: https://yourusername.github.io/blog
-</span><span style="color:#65737e;"># Sass: Y
-</span><span style="color:#65737e;"># Syntax highlighting: y
-</span><span style="color:#65737e;"># Search index: y
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell">cd C:\Users\player\Documents
+zola init myblog
+
+# 질문에 답변:
+# URL: https:&#x2F;&#x2F;yourusername.github.io&#x2F;blog
+# Sass: Y
+# Syntax highlighting: y
+# Search index: y
+</code></pre>
 <h3 id="3-tema-seolci">3. 테마 설치</h3>
 <p>terminimal 테마를 선택했다. 터미널 스타일이 깔끔하고 마음에 들었다.</p>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>cd myblog
-</span><span>git init
-</span><span>git submodule add https://</span><span style="color:#96b5b4;">github.com</span><span>/pawroman/zola-theme-terminimal.git themes/terminimal
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell">cd myblog
+git init
+git submodule add https:&#x2F;&#x2F;github.com&#x2F;pawroman&#x2F;zola-theme-terminimal.git themes&#x2F;terminimal
+</code></pre>
 <h3 id="4-seoljeong-pail-sujeong">4. 설정 파일 수정</h3>
 <p><code>config.toml</code>:</p>
-<pre data-lang="toml" style="background-color:#2b303b;color:#c0c5ce;" class="language-toml "><code class="language-toml" data-lang="toml"><span style="color:#bf616a;">base_url </span><span>= &quot;</span><span style="color:#a3be8c;">https://changki123.github.io/blog</span><span>&quot;
-</span><span style="color:#bf616a;">title </span><span>= &quot;</span><span style="color:#a3be8c;">changki123&#39;s blog</span><span>&quot;
-</span><span style="color:#bf616a;">description </span><span>= &quot;</span><span style="color:#a3be8c;">Infrastructure Engineer&#39;s Tech Blog</span><span>&quot;
-</span><span style="color:#bf616a;">compile_sass </span><span>= </span><span style="color:#d08770;">true
-</span><span style="color:#bf616a;">build_search_index </span><span>= </span><span style="color:#d08770;">true
-</span><span>
-</span><span style="color:#bf616a;">theme </span><span>= &quot;</span><span style="color:#a3be8c;">terminimal</span><span>&quot;
-</span><span>
-</span><span>[markdown]
-</span><span style="color:#bf616a;">highlight_code </span><span>= </span><span style="color:#d08770;">true
-</span><span>
-</span><span>[extra]
-</span><span style="color:#bf616a;">accent_color </span><span>= &quot;</span><span style="color:#a3be8c;">green</span><span>&quot;
-</span><span style="color:#bf616a;">logo_text </span><span>= &quot;</span><span style="color:#a3be8c;">changki123</span><span>&quot;
-</span></code></pre>
+<pre data-lang="toml" class="language-toml "><code class="language-toml" data-lang="toml">base_url = &quot;https:&#x2F;&#x2F;changki123.github.io&#x2F;blog&quot;
+title = &quot;changki123&#x27;s blog&quot;
+description = &quot;Infrastructure Engineer&#x27;s Tech Blog&quot;
+compile_sass = true
+build_search_index = true
+
+theme = &quot;terminimal&quot;
+
+[markdown]
+highlight_code = true
+
+[extra]
+accent_color = &quot;green&quot;
+logo_text = &quot;changki123&quot;
+</code></pre>
 <h3 id="5-rokeol-teseuteu">5. 로컬 테스트</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>zola serve
-</span><span style="color:#65737e;"># http://127.0.0.1:1111 접속
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell">zola serve
+# http:&#x2F;&#x2F;127.0.0.1:1111 접속
+</code></pre>
 <p>완벽하게 작동했다!</p>
 <h2 id="github-pages-baepo">GitHub Pages 배포</h2>
 <h3 id="1-github-repo-saengseong">1. GitHub 레포 생성</h3>
@@ -156,59 +156,59 @@
 <li>Public으로 생성</li>
 </ul>
 <h3 id="2-git-seoljeong">2. Git 설정</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span style="color:#65737e;"># Git 사용자 정보
-</span><span>git config --global user.email &quot;</span><span style="color:#a3be8c;">이메일@example.com</span><span>&quot;
-</span><span>git config --global user.name &quot;</span><span style="color:#a3be8c;">changki123</span><span>&quot;
-</span><span>
-</span><span style="color:#65737e;"># .gitignore 생성
-</span><span>echo &quot;</span><span style="color:#a3be8c;">public/</span><span>&quot; &gt; .gitignore
-</span><span>
-</span><span style="color:#65737e;"># 커밋 &amp; 푸시
-</span><span>git add .
-</span><span>git commit -m &quot;</span><span style="color:#a3be8c;">Initial commit</span><span>&quot;
-</span><span>git branch -M main
-</span><span>git remote add origin https://</span><span style="color:#96b5b4;">github.com</span><span>/changki123/blog.git
-</span><span>git push -u origin main
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell"># Git 사용자 정보
+git config --global user.email &quot;이메일@example.com&quot;
+git config --global user.name &quot;changki123&quot;
+
+# .gitignore 생성
+echo &quot;public&#x2F;&quot; &gt; .gitignore
+
+# 커밋 &amp; 푸시
+git add .
+git commit -m &quot;Initial commit&quot;
+git branch -M main
+git remote add origin https:&#x2F;&#x2F;github.com&#x2F;changki123&#x2F;blog.git
+git push -u origin main
+</code></pre>
 <h3 id="3-github-actions-weokeupeulrou">3. GitHub Actions 워크플로우</h3>
 <p><code>.github/workflows/deploy.yml</code>:</p>
-<pre data-lang="yaml" style="background-color:#2b303b;color:#c0c5ce;" class="language-yaml "><code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Deploy to GitHub Pages
-</span><span>
-</span><span style="color:#d08770;">on</span><span>:
-</span><span>  </span><span style="color:#bf616a;">push</span><span>:
-</span><span>    </span><span style="color:#bf616a;">branches</span><span>: [</span><span style="color:#a3be8c;">main</span><span>]
-</span><span>
-</span><span style="color:#bf616a;">jobs</span><span>:
-</span><span>  </span><span style="color:#bf616a;">build</span><span>:
-</span><span>    </span><span style="color:#bf616a;">runs-on</span><span>: </span><span style="color:#a3be8c;">ubuntu-latest
-</span><span>    
-</span><span>    </span><span style="color:#bf616a;">permissions</span><span>:
-</span><span>      </span><span style="color:#bf616a;">contents</span><span>: </span><span style="color:#a3be8c;">write
-</span><span>    
-</span><span>    </span><span style="color:#bf616a;">steps</span><span>:
-</span><span>      - </span><span style="color:#bf616a;">uses</span><span>: </span><span style="color:#a3be8c;">actions/checkout@v4
-</span><span>        </span><span style="color:#bf616a;">with</span><span>:
-</span><span>          </span><span style="color:#bf616a;">submodules</span><span>: </span><span style="color:#d08770;">true
-</span><span>      
-</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Install Zola
-</span><span>        </span><span style="color:#bf616a;">uses</span><span>: </span><span style="color:#a3be8c;">taiki-e/install-action@v2
-</span><span>        </span><span style="color:#bf616a;">with</span><span>:
-</span><span>          </span><span style="color:#bf616a;">tool</span><span>: </span><span style="color:#a3be8c;">zola@0.21.0
-</span><span>      
-</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Build
-</span><span>        </span><span style="color:#bf616a;">run</span><span>: </span><span style="color:#a3be8c;">zola build --base-url https://changki123.github.io/blog
-</span><span>      
-</span><span>      - </span><span style="color:#bf616a;">name</span><span>: </span><span style="color:#a3be8c;">Deploy
-</span><span>        </span><span style="color:#bf616a;">uses</span><span>: </span><span style="color:#a3be8c;">peaceiris/actions-gh-pages@v3
-</span><span>        </span><span style="color:#bf616a;">with</span><span>:
-</span><span>          </span><span style="color:#bf616a;">github_token</span><span>: </span><span style="color:#a3be8c;">${{ secrets.GITHUB_TOKEN }}
-</span><span>          </span><span style="color:#bf616a;">publish_dir</span><span>: </span><span style="color:#a3be8c;">./public
-</span></code></pre>
+<pre data-lang="yaml" class="language-yaml "><code class="language-yaml" data-lang="yaml">name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions&#x2F;checkout@v4
+        with:
+          submodules: true
+      
+      - name: Install Zola
+        uses: taiki-e&#x2F;install-action@v2
+        with:
+          tool: zola@0.21.0
+      
+      - name: Build
+        run: zola build --base-url https:&#x2F;&#x2F;changki123.github.io&#x2F;blog
+      
+      - name: Deploy
+        uses: peaceiris&#x2F;actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .&#x2F;public
+</code></pre>
 <h3 id="4-jekyll-bihwalseonghwa">4. Jekyll 비활성화</h3>
 <p>GitHub가 자동으로 Jekyll을 실행하려고 해서 <code>.nojekyll</code> 파일을 추가했다.</p>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>echo $</span><span style="color:#d08770;">null </span><span>&gt; .nojekyll
-</span><span>echo $</span><span style="color:#d08770;">null </span><span>&gt; </span><span style="color:#b48ead;">static</span><span>\.nojekyll
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell">echo $null &gt; .nojekyll
+echo $null &gt; static\.nojekyll
+</code></pre>
 <h3 id="5-github-seoljeong">5. GitHub 설정</h3>
 <ul>
 <li>Settings → Actions → Workflow permissions</li>

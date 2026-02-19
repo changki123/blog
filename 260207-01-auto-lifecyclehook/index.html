@@ -107,52 +107,52 @@
 <span id="continue-reading"></span>
 <hr />
 <h2 id="akitegceo-gaeyo">아키텍처 개요</h2>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Auto Scaling Group
-</span><span>    ↓
-</span><span>Lifecycle Hook (Terminating:Wait)
-</span><span>    ↓
-</span><span>systemd watcher 감지
-</span><span>    ↓
-</span><span>백업 스크립트 실행
-</span><span>    ↓
-</span><span>S3 업로드 완료
-</span><span>    ↓
-</span><span>Lifecycle Action Complete
-</span><span>    ↓
-</span><span>인스턴스 종료
-</span></code></pre>
+<pre><code>Auto Scaling Group
+    ↓
+Lifecycle Hook (Terminating:Wait)
+    ↓
+systemd watcher 감지
+    ↓
+백업 스크립트 실행
+    ↓
+S3 업로드 완료
+    ↓
+Lifecycle Action Complete
+    ↓
+인스턴스 종료
+</code></pre>
 <hr />
 <h2 id="haegsim-guseong-yoso">핵심 구성 요소</h2>
 <h3 id="1-asg-lifecycle-watcher-systemd-seobiseu">1. ASG Lifecycle Watcher (systemd 서비스)</h3>
 <p>인스턴스가 부팅되면 자동으로 시작되어 <strong>5초마다 Auto Scaling 상태를 체크</strong>합니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># /usr/local/bin/asg-lifecycle-watcher.sh
-</span><span style="color:#b48ead;">while </span><span style="color:#bf616a;">true</span><span>; </span><span style="color:#b48ead;">do
-</span><span>    </span><span style="color:#bf616a;">RESULT</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">aws</span><span style="color:#a3be8c;"> autoscaling describe-auto-scaling-instances \
-</span><span style="color:#bf616a;">        --instance-ids </span><span>$</span><span style="color:#bf616a;">INSTANCE_ID </span><span style="color:#a3be8c;">\
-</span><span style="color:#bf616a;">        --region </span><span>$</span><span style="color:#bf616a;">REGION </span><span style="color:#a3be8c;">\
-</span><span style="color:#bf616a;">        --query </span><span>&#39;</span><span style="color:#a3be8c;">AutoScalingInstances[0].[LifecycleState,AutoScalingGroupName]</span><span>&#39; </span><span style="color:#a3be8c;">\
-</span><span style="color:#bf616a;">        --output</span><span style="color:#a3be8c;"> text </span><span style="color:#d08770;">2</span><span>&gt;</span><span style="color:#a3be8c;">/dev/null)
-</span><span>    
-</span><span>    </span><span style="color:#bf616a;">LIFECYCLE_STATE</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#96b5b4;">echo </span><span>&quot;$</span><span style="color:#bf616a;">RESULT</span><span>&quot; | </span><span style="color:#bf616a;">awk </span><span>&#39;</span><span style="color:#a3be8c;">{print $1}</span><span>&#39;</span><span style="color:#a3be8c;">)
-</span><span>    
-</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[ </span><span>&quot;$</span><span style="color:#bf616a;">LIFECYCLE_STATE</span><span>&quot; == &quot;</span><span style="color:#a3be8c;">Terminating:Wait</span><span>&quot; </span><span style="color:#96b5b4;">]</span><span>; </span><span style="color:#b48ead;">then
-</span><span>        </span><span style="color:#65737e;"># 백업 실행!
-</span><span>        </span><span style="color:#bf616a;">/usr/local/bin/s3-backup-shutdown.sh
-</span><span>        
-</span><span>        </span><span style="color:#65737e;"># 백업 완료 신호
-</span><span>        </span><span style="color:#bf616a;">aws</span><span> autoscaling complete-lifecycle-action \
-</span><span style="color:#bf616a;">            --lifecycle-action-result</span><span> CONTINUE \
-</span><span style="color:#bf616a;">            --lifecycle-hook-name</span><span> backup-on-terminate \
-</span><span style="color:#bf616a;">            --auto-scaling-group-name </span><span>$</span><span style="color:#bf616a;">ASG_NAME </span><span>\
-</span><span style="color:#bf616a;">            --instance-id </span><span>$</span><span style="color:#bf616a;">INSTANCE_ID </span><span>\
-</span><span style="color:#bf616a;">            --region </span><span>$</span><span style="color:#bf616a;">REGION
-</span><span>        
-</span><span>        </span><span style="color:#b48ead;">break
-</span><span>    </span><span style="color:#b48ead;">fi
-</span><span>    
-</span><span>    </span><span style="color:#bf616a;">sleep</span><span> 5
-</span><span style="color:#b48ead;">done
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># &#x2F;usr&#x2F;local&#x2F;bin&#x2F;asg-lifecycle-watcher.sh
+while true; do
+    RESULT=$(aws autoscaling describe-auto-scaling-instances \
+        --instance-ids $INSTANCE_ID \
+        --region $REGION \
+        --query &#x27;AutoScalingInstances[0].[LifecycleState,AutoScalingGroupName]&#x27; \
+        --output text 2&gt;&#x2F;dev&#x2F;null)
+    
+    LIFECYCLE_STATE=$(echo &quot;$RESULT&quot; | awk &#x27;{print $1}&#x27;)
+    
+    if [ &quot;$LIFECYCLE_STATE&quot; == &quot;Terminating:Wait&quot; ]; then
+        # 백업 실행!
+        &#x2F;usr&#x2F;local&#x2F;bin&#x2F;s3-backup-shutdown.sh
+        
+        # 백업 완료 신호
+        aws autoscaling complete-lifecycle-action \
+            --lifecycle-action-result CONTINUE \
+            --lifecycle-hook-name backup-on-terminate \
+            --auto-scaling-group-name $ASG_NAME \
+            --instance-id $INSTANCE_ID \
+            --region $REGION
+        
+        break
+    fi
+    
+    sleep 5
+done
+</code></pre>
 <p><strong>핵심 로직:</strong></p>
 <ul>
 <li><code>Terminating:Wait</code> 상태 감지 시 백업 스크립트 실행</li>
@@ -162,36 +162,36 @@
 <hr />
 <h3 id="2-rogeu-akaibeu-seukeuribteu">2. 로그 아카이브 스크립트</h3>
 <p>각 애플리케이션별 로그를 압축하여 S3에 업로드합니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># /data/backup/scripts/log_archive_to_s3.sh
-</span><span style="color:#bf616a;">DATE</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">date</span><span style="color:#a3be8c;"> +</span><span>%</span><span style="color:#bf616a;">Y</span><span>%</span><span style="color:#bf616a;">m</span><span>%</span><span style="color:#bf616a;">d</span><span style="color:#a3be8c;">)
-</span><span style="color:#bf616a;">INSTANCE_ID</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">curl -s</span><span style="color:#a3be8c;"> http://169.254.169.254/latest/meta-data/instance-id)
-</span><span style="color:#bf616a;">BACKUP_DIR</span><span>=</span><span style="color:#a3be8c;">/data/backup/LOG_ARCHIVED
-</span><span style="color:#bf616a;">S3_BUCKET</span><span>=&quot;</span><span style="color:#a3be8c;">s3://my-backup-bucket/web-servers/</span><span>$</span><span style="color:#bf616a;">INSTANCE_ID</span><span style="color:#a3be8c;">/LOG/</span><span>$</span><span style="color:#bf616a;">DATE</span><span style="color:#a3be8c;">/</span><span>&quot;
-</span><span style="color:#bf616a;">LOG_SOURCE</span><span>=</span><span style="color:#a3be8c;">/data/backup/LOG
-</span><span>
-</span><span style="color:#bf616a;">mkdir -p </span><span>$</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE
-</span><span style="color:#96b5b4;">cd </span><span>$</span><span style="color:#bf616a;">LOG_SOURCE
-</span><span>
-</span><span style="color:#65737e;"># 각 서비스별 로그 압축
-</span><span style="color:#bf616a;">tar</span><span> czf $</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE</span><span>/nginx_$</span><span style="color:#bf616a;">DATE</span><span>.tar.gz nginx/
-</span><span style="color:#bf616a;">tar</span><span> czf $</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE</span><span>/app1_$</span><span style="color:#bf616a;">DATE</span><span>.tar.gz app1/
-</span><span style="color:#bf616a;">tar</span><span> czf $</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE</span><span>/app2_$</span><span style="color:#bf616a;">DATE</span><span>.tar.gz app2/
-</span><span style="color:#65737e;"># ... (기타 애플리케이션)
-</span><span>
-</span><span style="color:#65737e;"># S3 업로드
-</span><span style="color:#bf616a;">/usr/local/bin/aws</span><span> s3 cp $</span><span style="color:#bf616a;">BACKUP_DIR</span><span>/$</span><span style="color:#bf616a;">DATE</span><span>/ $</span><span style="color:#bf616a;">S3_BUCKET --recursive
-</span><span>
-</span><span style="color:#65737e;"># 15일 이상 된 로컬 백업 삭제
-</span><span style="color:#bf616a;">CUTOFF_DATE</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">date -d </span><span>&quot;</span><span style="color:#a3be8c;">15 days ago</span><span>&quot; &quot;</span><span style="color:#a3be8c;">+%Y%m%d</span><span>&quot;</span><span style="color:#a3be8c;">)
-</span><span style="color:#96b5b4;">cd </span><span>$</span><span style="color:#bf616a;">BACKUP_DIR
-</span><span>
-</span><span style="color:#b48ead;">for</span><span> DIR </span><span style="color:#b48ead;">in </span><span>*/; </span><span style="color:#b48ead;">do
-</span><span>    </span><span style="color:#bf616a;">DIR_NAME</span><span>=$</span><span style="color:#a3be8c;">(</span><span style="color:#bf616a;">basename </span><span>&quot;$</span><span style="color:#bf616a;">DIR</span><span>&quot;</span><span style="color:#a3be8c;">)
-</span><span>    </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">[[ </span><span>&quot;$</span><span style="color:#bf616a;">DIR_NAME</span><span>&quot; =~ ^</span><span style="color:#b48ead;">[</span><span>0-9</span><span style="color:#b48ead;">]</span><span>{8}$ </span><span style="color:#96b5b4;">]] </span><span>&amp;&amp; </span><span style="color:#96b5b4;">[[ </span><span>&quot;$</span><span style="color:#bf616a;">DIR_NAME</span><span>&quot; </span><span style="color:#bf616a;">-lt </span><span>&quot;$</span><span style="color:#bf616a;">CUTOFF_DATE</span><span>&quot; </span><span style="color:#96b5b4;">]]</span><span>; </span><span style="color:#b48ead;">then
-</span><span>        </span><span style="color:#bf616a;">rm -rf </span><span>&quot;$</span><span style="color:#bf616a;">DIR_NAME</span><span>&quot;
-</span><span>    </span><span style="color:#b48ead;">fi
-</span><span style="color:#b48ead;">done
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># &#x2F;data&#x2F;backup&#x2F;scripts&#x2F;log_archive_to_s3.sh
+DATE=$(date +%Y%m%d)
+INSTANCE_ID=$(curl -s http:&#x2F;&#x2F;169.254.169.254&#x2F;latest&#x2F;meta-data&#x2F;instance-id)
+BACKUP_DIR=&#x2F;data&#x2F;backup&#x2F;LOG_ARCHIVED
+S3_BUCKET=&quot;s3:&#x2F;&#x2F;my-backup-bucket&#x2F;web-servers&#x2F;$INSTANCE_ID&#x2F;LOG&#x2F;$DATE&#x2F;&quot;
+LOG_SOURCE=&#x2F;data&#x2F;backup&#x2F;LOG
+
+mkdir -p $BACKUP_DIR&#x2F;$DATE
+cd $LOG_SOURCE
+
+# 각 서비스별 로그 압축
+tar czf $BACKUP_DIR&#x2F;$DATE&#x2F;nginx_$DATE.tar.gz nginx&#x2F;
+tar czf $BACKUP_DIR&#x2F;$DATE&#x2F;app1_$DATE.tar.gz app1&#x2F;
+tar czf $BACKUP_DIR&#x2F;$DATE&#x2F;app2_$DATE.tar.gz app2&#x2F;
+# ... (기타 애플리케이션)
+
+# S3 업로드
+&#x2F;usr&#x2F;local&#x2F;bin&#x2F;aws s3 cp $BACKUP_DIR&#x2F;$DATE&#x2F; $S3_BUCKET --recursive
+
+# 15일 이상 된 로컬 백업 삭제
+CUTOFF_DATE=$(date -d &quot;15 days ago&quot; &quot;+%Y%m%d&quot;)
+cd $BACKUP_DIR
+
+for DIR in *&#x2F;; do
+    DIR_NAME=$(basename &quot;$DIR&quot;)
+    if [[ &quot;$DIR_NAME&quot; =~ ^[0-9]{8}$ ]] &amp;&amp; [[ &quot;$DIR_NAME&quot; -lt &quot;$CUTOFF_DATE&quot; ]]; then
+        rm -rf &quot;$DIR_NAME&quot;
+    fi
+done
+</code></pre>
 <p><strong>특징:</strong></p>
 <ul>
 <li>인스턴스 ID 기반 경로로 구분 (여러 인스턴스 백업 혼선 방지)</li>
@@ -201,19 +201,19 @@
 <hr />
 <h3 id="3-systemd-seobiseu-deungrog">3. systemd 서비스 등록</h3>
 <p>부팅 시 자동으로 watcher 시작:</p>
-<pre data-lang="ini" style="background-color:#2b303b;color:#c0c5ce;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#b48ead;">[Unit]
-</span><span style="color:#bf616a;">Description</span><span>=ASG Lifecycle State Watcher
-</span><span style="color:#bf616a;">After</span><span>=network.target
-</span><span>
-</span><span style="color:#b48ead;">[Service]
-</span><span style="color:#bf616a;">Type</span><span>=simple
-</span><span style="color:#bf616a;">ExecStart</span><span>=/usr/local/bin/asg-lifecycle-watcher.sh
-</span><span style="color:#bf616a;">Restart</span><span>=always
-</span><span style="color:#bf616a;">RestartSec</span><span>=</span><span style="color:#d08770;">10
-</span><span>
-</span><span style="color:#b48ead;">[Install]
-</span><span style="color:#bf616a;">WantedBy</span><span>=multi-user.target
-</span></code></pre>
+<pre data-lang="ini" class="language-ini "><code class="language-ini" data-lang="ini">[Unit]
+Description=ASG Lifecycle State Watcher
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=&#x2F;usr&#x2F;local&#x2F;bin&#x2F;asg-lifecycle-watcher.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
 <p><code>Restart=always</code> 덕분에 스크립트가 비정상 종료되어도 자동 재시작됩니다.</p>
 <hr />
 <h2 id="baegeob-daesang-yesi">백업 대상 예시</h2>
@@ -226,38 +226,38 @@
 <hr />
 <h2 id="dongjag-heureum">동작 흐름</h2>
 <h3 id="jeongsang-unyeong-si">정상 운영 시</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>인스턴스 부팅
-</span><span>    ↓
-</span><span>systemd가 asg-watcher.service 시작
-</span><span>    ↓
-</span><span>5초마다 Lifecycle 상태 체크 (InService 유지)
-</span><span>    ↓
-</span><span>애플리케이션 서비스들 정상 운영
-</span></code></pre>
+<pre><code>인스턴스 부팅
+    ↓
+systemd가 asg-watcher.service 시작
+    ↓
+5초마다 Lifecycle 상태 체크 (InService 유지)
+    ↓
+애플리케이션 서비스들 정상 운영
+</code></pre>
 <h3 id="scale-in-balsaeng-si">Scale-in 발생 시</h3>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Auto Scaling: Scale-in 결정
-</span><span>    ↓
-</span><span>Lifecycle Hook 발동 (Terminating:Wait)
-</span><span>    ↓
-</span><span>Watcher 감지
-</span><span>    ↓
-</span><span>백업 스크립트 실행
-</span><span>  - 로그 압축
-</span><span>  - 웹 패키지 백업
-</span><span>  - S3 업로드
-</span><span>    ↓
-</span><span>complete-lifecycle-action 호출
-</span><span>    ↓
-</span><span>인스턴스 종료
-</span></code></pre>
+<pre><code>Auto Scaling: Scale-in 결정
+    ↓
+Lifecycle Hook 발동 (Terminating:Wait)
+    ↓
+Watcher 감지
+    ↓
+백업 스크립트 실행
+  - 로그 압축
+  - 웹 패키지 백업
+  - S3 업로드
+    ↓
+complete-lifecycle-action 호출
+    ↓
+인스턴스 종료
+</code></pre>
 <hr />
 <h2 id="haegsim-pointeu">핵심 포인트</h2>
 <h3 id="1-lifecycle-hookyi-jungyoseong">1. Lifecycle Hook의 중요성</h3>
 <p>일반적인 Auto Scaling 종료는 <strong>즉시 강제 종료</strong>됩니다.<br />
 Lifecycle Hook을 사용하면 <strong>종료 전 대기 시간 확보</strong> 가능!</p>
 <h3 id="2-inseuteonseu-id-giban-gyeongro">2. 인스턴스 ID 기반 경로</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">S3_BUCKET</span><span>=&quot;</span><span style="color:#a3be8c;">s3://my-backup-bucket/servers/</span><span>$</span><span style="color:#bf616a;">INSTANCE_ID</span><span style="color:#a3be8c;">/LOG/</span><span>$</span><span style="color:#bf616a;">DATE</span><span style="color:#a3be8c;">/</span><span>&quot;
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">S3_BUCKET=&quot;s3:&#x2F;&#x2F;my-backup-bucket&#x2F;servers&#x2F;$INSTANCE_ID&#x2F;LOG&#x2F;$DATE&#x2F;&quot;
+</code></pre>
 <p>하드코딩된 경로 대신 <strong>EC2 메타데이터에서 인스턴스 ID를 동적으로 가져와</strong> 사용.<br />
 → 어떤 인스턴스가 종료되든 자동으로 올바른 경로에 백업!</p>
 <h3 id="3-systemdyi-anjeongseong">3. systemd의 안정성</h3>
@@ -277,12 +277,12 @@ Lifecycle Hook을 사용하면 <strong>종료 전 대기 시간 확보</strong> 
 <hr />
 <h2 id="teureobeulsyuting-tib">트러블슈팅 팁</h2>
 <h3 id="watcherga-dongjaghaji-anheul-ddae">Watcher가 동작하지 않을 때</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 서비스 상태 확인
-</span><span style="color:#bf616a;">systemctl</span><span> status asg-watcher.service
-</span><span>
-</span><span style="color:#65737e;"># 로그 확인
-</span><span style="color:#bf616a;">journalctl -u</span><span> asg-watcher.service</span><span style="color:#bf616a;"> -f
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 서비스 상태 확인
+systemctl status asg-watcher.service
+
+# 로그 확인
+journalctl -u asg-watcher.service -f
+</code></pre>
 <h3 id="iam-gweonhan-hwagin">IAM 권한 확인</h3>
 <p>EC2 인스턴스 Role에 필요한 권한:</p>
 <ul>
@@ -291,12 +291,12 @@ Lifecycle Hook을 사용하면 <strong>종료 전 대기 시간 확보</strong> 
 <li><code>s3:PutObject</code> (백업 버킷)</li>
 </ul>
 <h3 id="baegeob-silpae-si">백업 실패 시</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 수동으로 백업 스크립트 실행해보기
-</span><span style="color:#bf616a;">/usr/local/bin/s3-backup-shutdown.sh
-</span><span>
-</span><span style="color:#65737e;"># S3 접근 테스트
-</span><span style="color:#bf616a;">aws</span><span> s3 ls s3://my-backup-bucket/
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 수동으로 백업 스크립트 실행해보기
+&#x2F;usr&#x2F;local&#x2F;bin&#x2F;s3-backup-shutdown.sh
+
+# S3 접근 테스트
+aws s3 ls s3:&#x2F;&#x2F;my-backup-bucket&#x2F;
+</code></pre>
 <hr />
 <h2 id="camgo-jaryo">참고 자료</h2>
 <ul>

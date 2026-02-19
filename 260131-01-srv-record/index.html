@@ -98,11 +98,11 @@
 <p>SRV(Service) 레코드는 특정 서비스의 위치 정보를 제공하는 DNS 레코드 타입임. 일반적인 A 레코드가 도메인을 IP 주소로 연결한다면, SRV 레코드는 서비스의 호스트명과 포트 정보까지 함께 제공할 수 있음.</p>
 <span id="continue-reading"></span><h2 id="wae-minecraft-seobeoeseo-srv-rekodeureul-sayonghalgga">왜 Minecraft 서버에서 SRV 레코드를 사용할까?</h2>
 <p>Minecraft Java Edition 서버는 기본적으로 25565 포트를 사용함. 일반적으로 서버에 접속하려면 다음과 같이 입력해야 함:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>mc.example.com:25565
-</span></code></pre>
+<pre><code>mc.example.com:25565
+</code></pre>
 <p>하지만 SRV 레코드를 설정하면 포트 번호 없이 깔끔하게 접속 가능:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>play.example.com
-</span></code></pre>
+<pre><code>play.example.com
+</code></pre>
 <p>특히 다음과 같은 상황에서 유용함:</p>
 <ul>
 <li>비표준 포트(예: 25566, 25567)를 사용하는 경우</li>
@@ -111,8 +111,8 @@
 </ul>
 <h2 id="srv-rekodeuyi-gujo">SRV 레코드의 구조</h2>
 <p>SRV 레코드는 다음과 같은 형식을 가짐:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_service._protocol.name TTL class SRV priority weight port target
-</span></code></pre>
+<pre><code>_service._protocol.name TTL class SRV priority weight port target
+</code></pre>
 <p>각 필드의 의미:</p>
 <ul>
 <li><strong>_service</strong>: 서비스 이름 (Minecraft는 <code>_minecraft</code>)</li>
@@ -126,22 +126,22 @@
 <h2 id="minecraft-seobeo-srv-rekodeu-seoljeong-yesi">Minecraft 서버 SRV 레코드 설정 예시</h2>
 <h3 id="sinario-1-gibon-seoljeong">시나리오 1: 기본 설정</h3>
 <p>실제 서버 주소가 <code>mc.example.com</code>이고 포트 <code>25565</code>를 사용하는 경우:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
-</span></code></pre>
+<pre><code>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
+</code></pre>
 <p>이제 사용자는 <code>play.example.com</code>만 입력하면 자동으로 <code>mc.example.com:25565</code>로 연결됨.</p>
 <h3 id="sinario-2-bipyojun-poteu-sayong">시나리오 2: 비표준 포트 사용</h3>
 <p>AWS EC2에서 포트 <code>25570</code>을 사용하는 경우:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25570 ec2-server.example.com.
-</span></code></pre>
+<pre><code>_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25570 ec2-server.example.com.
+</code></pre>
 <p>사용자는 <code>survival.example.com</code> 입력만으로 포트 25570으로 자동 접속됨.</p>
 <h3 id="sinario-3-yeoreo-seobeo-unyeong">시나리오 3: 여러 서버 운영</h3>
 <p>생존 서버와 크리에이티브 서버를 각각 다른 포트로 운영하는 경우:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span># 생존 서버 (포트 25565)
-</span><span>_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25565 mc1.example.com.
-</span><span>
-</span><span># 크리에이티브 서버 (포트 25566)
-</span><span>_minecraft._tcp.creative.example.com. 300 IN SRV 0 5 25566 mc2.example.com.
-</span></code></pre>
+<pre><code># 생존 서버 (포트 25565)
+_minecraft._tcp.survival.example.com. 300 IN SRV 0 5 25565 mc1.example.com.
+
+# 크리에이티브 서버 (포트 25566)
+_minecraft._tcp.creative.example.com. 300 IN SRV 0 5 25566 mc2.example.com.
+</code></pre>
 <h2 id="cloudflareeseo-srv-rekodeu-seoljeonghagi">Cloudflare에서 SRV 레코드 설정하기</h2>
 <p>Cloudflare DNS 관리 페이지에서 다음과 같이 설정:</p>
 <ol>
@@ -158,40 +158,40 @@
 <p><strong>주의사항</strong>: Cloudflare의 프록시 기능(주황색 구름)은 SRV 레코드에 적용되지 않으므로 회색(DNS only)으로 설정됨.</p>
 <h2 id="seoljeong-hwagin-bangbeob">설정 확인 방법</h2>
 <h3 id="windowseseo-hwagin">Windows에서 확인</h3>
-<pre data-lang="powershell" style="background-color:#2b303b;color:#c0c5ce;" class="language-powershell "><code class="language-powershell" data-lang="powershell"><span>nslookup -type=SRV </span><span style="color:#96b5b4;">_minecraft._tcp.play.example.com
-</span></code></pre>
+<pre data-lang="powershell" class="language-powershell "><code class="language-powershell" data-lang="powershell">nslookup -type=SRV _minecraft._tcp.play.example.com
+</code></pre>
 <h3 id="linux-macoseseo-hwagin">Linux/macOS에서 확인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">dig</span><span> SRV _minecraft._tcp.play.example.com
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">dig SRV _minecraft._tcp.play.example.com
+</code></pre>
 <p>올바르게 설정되었다면 다음과 같은 결과가 나옴:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
-</span></code></pre>
+<pre><code>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc.example.com.
+</code></pre>
 <h2 id="siljeon-jeogyong-tib">실전 적용 팁</h2>
 <h3 id="dns-jeonpa-sigan-goryeo">DNS 전파 시간 고려</h3>
 <p>SRV 레코드 설정 후 전파까지 최대 24-48시간이 걸릴 수 있음. TTL을 낮게 설정하면(300초 권장) 변경사항이 더 빠르게 반영됨.</p>
 <h3 id="yeoreo-seobeo-gan-buha-bunsan">여러 서버 간 부하 분산</h3>
 <p>동일한 Priority에서 Weight 값을 조정하여 트래픽을 분산할 수 있음:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 70 25565 mc1.example.com.
-</span><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 30 25565 mc2.example.com.
-</span></code></pre>
+<pre><code>_minecraft._tcp.play.example.com. 300 IN SRV 0 70 25565 mc1.example.com.
+_minecraft._tcp.play.example.com. 300 IN SRV 0 30 25565 mc2.example.com.
+</code></pre>
 <p>이 경우 약 70%는 mc1으로, 30%는 mc2로 분산됨.</p>
 <h3 id="jangae-joci-failover-guseong">장애 조치(Failover) 구성</h3>
 <p>Priority를 다르게 설정하여 메인 서버 장애 시 백업 서버로 자동 전환:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc-main.example.com.
-</span><span>_minecraft._tcp.play.example.com. 300 IN SRV 10 5 25565 mc-backup.example.com.
-</span></code></pre>
+<pre><code>_minecraft._tcp.play.example.com. 300 IN SRV 0 5 25565 mc-main.example.com.
+_minecraft._tcp.play.example.com. 300 IN SRV 10 5 25565 mc-backup.example.com.
+</code></pre>
 <h2 id="munje-haegyeol">문제 해결</h2>
 <h3 id="srv-rekodeuga-jagdonghaji-anheul-ddae">SRV 레코드가 작동하지 않을 때</h3>
 <h4 id="dns-kaesi-cogihwa">DNS 캐시 초기화</h4>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># Windows
-</span><span style="color:#bf616a;">ipconfig</span><span> /flushdns
-</span><span>
-</span><span style="color:#65737e;"># Linux
-</span><span style="color:#bf616a;">sudo</span><span> systemd-resolve</span><span style="color:#bf616a;"> --flush-caches
-</span><span>
-</span><span style="color:#65737e;"># macOS
-</span><span style="color:#bf616a;">sudo</span><span> dscacheutil</span><span style="color:#bf616a;"> -flushcache
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># Windows
+ipconfig &#x2F;flushdns
+
+# Linux
+sudo systemd-resolve --flush-caches
+
+# macOS
+sudo dscacheutil -flushcache
+</code></pre>
 <h4 id="banghwabyeog-hwagin">방화벽 확인</h4>
 <ul>
 <li>AWS Security Group에서 해당 포트 개방 확인</li>

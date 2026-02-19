@@ -112,84 +112,84 @@
 </ul>
 <h2 id="1dangye-siseutem-hwangyeong-seoljeong">1단계: 시스템 환경 설정</h2>
 <p>먼저 EC2 인스턴스에 접속한 후 시스템을 업데이트하고 필요한 패키지를 설치합니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 시스템 업데이트
-</span><span style="color:#bf616a;">sudo</span><span> dnf update</span><span style="color:#bf616a;"> -y
-</span><span>
-</span><span style="color:#65737e;"># Java 21 설치 (마인크래프트 1.21+ 필수)
-</span><span style="color:#bf616a;">sudo</span><span> dnf install java-21-amazon-corretto-headless</span><span style="color:#bf616a;"> -y
-</span><span>
-</span><span style="color:#65737e;"># 설치 확인
-</span><span style="color:#bf616a;">java -version
-</span><span style="color:#65737e;"># openjdk version &quot;21.0.x&quot; 출력되면 성공
-</span><span>
-</span><span style="color:#65737e;"># 필수 도구 설치
-</span><span style="color:#bf616a;">sudo</span><span> dnf install wget screen</span><span style="color:#bf616a;"> -y
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 시스템 업데이트
+sudo dnf update -y
+
+# Java 21 설치 (마인크래프트 1.21+ 필수)
+sudo dnf install java-21-amazon-corretto-headless -y
+
+# 설치 확인
+java -version
+# openjdk version &quot;21.0.x&quot; 출력되면 성공
+
+# 필수 도구 설치
+sudo dnf install wget screen -y
+</code></pre>
 <blockquote>
 <p><strong>참고</strong>: 마인크래프트 1.21 이상 버전은 Java 21이 필수입니다. 이전 버전의 Java를 사용하면 서버가 시작되지 않습니다.</p>
 </blockquote>
 <h2 id="2dangye-mainkeuraepeuteu-seobeo-pail-daunrodeu">2단계: 마인크래프트 서버 파일 다운로드</h2>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 서버 디렉토리 생성
-</span><span style="color:#bf616a;">sudo</span><span> mkdir</span><span style="color:#bf616a;"> -p</span><span> /opt/minecraft
-</span><span style="color:#bf616a;">sudo</span><span> chown</span><span style="color:#bf616a;"> -R</span><span> ec2-user:ec2-user /opt/minecraft/
-</span><span style="color:#96b5b4;">cd</span><span> /opt/minecraft
-</span><span>
-</span><span style="color:#65737e;"># 마인크래프트 1.21.11 서버 파일 다운로드 (최신버전은 알아서 변경해서 다운필요합니다.)
-</span><span style="color:#bf616a;">wget</span><span> https://piston-data.mojang.com/v1/objects/64bb6d763bed0a9f1d632ec347938594144943ed/server.jar</span><span style="color:#bf616a;"> -O</span><span> minecraft_server.1.21.11.jar
-</span><span>
-</span><span style="color:#65737e;"># EULA 동의 (필수)
-</span><span style="color:#96b5b4;">echo </span><span>&quot;</span><span style="color:#a3be8c;">eula=true</span><span>&quot; &gt; eula.txt
-</span><span>
-</span><span style="color:#65737e;"># 첫 실행으로 설정 파일 생성
-</span><span style="color:#bf616a;">java -Xmx2G -Xms1G -jar</span><span> minecraft_server.1.21.11.jar nogui
-</span><span style="color:#65737e;"># 월드 생성이 완료되면 Ctrl+C로 중지
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 서버 디렉토리 생성
+sudo mkdir -p &#x2F;opt&#x2F;minecraft
+sudo chown -R ec2-user:ec2-user &#x2F;opt&#x2F;minecraft&#x2F;
+cd &#x2F;opt&#x2F;minecraft
+
+# 마인크래프트 1.21.11 서버 파일 다운로드 (최신버전은 알아서 변경해서 다운필요합니다.)
+wget https:&#x2F;&#x2F;piston-data.mojang.com&#x2F;v1&#x2F;objects&#x2F;64bb6d763bed0a9f1d632ec347938594144943ed&#x2F;server.jar -O minecraft_server.1.21.11.jar
+
+# EULA 동의 (필수)
+echo &quot;eula=true&quot; &gt; eula.txt
+
+# 첫 실행으로 설정 파일 생성
+java -Xmx2G -Xms1G -jar minecraft_server.1.21.11.jar nogui
+# 월드 생성이 완료되면 Ctrl+C로 중지
+</code></pre>
 <h2 id="3dangye-seobeo-seoljeong-keoseuteomaijing-seontaeg">3단계: 서버 설정 커스터마이징 (선택)</h2>
 <p>생성된 <code>server.properties</code> 파일을 수정해서 서버를 커스터마이징할 수 있습니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">vi</span><span> server.properties
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">vi server.properties
+</code></pre>
 <p>주요 설정 항목:</p>
-<pre data-lang="properties" style="background-color:#2b303b;color:#c0c5ce;" class="language-properties "><code class="language-properties" data-lang="properties"><span style="color:#65737e;"># 서버 이름
-</span><span>motd=</span><span style="color:#a3be8c;">changki123&#39;s Minecraft Server
-</span><span>
-</span><span style="color:#65737e;"># 최대 플레이어 수
-</span><span>max-players=</span><span style="color:#a3be8c;">10
-</span><span>
-</span><span style="color:#65737e;"># 난이도 (peaceful, easy, normal, hard)
-</span><span>difficulty=</span><span style="color:#a3be8c;">normal
-</span><span>
-</span><span style="color:#65737e;"># 게임 모드 (survival, creative, adventure)
-</span><span>gamemode=</span><span style="color:#a3be8c;">survival
-</span><span>
-</span><span style="color:#65737e;"># PvP 활성화
-</span><span>pvp=</span><span style="color:#a3be8c;">true
-</span><span>
-</span><span style="color:#65737e;"># 화이트리스트 사용
-</span><span>white-list=</span><span style="color:#a3be8c;">false
-</span><span>
-</span><span style="color:#65737e;"># 뷰 거리 (청크 단위, 높을수록 부하 증가)
-</span><span>view-distance=</span><span style="color:#a3be8c;">10
-</span></code></pre>
+<pre data-lang="properties" class="language-properties "><code class="language-properties" data-lang="properties"># 서버 이름
+motd=changki123&#x27;s Minecraft Server
+
+# 최대 플레이어 수
+max-players=10
+
+# 난이도 (peaceful, easy, normal, hard)
+difficulty=normal
+
+# 게임 모드 (survival, creative, adventure)
+gamemode=survival
+
+# PvP 활성화
+pvp=true
+
+# 화이트리스트 사용
+white-list=false
+
+# 뷰 거리 (청크 단위, 높을수록 부하 증가)
+view-distance=10
+</code></pre>
 <h2 id="4dangye-systemd-seobiseuro-jadonghwa">4단계: systemd 서비스로 자동화</h2>
 <p>서버를 안정적으로 운영하기 위해 systemd 서비스로 등록합니다.</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> vi /etc/systemd/system/minecraft.service
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">sudo vi &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;minecraft.service
+</code></pre>
 <p>서비스 파일 내용:</p>
-<pre data-lang="ini" style="background-color:#2b303b;color:#c0c5ce;" class="language-ini "><code class="language-ini" data-lang="ini"><span style="color:#b48ead;">[Unit]
-</span><span style="color:#bf616a;">Description</span><span>=Minecraft Server </span><span style="color:#d08770;">1</span><span>.</span><span style="color:#d08770;">21</span><span>.</span><span style="color:#d08770;">11
-</span><span style="color:#bf616a;">After</span><span>=network.target
-</span><span>
-</span><span style="color:#b48ead;">[Service]
-</span><span style="color:#bf616a;">Type</span><span>=simple
-</span><span style="color:#bf616a;">User</span><span>=ec2-user
-</span><span style="color:#bf616a;">WorkingDirectory</span><span>=/opt/minecraft
-</span><span style="color:#bf616a;">ExecStart</span><span>=/usr/bin/java -Xmx3G -Xms1G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=</span><span style="color:#d08770;">200 </span><span>-jar minecraft_server.</span><span style="color:#d08770;">1</span><span>.</span><span style="color:#d08770;">21</span><span>.</span><span style="color:#d08770;">11</span><span>.jar nogui
-</span><span style="color:#bf616a;">Restart</span><span>=on-failure
-</span><span style="color:#bf616a;">RestartSec</span><span>=</span><span style="color:#d08770;">10
-</span><span>
-</span><span style="color:#b48ead;">[Install]
-</span><span style="color:#bf616a;">WantedBy</span><span>=multi-user.target
-</span></code></pre>
+<pre data-lang="ini" class="language-ini "><code class="language-ini" data-lang="ini">[Unit]
+Description=Minecraft Server 1.21.11
+After=network.target
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=&#x2F;opt&#x2F;minecraft
+ExecStart=&#x2F;usr&#x2F;bin&#x2F;java -Xmx3G -Xms1G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -jar minecraft_server.1.21.11.jar nogui
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
 <p><strong>JVM 옵션 설명</strong>:</p>
 <ul>
 <li><code>-Xmx3G</code>: 최대 메모리 3GB (인스턴스 메모리의 75% 정도 권장)</li>
@@ -198,36 +198,36 @@
 <li><code>-XX:MaxGCPauseMillis=200</code>: GC 일시정지 시간 최대 200ms로 제한</li>
 </ul>
 <p>서비스 등록 및 시작:</p>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># systemd 데몬 리로드
-</span><span style="color:#bf616a;">sudo</span><span> systemctl daemon-reload
-</span><span>
-</span><span style="color:#65737e;"># 서버 시작
-</span><span style="color:#bf616a;">sudo</span><span> systemctl start minecraft
-</span><span>
-</span><span style="color:#65737e;"># 부팅 시 자동 시작 설정
-</span><span style="color:#bf616a;">sudo</span><span> systemctl enable minecraft
-</span><span>
-</span><span style="color:#65737e;"># 서버 상태 확인
-</span><span style="color:#bf616a;">sudo</span><span> systemctl status minecraft
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># systemd 데몬 리로드
+sudo systemctl daemon-reload
+
+# 서버 시작
+sudo systemctl start minecraft
+
+# 부팅 시 자동 시작 설정
+sudo systemctl enable minecraft
+
+# 서버 상태 확인
+sudo systemctl status minecraft
+</code></pre>
 <h2 id="5dangye-rogeu-mic-gwanri">5단계: 로그 및 관리</h2>
 <h3 id="rogeu-hwagin">로그 확인</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 실시간 로그 보기 (실행시키고 정상작동 하는지 확인 필요)
-</span><span style="color:#bf616a;">sudo</span><span> journalctl</span><span style="color:#bf616a;"> -u</span><span> minecraft</span><span style="color:#bf616a;"> -f
-</span><span>
-</span><span style="color:#65737e;"># 최근 100줄 보기
-</span><span style="color:#bf616a;">sudo</span><span> journalctl</span><span style="color:#bf616a;"> -u</span><span> minecraft</span><span style="color:#bf616a;"> -n</span><span> 100
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 실시간 로그 보기 (실행시키고 정상작동 하는지 확인 필요)
+sudo journalctl -u minecraft -f
+
+# 최근 100줄 보기
+sudo journalctl -u minecraft -n 100
+</code></pre>
 <h3 id="seobeo-gwanri-myeongryeongeo">서버 관리 명령어</h3>
-<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#65737e;"># 서버 중지
-</span><span style="color:#bf616a;">sudo</span><span> systemctl stop minecraft
-</span><span>
-</span><span style="color:#65737e;"># 서버 재시작
-</span><span style="color:#bf616a;">sudo</span><span> systemctl restart minecraft
-</span><span>
-</span><span style="color:#65737e;"># 서버 상태 확인
-</span><span style="color:#bf616a;">sudo</span><span> systemctl status minecraft
-</span></code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 서버 중지
+sudo systemctl stop minecraft
+
+# 서버 재시작
+sudo systemctl restart minecraft
+
+# 서버 상태 확인
+sudo systemctl status minecraft
+</code></pre>
 <h2 id="boan-geurub-seoljeong">보안 그룹 설정</h2>
 <p>AWS 콘솔에서 EC2 보안 그룹에 다음 규칙을 추가해야 합니다:</p>
 <table><thead><tr><th>타입</th><th>프로토콜</th><th>포트 범위</th><th>소스</th></tr></thead><tbody>
@@ -238,17 +238,17 @@
 </blockquote>
 <h2 id="jeobsog-bangbeob">접속 방법</h2>
 <p>마인크래프트 클라이언트에서 멀티플레이 → 서버 추가 → 서버 주소에 EC2의 퍼블릭 IP 입력:</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>your-ec2-public-ip:25565
-</span></code></pre>
+<pre><code>your-ec2-public-ip:25565
+</code></pre>
 <p>도메인이 있다면 A 레코드로 연결해서 사용할 수 있습니다.</p>
 <p>service 파일에서 -Xmx3G를 -Xmx2G로 변경 해서 적용도 가능해보이는데 테스트 필요해보입니다.</p>
-<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>
-</span><span>## 간단한 백업 방법
-</span><span>
-</span><span>
-</span><span>## 마무리
-</span><span>
-</span><span>비용 최적화나 백업, 자동화 등등은 다음에 ... 즐마 ⛏️</span></code></pre>
+<pre><code>
+## 간단한 백업 방법
+
+
+## 마무리
+
+비용 최적화나 백업, 자동화 등등은 다음에 ... 즐마 ⛏️</code></pre>
 
         </div>
 
