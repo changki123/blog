@@ -11,7 +11,9 @@ taxonomies = [
 ]
 
 [markdown]
-highlighting = {}
+
+[markdown.highlighting]
+theme = "base16-ocean-dark"
 
 [extra]
 # terminimal 테마 설정
