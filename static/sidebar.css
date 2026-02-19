@@ -48,3 +48,9 @@
     max-width: 100% !important;
     width: 100% !important;
 }
+
+.content {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+}
