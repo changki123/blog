@@ -26,6 +26,7 @@ tags = ["aws", "mssql", "alwayson", "windows", "active-directory", "high-availab
 
 <!-- more -->
 
+---
 
 ## 서버 스펙
 
@@ -37,7 +38,7 @@ tags = ["aws", "mssql", "alwayson", "windows", "active-directory", "high-availab
 |------|-----|
 | OS | Windows Server 2022 Datacenter [English] |
 | 인스턴스 타입 | t3.micro |
-| 서브넷 | ap-northeast-2c |
+| AZ | ap-northeast-2c |
 | Public IP | 활성화 (Bastion 겸용) |
 | 스토리지 | 30GB gp2 |
 
@@ -50,12 +51,14 @@ MSSQL 서버들은 이 AD 서버를 경유해서만 접근합니다.
 |------|-----|
 | OS | Windows Server 2022 + SQL Server 2022 Standard [English] |
 | 인스턴스 타입 | m5.large (2Core / 8GB) |
-| 서브넷 | ap-northeast-2c |
+| AZ | ap-northeast-2c |
 | Public IP | 비활성화 |
 | 스토리지 | 75GB gp2 |
 
 DB 서버는 Public IP 없이 AD 서버를 경유해 접근합니다.
-AlwaysOn은 동일 AZ 구성이므로 서브넷을 ap-northeast-2c로 통일합니다.
+AlwaysOn은 동일 AZ 구성과 함께 서브넷 또한 통일합니다.
+
+---
 
 ## EC2 생성
 
@@ -89,6 +92,8 @@ VPC CIDR 전체를 허용하는 이 설정은 **테스트 환경 전용**입니�
 | 445 | SMB |
 | 135, 49152-65535 | RPC Dynamic Ports |
 
+---
+
 ## AD 설치
 
 ### Active Directory 역할 추가
@@ -96,31 +101,31 @@ VPC CIDR 전체를 허용하는 이 설정은 **테스트 환경 전용**입니�
 Server Manager - Manage - Add Roles and Features 클릭
 
 <img width="780" height="555" alt="Image" src="https://github.com/user-attachments/assets/5bfbe04d-4fa5-4bf5-87ab-6c8cc4a31e89" />
-Next >
+Next >  
 
 <img width="781" height="556" alt="Image" src="https://github.com/user-attachments/assets/e7eeb343-c9d1-4563-95b6-594bae612d4d" />
-Next >
+Next >  
 
 <img width="782" height="556" alt="Image" src="https://github.com/user-attachments/assets/9eddc868-f357-4dc9-b583-412ec36ee42a" />
-Next >
+Next >  
 
 <img width="781" height="555" alt="Image" src="https://github.com/user-attachments/assets/b2ab30fa-0446-48ba-a834-34f49c3ea413" />
-Active Directory Domain Service 체크 - Add Feature
+Active Directory Domain Service 체크 - Add Feature  
 
 <img width="779" height="555" alt="Image" src="https://github.com/user-attachments/assets/98fa86a2-ad85-454c-9e59-57efe4e5c9f7" />
-Next >
+Next >  
 
 <img width="781" height="552" alt="Image" src="https://github.com/user-attachments/assets/985fd175-4a41-426b-a0da-bbd7e35a680d" />
-Next >
+Next >  
 
 <img width="781" height="557" alt="Image" src="https://github.com/user-attachments/assets/acfe1234-6fc8-40bf-ac99-eba94ac8f48c" />
-Next >
+Next >  
 
 <img width="780" height="557" alt="Image" src="https://github.com/user-attachments/assets/2cca8e18-d50f-41ea-b131-9e7315c98424" />
-Restart the destination server automatically if required 체크 - Yes - Install
+Restart the destination server automatically if required 체크 - Yes - Install  
 
 <img width="781" height="556" alt="Image" src="https://github.com/user-attachments/assets/c4b61224-a957-4301-b9a8-d316d56db7ff" />
-Close
+Close  
 
 <img width="414" height="339" alt="Image" src="https://github.com/user-attachments/assets/5319ce2d-a7bd-40ba-a4a1-20a608bef641" />
 <img width="757" height="556" alt="Image" src="https://github.com/user-attachments/assets/ebdd1bb6-a3aa-4165-b5e2-48e447dbff3d" />
