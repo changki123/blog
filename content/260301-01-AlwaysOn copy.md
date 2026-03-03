@@ -127,17 +127,44 @@ Restart the destination server automatically if required 체크 - Yes - Install
 <img width="781" height="556" alt="Image" src="https://github.com/user-attachments/assets/c4b61224-a957-4301-b9a8-d316d56db7ff" />
 Close  
 
+---
+
+## 도메인 컨트롤러로 승격
 <img width="414" height="339" alt="Image" src="https://github.com/user-attachments/assets/5319ce2d-a7bd-40ba-a4a1-20a608bef641" />
+Server Manager - Notifications! 클릭 - Promote this server to a domain controller 클릭  
+
 <img width="757" height="556" alt="Image" src="https://github.com/user-attachments/assets/ebdd1bb6-a3aa-4165-b5e2-48e447dbff3d" />
+Add a new forest - test.com[원하는 도메인] 기입  
+
 <img width="757" height="550" alt="Image" src="https://github.com/user-attachments/assets/91d244b0-d145-463c-8700-bd9bfa42f278" />
+복구 암호 입력  
+
 <img width="754" height="552" alt="Image" src="https://github.com/user-attachments/assets/aa4fd3d2-020e-4e58-9690-c176e54bab1e" />
+Next >  
+
 <img width="757" height="556" alt="Image" src="https://github.com/user-attachments/assets/56f3437a-0c36-4982-84d4-5ac7d51f88d2" />
+앞서 도메인을 test.com 이라고 해서 TEST 입력  
+
 <img width="755" height="554" alt="Image" src="https://github.com/user-attachments/assets/fc6d5033-1353-4451-9063-49bc9f9f2394" />
+Next >  
+
 <img width="757" height="555" alt="Image" src="https://github.com/user-attachments/assets/a4c058f5-d0c1-4e42-b35a-967224913820" />
+Next >  
+
 <img width="755" height="554" alt="Image" src="https://github.com/user-attachments/assets/ce2fe73f-506e-4922-84cf-5656a9dae363" />
+Install  
+
 <img width="674" height="155" alt="Image" src="https://github.com/user-attachments/assets/795125b4-4f6d-45b1-b8c6-101651d25c5f" />
+Close  
+
 <img width="316" height="189" alt="Image" src="https://github.com/user-attachments/assets/6df31a73-dc1b-4a73-b573-8b4c69bb6cec" />
 <img width="438" height="564" alt="Image" src="https://github.com/user-attachments/assets/b796e9d0-7b36-4453-816a-60d8a0cb3def" />
+사용자 로그인시 TEST\Administrator 로 접속 필요 (비밀번호는 바뀐거 없음)  
+
+---
+
+## 유저 생성
+
 <img width="507" height="740" alt="Image" src="https://github.com/user-attachments/assets/202b9df5-61d6-498a-94b9-7a2abd14abbb" />
 <img width="763" height="573" alt="Image" src="https://github.com/user-attachments/assets/d753720d-2452-4d6a-b35f-8375e929d721" />
 <img width="433" height="373" alt="Image" src="https://github.com/user-attachments/assets/68659c28-1177-4b5e-a007-5e19ac6dc324" />
