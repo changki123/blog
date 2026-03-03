@@ -2,14 +2,92 @@
 title = "Active Directory Always On Failover"
 date = 2026-03-01
 [taxonomies]
-tags = ["AD", "Widnows", "AWS"]
+tags = ["aws", "mssql", "alwayson", "windows", "active-directory", "high-availability"]
 +++
 
-## TL;DR
+## 구성 목표
 
+이 시리즈에서 구성할 최종 구조입니다.
+```
+[ AD 서버 (Bastion + DNS) ]
+         |
+    VPC Subnet (ap-northeast-2c)
+    172.31.0.0/16
+         |
+   +-----------+
+   |           |
+[MSSQL01]  [MSSQL02]
+ Primary   Secondary
+```
 
+- AD 서버가 DNS 및 도메인 컨트롤러 역할을 겸함
+- MSSQL01, MSSQL02는 동일 서브넷에 배치
+- 외부 접근은 AD(Bastion) 경유
 
 <!-- more -->
+
+
+## 서버 스펙
+
+> 이번 구성은 테스트 환경 기준입니다. 운영 환경이라면 알아서 조정하세요.
+
+### AD 서버
+
+| 항목 | 값 |
+|------|-----|
+| OS | Windows Server 2022 Datacenter [English] |
+| 인스턴스 타입 | t3.micro |
+| 서브넷 | ap-northeast-2c |
+| Public IP | 활성화 (Bastion 겸용) |
+| 스토리지 | 30GB gp2 |
+
+AD 서버는 외부에서 RDP로 직접 접근할 수 있도록 Public IP를 붙입니다.
+MSSQL 서버들은 이 AD 서버를 경유해서만 접근합니다.
+
+### MSSQL01, MSSQL02
+
+| 항목 | 값 |
+|------|-----|
+| OS | Windows Server 2022 + SQL Server 2022 Standard [English] |
+| 인스턴스 타입 | m5.large (2Core / 8GB) |
+| 서브넷 | ap-northeast-2c |
+| Public IP | 비활성화 |
+| 스토리지 | 75GB gp2 |
+
+DB 서버는 Public IP 없이 AD 서버를 경유해 접근합니다.
+AlwaysOn은 동일 AZ 구성이므로 서브넷을 ap-northeast-2c로 통일합니다.
+
+## EC2 생성
+
+AWS 콘솔에서 EC2 인스턴스 생성 시 AMI 선택에서 **Windows** 탭을 선택합니다.
+
+- AD 서버: `Windows Server 2022 Base`
+- MSSQL 서버: `Windows Server 2022 with SQL Server 2022 Standard`
+
+> **주의**: SQL Server 포함 AMI는 라이선스 비용이 시간당 부과됩니다. 운영 환경에서는 BYOL 여부를 검토하세요.
+
+## 보안 그룹 설정
+
+세 서버 모두 동일 VPC 내 통신이 가능하도록 인바운드 규칙을 추가합니다.
+
+| 유형 | 포트 범위 | 소스 |
+|------|-----------|------|
+| 모든 TCP | 0 - 65535 | 172.31.0.0/16 |
+| 모든 UDP | 0 - 65535 | 172.31.0.0/16 |
+
+VPC CIDR 전체를 허용하는 이 설정은 **테스트 환경 전용**입니다.
+운영 환경이라면 아래 포트 정보 확인해서 필요한 만큼 열어야 합니다.
+
+| 포트 | 용도 |
+|------|------|
+| 3389 | RDP |
+| 1433 | SQL Server |
+| 5022 | AG 미러링 엔드포인트 |
+| 53 | DNS |
+| 88 | Kerberos |
+| 389 / 636 | LDAP / LDAPS |
+| 445 | SMB |
+| 135, 49152-65535 | RPC Dynamic Ports |
 
 <img width="780" height="555" alt="Image" src="https://github.com/user-attachments/assets/5bfbe04d-4fa5-4bf5-87ab-6c8cc4a31e89" />
 <img width="781" height="556" alt="Image" src="https://github.com/user-attachments/assets/e7eeb343-c9d1-4563-95b6-594bae612d4d" />
