@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>changki123&#x27;s blog - high-availability</title>
+    <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/high-availability/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-03-01T00:00:00+00:00</updated>
+    <id>https://blog.changki123.click/tags/high-availability/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Active Directory Always On Failover</title>
+        <published>2026-03-01T00:00:00+00:00</published>
+        <updated>2026-03-01T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260301-01-alwayson-copy/"/>
+        <id>https://blog.changki123.click/260301-01-alwayson-copy/</id>
+        
+        <summary type="html">&lt;h2 id=&quot;guseong-mogpyo&quot;&gt;구성 목표&lt;&#x2F;h2&gt;
+&lt;p&gt;이 시리즈에서 구성할 최종 구조입니다.&lt;&#x2F;p&gt;
+&lt;pre&gt;&lt;code&gt;[ AD 서버 (Bastion + DNS) ]
+         |
+    VPC Subnet (ap-northeast-2c)
+    172.31.0.0&amp;#x2F;16
+         |
+   +-----------+
+   |           |
+[MSSQL01]  [MSSQL02]
+ Primary   Secondary
+&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;ul&gt;
+&lt;li&gt;AD 서버가 DNS 및 도메인 컨트롤러 역할을 겸함&lt;&#x2F;li&gt;
+&lt;li&gt;MSSQL01, MSSQL02는 동일 서브넷에 배치&lt;&#x2F;li&gt;
+&lt;li&gt;외부 접근은 AD(Bastion) 경유&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;</summary>
+        
+    </entry>
+</feed>

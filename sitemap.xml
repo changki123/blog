@@ -85,7 +85,13 @@
         <loc>https://blog.changki123.click/tags/</loc>
     </url>
     <url>
+        <loc>https://blog.changki123.click/tags/active-directory/</loc>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/tags/ad/</loc>
+    </url>
+    <url>
+        <loc>https://blog.changki123.click/tags/alwayson/</loc>
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/analytics/</loc>
@@ -142,6 +148,9 @@
         <loc>https://blog.changki123.click/tags/hands-on/</loc>
     </url>
     <url>
+        <loc>https://blog.changki123.click/tags/high-availability/</loc>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/tags/infrastructure/</loc>
     </url>
     <url>
@@ -167,6 +176,9 @@
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/monitoring/</loc>
+    </url>
+    <url>
+        <loc>https://blog.changki123.click/tags/mssql/</loc>
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/rasbora/</loc>

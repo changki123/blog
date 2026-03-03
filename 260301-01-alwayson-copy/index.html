@@ -88,14 +88,84 @@
     
         <span class="post-tags-inline">
                 :: tags:&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ad/">#AD</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/aws/">#AWS</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/widnows/">#Widnows</a></span>
+                <a class="post-tag" href="https://blog.changki123.click/tags/active-directory/">#active-directory</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/alwayson/">#alwayson</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/aws/">#aws</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/high-availability/">#high-availability</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/mssql/">#mssql</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/windows/">#windows</a></span>
     
 
         <div class="post-content">
-            <h2 id="tl-dr">TL;DR</h2>
-<span id="continue-reading"></span><img width="780" height="555" alt="Image" src="https://github.com/user-attachments/assets/5bfbe04d-4fa5-4bf5-87ab-6c8cc4a31e89" />
+            <h2 id="guseong-mogpyo">구성 목표</h2>
+<p>이 시리즈에서 구성할 최종 구조입니다.</p>
+<pre><code>[ AD 서버 (Bastion + DNS) ]
+         |
+    VPC Subnet (ap-northeast-2c)
+    172.31.0.0&#x2F;16
+         |
+   +-----------+
+   |           |
+[MSSQL01]  [MSSQL02]
+ Primary   Secondary
+</code></pre>
+<ul>
+<li>AD 서버가 DNS 및 도메인 컨트롤러 역할을 겸함</li>
+<li>MSSQL01, MSSQL02는 동일 서브넷에 배치</li>
+<li>외부 접근은 AD(Bastion) 경유</li>
+</ul>
+<span id="continue-reading"></span><h2 id="seobeo-seupeg">서버 스펙</h2>
+<blockquote>
+<p>이번 구성은 테스트 환경 기준입니다. 운영 환경이라면 알아서 조정하세요.</p>
+</blockquote>
+<h3 id="ad-seobeo">AD 서버</h3>
+<table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
+<tr><td>OS</td><td>Windows Server 2022 Datacenter [English]</td></tr>
+<tr><td>인스턴스 타입</td><td>t3.micro</td></tr>
+<tr><td>서브넷</td><td>ap-northeast-2c</td></tr>
+<tr><td>Public IP</td><td>활성화 (Bastion 겸용)</td></tr>
+<tr><td>스토리지</td><td>30GB gp2</td></tr>
+</tbody></table>
+<p>AD 서버는 외부에서 RDP로 직접 접근할 수 있도록 Public IP를 붙입니다.
+MSSQL 서버들은 이 AD 서버를 경유해서만 접근합니다.</p>
+<h3 id="mssql01-mssql02">MSSQL01, MSSQL02</h3>
+<table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
+<tr><td>OS</td><td>Windows Server 2022 + SQL Server 2022 Standard [English]</td></tr>
+<tr><td>인스턴스 타입</td><td>m5.large (2Core / 8GB)</td></tr>
+<tr><td>서브넷</td><td>ap-northeast-2c</td></tr>
+<tr><td>Public IP</td><td>비활성화</td></tr>
+<tr><td>스토리지</td><td>75GB gp2</td></tr>
+</tbody></table>
+<p>DB 서버는 Public IP 없이 AD 서버를 경유해 접근합니다.
+AlwaysOn은 동일 AZ 구성이므로 서브넷을 ap-northeast-2c로 통일합니다.</p>
+<h2 id="ec2-saengseong">EC2 생성</h2>
+<p>AWS 콘솔에서 EC2 인스턴스 생성 시 AMI 선택에서 <strong>Windows</strong> 탭을 선택합니다.</p>
+<ul>
+<li>AD 서버: <code>Windows Server 2022 Base</code></li>
+<li>MSSQL 서버: <code>Windows Server 2022 with SQL Server 2022 Standard</code></li>
+</ul>
+<blockquote>
+<p><strong>주의</strong>: SQL Server 포함 AMI는 라이선스 비용이 시간당 부과됩니다. 운영 환경에서는 BYOL 여부를 검토하세요.</p>
+</blockquote>
+<h2 id="boan-geurub-seoljeong">보안 그룹 설정</h2>
+<p>세 서버 모두 동일 VPC 내 통신이 가능하도록 인바운드 규칙을 추가합니다.</p>
+<table><thead><tr><th>유형</th><th>포트 범위</th><th>소스</th></tr></thead><tbody>
+<tr><td>모든 TCP</td><td>0 - 65535</td><td>172.31.0.0/16</td></tr>
+<tr><td>모든 UDP</td><td>0 - 65535</td><td>172.31.0.0/16</td></tr>
+</tbody></table>
+<p>VPC CIDR 전체를 허용하는 이 설정은 <strong>테스트 환경 전용</strong>입니다.
+운영 환경이라면 아래 포트 정보 확인해서 필요한 만큼 열어야 합니다.</p>
+<table><thead><tr><th>포트</th><th>용도</th></tr></thead><tbody>
+<tr><td>3389</td><td>RDP</td></tr>
+<tr><td>1433</td><td>SQL Server</td></tr>
+<tr><td>5022</td><td>AG 미러링 엔드포인트</td></tr>
+<tr><td>53</td><td>DNS</td></tr>
+<tr><td>88</td><td>Kerberos</td></tr>
+<tr><td>389 / 636</td><td>LDAP / LDAPS</td></tr>
+<tr><td>445</td><td>SMB</td></tr>
+<tr><td>135, 49152-65535</td><td>RPC Dynamic Ports</td></tr>
+</tbody></table>
+<img width="780" height="555" alt="Image" src="https://github.com/user-attachments/assets/5bfbe04d-4fa5-4bf5-87ab-6c8cc4a31e89" />
 <img width="781" height="556" alt="Image" src="https://github.com/user-attachments/assets/e7eeb343-c9d1-4563-95b6-594bae612d4d" />
 <img width="782" height="556" alt="Image" src="https://github.com/user-attachments/assets/9eddc868-f357-4dc9-b583-412ec36ee42a" />
 <img width="781" height="555" alt="Image" src="https://github.com/user-attachments/assets/b2ab30fa-0446-48ba-a834-34f49c3ea413" />

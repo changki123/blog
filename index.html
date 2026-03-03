@@ -89,15 +89,34 @@
     
         <span class="post-tags-inline">
                 :: tags:&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ad/">#AD</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/aws/">#AWS</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/widnows/">#Widnows</a></span>
+                <a class="post-tag" href="https://blog.changki123.click/tags/active-directory/">#active-directory</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/alwayson/">#alwayson</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/aws/">#aws</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/high-availability/">#high-availability</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/mssql/">#mssql</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/windows/">#windows</a></span>
     
 
 
                     
         <div class="post-content">
-            <h2 id="tl-dr">TL;DR</h2>
+            <h2 id="guseong-mogpyo">구성 목표</h2>
+<p>이 시리즈에서 구성할 최종 구조입니다.</p>
+<pre><code>[ AD 서버 (Bastion + DNS) ]
+         |
+    VPC Subnet (ap-northeast-2c)
+    172.31.0.0&#x2F;16
+         |
+   +-----------+
+   |           |
+[MSSQL01]  [MSSQL02]
+ Primary   Secondary
+</code></pre>
+<ul>
+<li>AD 서버가 DNS 및 도메인 컨트롤러 역할을 겸함</li>
+<li>MSSQL01, MSSQL02는 동일 서브넷에 배치</li>
+<li>외부 접근은 AD(Bastion) 경유</li>
+</ul>
         </div>
         <div>
             <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
