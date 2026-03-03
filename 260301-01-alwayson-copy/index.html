@@ -114,7 +114,9 @@
 <li>MSSQL01, MSSQL02는 동일 서브넷에 배치</li>
 <li>외부 접근은 AD(Bastion) 경유</li>
 </ul>
-<span id="continue-reading"></span><h2 id="seobeo-seupeg">서버 스펙</h2>
+<span id="continue-reading"></span>
+<hr />
+<h2 id="seobeo-seupeg">서버 스펙</h2>
 <blockquote>
 <p>이번 구성은 테스트 환경 기준입니다. 운영 환경이라면 알아서 조정하세요.</p>
 </blockquote>
@@ -122,7 +124,7 @@
 <table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
 <tr><td>OS</td><td>Windows Server 2022 Datacenter [English]</td></tr>
 <tr><td>인스턴스 타입</td><td>t3.micro</td></tr>
-<tr><td>서브넷</td><td>ap-northeast-2c</td></tr>
+<tr><td>AZ</td><td>ap-northeast-2c</td></tr>
 <tr><td>Public IP</td><td>활성화 (Bastion 겸용)</td></tr>
 <tr><td>스토리지</td><td>30GB gp2</td></tr>
 </tbody></table>
@@ -132,12 +134,13 @@ MSSQL 서버들은 이 AD 서버를 경유해서만 접근합니다.</p>
 <table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
 <tr><td>OS</td><td>Windows Server 2022 + SQL Server 2022 Standard [English]</td></tr>
 <tr><td>인스턴스 타입</td><td>m5.large (2Core / 8GB)</td></tr>
-<tr><td>서브넷</td><td>ap-northeast-2c</td></tr>
+<tr><td>AZ</td><td>ap-northeast-2c</td></tr>
 <tr><td>Public IP</td><td>비활성화</td></tr>
 <tr><td>스토리지</td><td>75GB gp2</td></tr>
 </tbody></table>
 <p>DB 서버는 Public IP 없이 AD 서버를 경유해 접근합니다.
-AlwaysOn은 동일 AZ 구성이므로 서브넷을 ap-northeast-2c로 통일합니다.</p>
+AlwaysOn은 동일 AZ 구성과 함께 서브넷 또한 통일합니다.</p>
+<hr />
 <h2 id="ec2-saengseong">EC2 생성</h2>
 <p>AWS 콘솔에서 EC2 인스턴스 생성 시 AMI 선택에서 <strong>Windows</strong> 탭을 선택합니다.</p>
 <ul>
@@ -165,27 +168,28 @@ AlwaysOn은 동일 AZ 구성이므로 서브넷을 ap-northeast-2c로 통일합�
 <tr><td>445</td><td>SMB</td></tr>
 <tr><td>135, 49152-65535</td><td>RPC Dynamic Ports</td></tr>
 </tbody></table>
+<hr />
 <h2 id="ad-seolci">AD 설치</h2>
 <h3 id="active-directory-yeoghal-cuga">Active Directory 역할 추가</h3>
 <p>Server Manager - Manage - Add Roles and Features 클릭</p>
 <img width="780" height="555" alt="Image" src="https://github.com/user-attachments/assets/5bfbe04d-4fa5-4bf5-87ab-6c8cc4a31e89" />
-Next >
+Next >  
 <img width="781" height="556" alt="Image" src="https://github.com/user-attachments/assets/e7eeb343-c9d1-4563-95b6-594bae612d4d" />
-Next >
+Next >  
 <img width="782" height="556" alt="Image" src="https://github.com/user-attachments/assets/9eddc868-f357-4dc9-b583-412ec36ee42a" />
-Next >
+Next >  
 <img width="781" height="555" alt="Image" src="https://github.com/user-attachments/assets/b2ab30fa-0446-48ba-a834-34f49c3ea413" />
-Active Directory Domain Service 체크 - Add Feature
+Active Directory Domain Service 체크 - Add Feature  
 <img width="779" height="555" alt="Image" src="https://github.com/user-attachments/assets/98fa86a2-ad85-454c-9e59-57efe4e5c9f7" />
-Next >
+Next >  
 <img width="781" height="552" alt="Image" src="https://github.com/user-attachments/assets/985fd175-4a41-426b-a0da-bbd7e35a680d" />
-Next >
+Next >  
 <img width="781" height="557" alt="Image" src="https://github.com/user-attachments/assets/acfe1234-6fc8-40bf-ac99-eba94ac8f48c" />
-Next >
+Next >  
 <img width="780" height="557" alt="Image" src="https://github.com/user-attachments/assets/2cca8e18-d50f-41ea-b131-9e7315c98424" />
-Restart the destination server automatically if required 체크 - Yes - Install
+Restart the destination server automatically if required 체크 - Yes - Install  
 <img width="781" height="556" alt="Image" src="https://github.com/user-attachments/assets/c4b61224-a957-4301-b9a8-d316d56db7ff" />
-Close
+Close  
 <img width="414" height="339" alt="Image" src="https://github.com/user-attachments/assets/5319ce2d-a7bd-40ba-a4a1-20a608bef641" />
 <img width="757" height="556" alt="Image" src="https://github.com/user-attachments/assets/ebdd1bb6-a3aa-4165-b5e2-48e447dbff3d" />
 <img width="757" height="550" alt="Image" src="https://github.com/user-attachments/assets/91d244b0-d145-463c-8700-bd9bfa42f278" />
