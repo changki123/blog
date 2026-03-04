@@ -145,7 +145,7 @@ Add a new forest - test.com[원하는 도메인] 기입  <br>
 Next >  <br>
 
 <img width="757" height="556" alt="Image" src="https://github.com/user-attachments/assets/56f3437a-0c36-4982-84d4-5ac7d51f88d2" />
-앞서 도메인을 test.com 이라고 해서 TEST 입력  <br>
+앞서 도메인을 test.com 이라고 해서 TEST 입력 (실제 접속 할 때 쓰는.)  <br>
 
 <img width="755" height="554" alt="Image" src="https://github.com/user-attachments/assets/fc6d5033-1353-4451-9063-49bc9f9f2394" />
 Next >  <br>
