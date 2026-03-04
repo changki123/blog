@@ -118,7 +118,7 @@ Active Directory Domain Service 체크 - Add Feature  <br>
 Next >  <br>
 
 <img width="781" height="552" alt="Image" src="https://github.com/user-attachments/assets/985fd175-4a41-426b-a0da-bbd7e35a680d" />
-Next >  <br>
+.Net Framework 3.5 Features 체크 - Next >  <br>
 
 <img width="781" height="557" alt="Image" src="https://github.com/user-attachments/assets/acfe1234-6fc8-40bf-ac99-eba94ac8f48c" />
 Next >  <br>
