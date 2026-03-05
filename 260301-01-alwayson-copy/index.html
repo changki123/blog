@@ -226,45 +226,112 @@ Close  <br>
 <hr />
 <h2 id="yujeo-saengseong">유저 생성</h2>
 <img width="507" height="740" alt="Image" src="https://github.com/user-attachments/assets/202b9df5-61d6-498a-94b9-7a2abd14abbb" />
+Server Manager - Tools - Active Directory User and Computers
 <img width="763" height="573" alt="Image" src="https://github.com/user-attachments/assets/d753720d-2452-4d6a-b35f-8375e929d721" />
+test.com - Users 우클릭 - New - User
 <img width="433" height="373" alt="Image" src="https://github.com/user-attachments/assets/68659c28-1177-4b5e-a007-5e19ac6dc324" />
+유저이름은 일단 sql_test로 생성
 <img width="433" height="375" alt="Image" src="https://github.com/user-attachments/assets/eefbe586-a991-4c97-b511-12153c31c208" />
+편의를 위해 Password never expires 체크
 <img width="436" height="376" alt="Image" src="https://github.com/user-attachments/assets/004a328e-ebdf-49c2-9e17-8b7b05c956ee" />
 <img width="300" height="295" alt="Image" src="https://github.com/user-attachments/assets/ec36b323-df9a-4215-be27-0b54804353cb" />
+sql_test 우클릭 - Properties
 <img width="403" height="535" alt="Image" src="https://github.com/user-attachments/assets/a6da3ee6-f57a-4ebd-8144-e69e93326d19" />
+Add…
 <img width="455" height="250" alt="Image" src="https://github.com/user-attachments/assets/877e3cc7-81fe-4623-8c86-616f18fd4c8c" />
+Advanced…
 <img width="508" height="570" alt="Image" src="https://github.com/user-attachments/assets/e05de936-4475-49f1-9541-234ff0c9912f" />
+Find Now - Domain Admins - OK
 <img width="454" height="246" alt="Image" src="https://github.com/user-attachments/assets/79b5433e-2f39-433b-a899-676dce58aca9" />
+(Domain Admins 직접 입력 하고 Check Names 클릭 해도 동일합니다.)
 <img width="410" height="536" alt="Image" src="https://github.com/user-attachments/assets/3e5c9d59-a803-4a75-9cae-71887ad83faa" />
+Failover Cluster 관리자 생성 완료.
+<hr />
+<h2 id="failover-cluster-seolci-db01-02">Failover Cluster 설치 (DB01, 02)</h2>
+<p>편의용 RDP 생성</p>
+<pre><code>full address:s:서버IP또는호스트명
+username:s:TEST\sql_test
+prompt for credentials:i:1
+authentication level:i:2
+</code></pre>
+<p>각 DB01, DB02 Administrator 접속</p>
+<p>실행창 Win + R</p>
+<pre><code>ncpa.cpl
+</code></pre>
 <img width="1340" height="562" alt="Image" src="https://github.com/user-attachments/assets/c825b179-b48f-4880-80c5-93c1c0ad44fc" />
+Ethernet 3 더블클릭 - Properties - Internet Protocol Version 4 (TCP/IPv4) - Properties - Use the following DNS server addresses 선택 - AD IP 입력
+<hr />
+<h2 id="hostireum-byeongyeong-mic-domein-gaib">HOST이름 변경 및 도메인 가입</h2>
+<p>시스템창 Win + Pause break</p>
 <img width="945" height="467" alt="Image" src="https://github.com/user-attachments/assets/635aae6b-b4e9-40e4-bf9e-ba8799806c91" />
+System protection - Change… - Computer name 디비0102 변경 - Domain 클릭 - test.com 입력
 <img width="451" height="300" alt="Image" src="https://github.com/user-attachments/assets/384b9158-9611-4d97-b5cc-157135e28904" />
+AD 서버에서 생성했던 계정 입력
 <img width="260" height="146" alt="Image" src="https://github.com/user-attachments/assets/6474b339-a17a-47b2-945d-68e5cb179fc1" />
+OK
 <img width="350" height="180" alt="Image" src="https://github.com/user-attachments/assets/ce9ed03f-a66f-4675-9372-0086df35965c" />
+OK
 <img width="347" height="166" alt="Image" src="https://github.com/user-attachments/assets/edfbb367-4706-46e1-9c2c-9f4a6aae1682" />
+Restart Now
+DB01 02 세팅 완료, 이제 AD 계정 으로 진입.
+<p>또한 DB01 , DB02 TEST\sql_test 계정으로 진행</p>
+<hr />
+<h2 id="failover-cluster-seolci">Failover Cluster 설치</h2>
+<p>Server Manager - Mange - Add Roles and Feature</p>
 <img width="783" height="558" alt="Image" src="https://github.com/user-attachments/assets/22362006-e6e0-4c09-b4af-1f19812cf543" />
+Next >
 <img width="780" height="551" alt="Image" src="https://github.com/user-attachments/assets/5207fe94-e1f9-4ec3-b3a6-e522baf01c5a" />
+Next >
 <img width="783" height="556" alt="Image" src="https://github.com/user-attachments/assets/7f439dcf-1e06-40d3-83c4-f89128bea9de" />
+Next >
 <img width="781" height="555" alt="Image" src="https://github.com/user-attachments/assets/d070572b-fdd3-497b-99ad-e9b99430898a" />
+Next >
 <img width="778" height="554" alt="Image" src="https://github.com/user-attachments/assets/c6431484-def7-4196-b591-c2cf0c860a7b" />
+Failover Clustering - Add Features - Next >
 <img width="779" height="555" alt="Image" src="https://github.com/user-attachments/assets/a5606706-562c-4541-a494-4017250b6060" />
+이런;; 재부팅 체크 해야하는듯
+<p>DB01 02 클러스터 설치 완료되면 재부팅 진행</p>
+<p>Failover Cluster 매니저 생성 (여기부터 DB01번에서만)
 <img width="491" height="598" alt="Image" src="https://github.com/user-attachments/assets/2e45bc3e-a6bf-402f-8c10-3a454e9b0d74" />
+Server Manager - Tools - Failover Cluster Manager</p>
 <img width="1042" height="804" alt="Image" src="https://github.com/user-attachments/assets/66e95d84-b3e5-4aab-9fed-d893bf01075b" />
+Create Cluster…
 <img width="662" height="450" alt="Image" src="https://github.com/user-attachments/assets/8897a955-2782-478d-a09c-b2ea0c9671be" />
+Next >
 <img width="663" height="447" alt="Image" src="https://github.com/user-attachments/assets/12915041-9ba1-44c5-b229-2ebd352ce119" />
+Browse…
 <img width="456" height="247" alt="Image" src="https://github.com/user-attachments/assets/329e408e-cf16-4dfc-bf81-3ff0e98d9a21" />
+Advanced…
 <img width="510" height="570" alt="Image" src="https://github.com/user-attachments/assets/0c96ff3b-b08d-4302-975e-1fcf24c2cd7a" />
+Find Now - DB01 선택 - OK
+<p>DB02도 동일하게 진행</p>
 <img width="663" height="450" alt="Image" src="https://github.com/user-attachments/assets/702c65a1-8893-4813-8514-cc42e1bd5a61" />
+2개 연결확인 (클러스터 조회가 안되는 경우 윈도우 버전 호환되는지 확인이 필요합니다.)
+<p>클러스터 지정시 각 DB로 통신은 되는데 조회가 안되는 이슈가 있을 경우 수동으로도 지정 가능합니다.</p>
+<pre><code>New-Cluster -Name CLU -Node MSSQLDB01, MSSQLDB02 -StaticAddress 172.31.30.100 -NoStorage -Force
+이게 외됌;;
+</code></pre>
 <img width="663" height="447" alt="Image" src="https://github.com/user-attachments/assets/ba532e63-97ee-4fe4-a850-2feea480cc35" />
+Next >
 <img width="662" height="457" alt="Image" src="https://github.com/user-attachments/assets/5baba11e-1714-483d-99b9-a02aa9395866" />
+Next >
 <img width="660" height="458" alt="Image" src="https://github.com/user-attachments/assets/22bf524b-0551-42c3-a002-b1c09cf9eab7" />
+Next >
 <img width="666" height="458" alt="Image" src="https://github.com/user-attachments/assets/60559238-bf0f-4ded-8194-584dca654206" />
+Next >
 <img width="664" height="457" alt="Image" src="https://github.com/user-attachments/assets/76d62bb1-e9f8-4b42-ae52-514fbcaf339c" />
 <img width="660" height="457" alt="Image" src="https://github.com/user-attachments/assets/4235e71f-0687-4e79-b6a2-7edb2266f631" />
+Finish
 <img width="662" height="451" alt="Image" src="https://github.com/user-attachments/assets/1466a993-89ec-42f5-ab42-eb0956fd50a8" />
+클러스터 이름 FACLU
 <img width="666" height="452" alt="Image" src="https://github.com/user-attachments/assets/c3598b34-507e-4ffd-8870-e6b66e5416c4" />
+Next >
 <img width="662" height="449" alt="Image" src="https://github.com/user-attachments/assets/ac2ad9a7-78db-422f-8ccf-8c4eb3c9e0b5" />
+Finish
 <img width="1039" height="801" alt="Image" src="https://github.com/user-attachments/assets/55d29f0d-da4b-44d5-9af0-f43075b07a03" />
+FACLU.test.com 생성확인 
+<hr />
+<h2 id="cluster-static-ip-jijeong">Cluster Static IP 지정</h2>
 <img width="1040" height="861" alt="Image" src="https://github.com/user-attachments/assets/870ad327-eeec-435d-97dd-abd7743f6a7d" />
 <img width="394" height="485" alt="Image" src="https://github.com/user-attachments/assets/b1cdd01e-dc2b-4020-b61f-33ef53acd3f5" />
 <img width="396" height="482" alt="Image" src="https://github.com/user-attachments/assets/ec35322f-d3ad-4ddb-a5f2-cdcf20b1c9d0" />
