@@ -380,36 +380,182 @@ OK
 <img width="324" height="275" alt="Image" src="https://github.com/user-attachments/assets/ccf76c07-82a9-4240-8325-1043ca2b7be2" />
 SQL Server (MSSQLSERVER) - Restart
 
+## Always On 설정 이전 DB 데이터 넣기
+
+SSMS 실행
 <img width="479" height="585" alt="Image" src="https://github.com/user-attachments/assets/0298513d-4b04-4423-8678-c705c2c22df1" />
+Server Name : hostname 입력
+
+Trust Server Certificate : 체크
+
+Connect
+
+MSSQL에서 계정이 없기 때문에 Error: 18456 나오는 경우!
+
+Powershell
+```
+# SQL Server 중지
+net stop MSSQLSERVER
+
+# 단일 사용자 모드로 시작
+net start MSSQLSERVER /m"SQLCMD"
+
+# SQLCMD 접속
+sqlcmd -S . -E
+```
+
+>
+```
+CREATE LOGIN [TEST\sql_test] FROM WINDOWS;
+GO
+EXEC sp_addsrvrolemember 'TEST\sql_test', 'sysadmin';
+GO
+EXIT
+```
+
+```
+# MSSQLSERVER 재시작
+net stop MSSQLSERVER
+net start MSSQLSERVER
+```
+
+DB01 에서 SSMS New Query 작성
+
+임의 데이터 넣기
+```
+CREATE DATABASE TinypingDB;
+GO
+
+USE TinypingDB;
+GO
+
+-- 티니핑 직원 테이블
+CREATE TABLE Employees (
+    EmpID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50),
+    Department NVARCHAR(50),
+    Position NVARCHAR(50),
+    Salary INT,
+    HireDate DATE,
+    IsActive BIT DEFAULT 1
+);
+
+-- 서버 모니터링 로그 테이블
+CREATE TABLE ServerLogs (
+    LogID INT PRIMARY KEY IDENTITY(1,1),
+    LogTime DATETIME DEFAULT GETDATE(),
+    ServerName NVARCHAR(50),
+    LogLevel NVARCHAR(20),
+    Message NVARCHAR(500)
+);
+
+-- 주문 테이블
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY IDENTITY(1,1),
+    EmpID INT FOREIGN KEY REFERENCES Employees(EmpID),
+    OrderDate DATETIME DEFAULT GETDATE(),
+    Product NVARCHAR(100),
+    Quantity INT,
+    Amount INT
+);
+GO
+
+-- 티니핑 직원 데이터
+INSERT INTO Employees (Name, Department, Position, Salary, HireDate) VALUES
+(N'해피니핑', N'IT', N'행복 관리자', 5000000, '2020-03-15'),
+(N'사랑이', N'IT', N'사랑 수호자', 5500000, '2019-07-01'),
+(N'반짝이', N'개발', N'빛 담당자', 4800000, '2021-01-10'),
+(N'두근이', N'개발', N'설레임 전달자', 4500000, '2022-05-20'),
+(N'꿈틀이', N'운영', N'꿈 관리팀장', 6000000, '2018-11-30');
+GO
+
+-- 서버 로그 데이터
+INSERT INTO ServerLogs (ServerName, LogLevel, Message) VALUES
+(N'MSSQLDB01', N'INFO', N'SQL Server 서비스 시작됨'),
+(N'MSSQLDB01', N'WARNING', N'CPU 사용률 80% 초과'),
+(N'MSSQLDB02', N'INFO', N'AlwaysOn 동기화 완료'),
+(N'MSSQLDB01', N'ERROR', N'디스크 용량 부족 경고'),
+(N'MSSQLDB02', N'INFO', N'Backup 완료');
+GO
+
+-- 주문 데이터
+INSERT INTO Orders (EmpID, Product, Quantity, Amount) VALUES
+(1, N'행복 에너지 충전기', 2, 1000000),
+(2, N'사랑 수호 장치', 1, 2000000),
+(3, N'반짝임 발생기', 5, 500000),
+(4, N'두근거림 센서', 3, 300000),
+(5, N'꿈 모니터링 솔루션', 1, 3000000);
+GO
+
+-- AlwaysOn 적용을 위한 복구 모델 설정
+ALTER DATABASE TinypingDB SET RECOVERY FULL;
+GO
+
+SELECT * FROM Employees;
+SELECT * FROM ServerLogs;
+SELECT * FROM Orders;
+```
 
 <img width="508" height="435" alt="Image" src="https://github.com/user-attachments/assets/23f6e2b4-f1da-4ffa-b557-18c0989eb70d" />
 
+## MSSQL FULL Backup (여기부터 DB01번에서만)
+
 <img width="735" height="832" alt="Image" src="https://github.com/user-attachments/assets/e45c4f13-c817-468e-9580-ec3a43d27a76" />
+TinypingDB 우클릭 - Tasks - Back up…
 
 <img width="905" height="664" alt="Image" src="https://github.com/user-attachments/assets/dc21c5e4-3bcf-40cd-bd4a-908747f38892" />
+경로 바꾸고 싶은 경우 변경
 
 <img width="901" height="662" alt="Image" src="https://github.com/user-attachments/assets/3c4ebdaf-e55f-49cb-ba7b-4fdddfadbc94" />
+OK
 
 <img width="796" height="528" alt="Image" src="https://github.com/user-attachments/assets/24725315-949a-499c-b87c-817f1cf27eec" />
+파일이 생성됨
+
+## AG(Availability Groups) 설정
 
 <img width="369" height="356" alt="Image" src="https://github.com/user-attachments/assets/49b695ff-7125-4292-9c7a-8452cea0240c" />
+Always On High Availability - Availability Groups 우클릭 - New Availability Group Wizard…
 
 
 <img width="816" height="746" alt="Image" src="https://github.com/user-attachments/assets/af8b8f8b-9565-40f7-97f1-119ff4c5f06f" />
+Next >
 
 <img width="817" height="744" alt="Image" src="https://github.com/user-attachments/assets/efeed659-7189-45a0-89ad-67b49343a00f" />
+Availability group name : sql_ag 입력
+
 <img width="821" height="747" alt="Image" src="https://github.com/user-attachments/assets/9cd47f38-8efa-485d-a9a3-ad5fc53171a8" />
+Meet prerequisites 확인 (다를 경우 대부분 풀백업이 필요합니다.)
+
 <img width="817" height="747" alt="Image" src="https://github.com/user-attachments/assets/d38d517e-45b4-4c0d-a4ca-cd341506d76c" />
+만족된다는 화면
+
 <img width="814" height="743" alt="Image" src="https://github.com/user-attachments/assets/7358af0e-9f54-4365-bdbc-f9044b58993e" />
+Add Replica…
+
 <img width="819" height="745" alt="Image" src="https://github.com/user-attachments/assets/6751b27a-f52b-492f-a34c-77bda3a34008" />
+DB02 정보와 Trust server certificate 체크
+
 <img width="819" height="746" alt="Image" src="https://github.com/user-attachments/assets/7aa837e6-dd49-4872-9f48-c8559cee0308" />
+Automatic Failover (Up to 2) 두개 체크
+
 <img width="818" height="745" alt="Image" src="https://github.com/user-attachments/assets/38222d42-7c61-49b2-9054-2e6a25ac8911" />
+Next >
+
 <img width="817" height="741" alt="Image" src="https://github.com/user-attachments/assets/3b87fdc0-7727-4f17-8d9c-42955949c4cb" />
+Next >
+
 <img width="820" height="742" alt="Image" src="https://github.com/user-attachments/assets/2d3699e2-7060-4054-aef9-a9c4197af5d6" />
+Finish
 
 
 <img width="818" height="742" alt="Image" src="https://github.com/user-attachments/assets/a810b2eb-55a1-4c45-bd2d-422e64b44cf5" />
+NEXT 하는경우 
+
 <img width="816" height="743" alt="Image" src="https://github.com/user-attachments/assets/32e0cf1a-5665-487b-80c1-deab5061eae5" />
+클러스터 간 TLS 암호화 설정’ 화면이 나오는데 참고만 하고 Close
+
+
 <img width="282" height="180" alt="Image" src="https://github.com/user-attachments/assets/9e1f78ab-6547-4f11-9316-ca3c7c2896a3" />
 <img width="320" height="116" alt="Image" src="https://github.com/user-attachments/assets/79748767-0f29-48ff-810d-28e49aa6fe53" />
 <img width="333" height="466" alt="Image" src="https://github.com/user-attachments/assets/deb24c71-96af-43c3-9af2-e7129ba22c19" />
