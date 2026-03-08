@@ -504,37 +504,157 @@ Finish
 NEXT 하는경우 
 <img width="816" height="743" alt="Image" src="https://github.com/user-attachments/assets/32e0cf1a-5665-487b-80c1-deab5061eae5" />
 클러스터 간 TLS 암호화 설정’ 화면이 나오는데 참고만 하고 Close
-<img width="282" height="180" alt="Image" src="https://github.com/user-attachments/assets/9e1f78ab-6547-4f11-9316-ca3c7c2896a3" />
+<p>결과 확인
+<img width="282" height="180" alt="Image" src="https://github.com/user-attachments/assets/9e1f78ab-6547-4f11-9316-ca3c7c2896a3" /></p>
+<pre><code>Always On High Availability
+└── Availability Groups
+    └── sql_ag (Primary)
+        ├── Availability Replicas
+        │   ├── MSSQLDB01 (Primary)
+        │   └── MSSQLDB02 (Secondary)
+        ├── Availability Databases
+        │   └── TinypingDB
+        └── Availability Group Listeners
+</code></pre>
 <img width="320" height="116" alt="Image" src="https://github.com/user-attachments/assets/79748767-0f29-48ff-810d-28e49aa6fe53" />
+TinypingDB에 이제 (Synchronized) 생성된것 확인
+<h2 id="alwayson-riseuneo-seoljeong">AlwaysOn 리스너 설정</h2>
+<p>AWS 에서 NLB 사용을 하는 경우 해당 설정이 필요없습니다.
 <img width="333" height="466" alt="Image" src="https://github.com/user-attachments/assets/deb24c71-96af-43c3-9af2-e7129ba22c19" />
+Availability Group Listeners - Add Listener…</p>
 <img width="702" height="657" alt="Image" src="https://github.com/user-attachments/assets/ab94c44f-9d5c-4c65-8b37-453b709016b8" />
+Listener DNS Name : sql_lsn
+<p>Port : 1433</p>
+<p>Add..</p>
 <img width="704" height="657" alt="Image" src="https://github.com/user-attachments/assets/75fee148-626c-4080-b76f-8ae0227b75f4" />
+리스너 전용 IP 추가 
+<p>IPv4 Address : 172.31.30.101</p>
 <img width="269" height="180" alt="Image" src="https://github.com/user-attachments/assets/db327b04-7257-4e51-bdc9-4dc80ace5ff6" />
+리스너 추가 완료됨
 <img width="1038" height="803" alt="Image" src="https://github.com/user-attachments/assets/e487582e-2c1b-484f-b1e6-fc4cfc920d7f" />
+Failover Cluster Manager - FACLU.test.com - Roles - Resource에서 Server Name, IP Address 확인.
+<h2 id="alwayson-failover-teseuteu-db01">AlwaysOn Failover 테스트 (DB01)</h2>
 <img width="326" height="398" alt="Image" src="https://github.com/user-attachments/assets/53465b76-551c-48e9-b15f-e3298086c99b" />
+Availability Groups - sql_ag 우클릭 - Failover…
 <img width="816" height="746" alt="Image" src="https://github.com/user-attachments/assets/72936092-c550-4ea5-aa29-00876f74090d" />
+Next >
 <img width="818" height="745" alt="Image" src="https://github.com/user-attachments/assets/ac31993f-52f6-43a4-b104-2a89332de83c" />
+Next >
 <img width="819" height="745" alt="Image" src="https://github.com/user-attachments/assets/32169884-96c8-4dc4-a849-106e85738ca5" />
+Connect…
 <img width="819" height="744" alt="Image" src="https://github.com/user-attachments/assets/a8efe544-6944-4083-8bcf-225c6972afa4" />
+DB02 선택된것 확인 후 Connect
 <img width="817" height="743" alt="Image" src="https://github.com/user-attachments/assets/dbb6d5cb-1d72-4333-9b37-3bf6469bf14c" />
+Next >
 <img width="818" height="743" alt="Image" src="https://github.com/user-attachments/assets/00fb62f9-8c45-4a3a-a418-c37cd4e01ba8" />
+Finish
 <img width="817" height="744" alt="Image" src="https://github.com/user-attachments/assets/d201d80f-3607-4fe2-aff0-41b656e32007" />
+Close
 <img width="1197" height="514" alt="Image" src="https://github.com/user-attachments/assets/65f8cd64-b6d1-4176-8810-0a5914f001a7" />
+sql_ag 우클릭 - Show Dashboard - Primary instance: 에서 DB02로 된것 확인 하면 완료
+<h2 id="failback-db01-db02-dul-jung-han-goseseo-jinhaeng">Failback ( DB01, DB02 둘 중 한 곳에서 진행 )</h2>
+<p>동일하게 Failover… 클릭
 <img width="819" height="743" alt="Image" src="https://github.com/user-attachments/assets/591dd809-6641-4dff-9026-ac989d20caa3" />
+Next &gt;</p>
 <img width="814" height="743" alt="Image" src="https://github.com/user-attachments/assets/6759a3be-73ee-4392-b854-46ed928ca605" />
+Next >
 <img width="817" height="746" alt="Image" src="https://github.com/user-attachments/assets/7727e845-5ff4-43f0-bc1a-9ca74c740e42" />
+Finish
 <img width="815" height="744" alt="Image" src="https://github.com/user-attachments/assets/ed14b67e-c8b5-475a-bf49-a742a95d7eb4" />
+Close
 <img width="331" height="272" alt="Image" src="https://github.com/user-attachments/assets/09af33cc-39a4-42de-89bb-339371c49021" />
-<img width="845" height="599" alt="Image" src="https://github.com/user-attachments/assets/644abe4a-2064-498e-985e-c2cbbc597213" />
+DB02 번에서 이제 조회 가능
+<h2 id="ad-seobeo-setingdoen-sahangdeul-hwagin">AD 서버 세팅된 사항들 확인</h2>
+<p>DNS Manager 확인
+<img width="845" height="599" alt="Image" src="https://github.com/user-attachments/assets/644abe4a-2064-498e-985e-c2cbbc597213" /></p>
 <img width="631" height="325" alt="Image" src="https://github.com/user-attachments/assets/dd81a257-f06e-4443-a3e4-48490de19716" />
+Active Directory Users and Computers - test.com - Computers
 <img width="756" height="614" alt="Image" src="https://github.com/user-attachments/assets/69cd9a22-6a59-4ffd-ac0c-7421ad8ec4b3" />
+Active Directory Users and Computers - test.com - Users
+<h2 id="aws-failover-failback-bulga-isyuro-inhan-ipcuga">++ AWS Failover/Failback 불가 이슈로 인한 IP추가</h2>
+<p>클러스터 자동 추가가 되지않아 명령어로 강제로 Failover Clouster 를 붙인경우가 이런경우
+&lt; 증거물 &gt;
 <img width="580" height="531" alt="Image" src="https://github.com/user-attachments/assets/4217e5c8-b7b5-40b3-9247-a1d4efd33607" />
 <img width="400" height="346" alt="Image" src="https://github.com/user-attachments/assets/c87a1bbf-b003-4264-b38b-35379a655f60" />
+Secondary 대상으로 Listener IP 추가</p>
 <img width="969" height="298" alt="Image" src="https://github.com/user-attachments/assets/6aa13f80-1c07-4111-9056-232827b55361" />
-<img width="1075" height="365" alt="Image" src="https://github.com/user-attachments/assets/f53d3ca3-f75f-4888-9325-44cba1ea6aa1" />
-<img width="1058" height="360" alt="Image" src="https://github.com/user-attachments/assets/9d639047-3fce-48a1-adc6-760dee12a05d" />
-<img width="1613" height="251" alt="Image" src="https://github.com/user-attachments/assets/bd10f912-5e11-4986-90ac-df7599c9e1f3" />
-## 123
+예시로 172.31.20.100이 Cluster IP, 172.31.20.102가 AG Listener IP일 경우 이렇게 설정 (이 경우는 failback)
+<p>그래서</p>
+<hr />
+<ul>
+<li>Failover (MSSQLDB01 → MSSQLDB02)</li>
+</ul>
+<ol>
+<li>SSMS에서 MSSQLDB02로 페일오버 실행</li>
+<li>AWS 콘솔 → EC2 → Network Interfaces</li>
+<li>MSSQLDB01 ENI에서 <code>172.31.20.102</code> 제거</li>
+<li>MSSQLDB02 ENI에 <code>172.31.20.102</code> 할당</li>
+</ol>
+<hr />
+<ul>
+<li>Failback (MSSQLDB02 → MSSQLDB01)</li>
+</ul>
+<ol>
+<li>SSMS에서 MSSQLDB01로 페일오버 실행</li>
+<li>AWS 콘솔 → EC2 → Network Interfaces</li>
+<li>MSSQLDB02 ENI에서 <code>172.31.20.102</code> 제거</li>
+<li>MSSQLDB01 ENI에 <code>172.31.20.102</code> 할당</li>
+</ol>
+<hr />
+<p>Failover 발생시! ENI 에서 옮겨주면 된다!!</p>
+<h2 id="jadong-failoverreul-wihaeseo-nlb-sayong">++ 자동 Failover를 위해서 NLB 사용</h2>
+<p>NLB Primary 감지를 위해 shell 작성</p>
+<p>healthcheck.ps1</p>
+<pre><code>$port = 59999
+
+while ($true) {
+    try {
+        $result = Invoke-Sqlcmd -Query &quot;SELECT role_desc FROM sys.dm_hadr_availability_replica_states r JOIN sys.availability_replicas ar ON r.replica_id = ar.replica_id WHERE is_local = 1&quot; -ServerInstance &quot;localhost&quot;
+        
+        if ($result.role_desc -eq &quot;PRIMARY&quot;) {
+            if ($null -eq $listener) {
+                $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Any, $port)
+                $listener.Start()
+            }
+            if ($listener.Pending()) {
+                $client = $listener.AcceptTcpClient()
+                $client.Close()
+            }
+        } else {
+            if ($null -ne $listener) {
+                $listener.Stop()
+                $listener = $null
+            }
+        }
+    } catch {}
+    Start-Sleep -Milliseconds 100
+}
+</code></pre>
+<p>서비스 등록</p>
+<pre><code>$action = New-ScheduledTaskAction -Execute &quot;PowerShell.exe&quot; -Argument &quot;-ExecutionPolicy Bypass -File C:\Users\mscs\Desktop\healthcheck.ps1&quot;
+$trigger = New-ScheduledTaskTrigger -AtStartup
+Register-ScheduledTask -TaskName &quot;SQLHealthCheck&quot; -Action $action -Trigger $trigger -RunLevel Highest -Force
+Start-ScheduledTask -TaskName &quot;SQLHealthCheck&quot;
+</code></pre>
+<p>서비스 시작</p>
+<pre><code>Stop-ScheduledTask -TaskName &quot;SQLHealthCheck&quot;
+# 스크립트 교체 후
+Start-ScheduledTask -TaskName &quot;SQLHealthCheck&quot;
+</code></pre>
+<p>각서버 상태확인하면 서로 다른 결과가 나와야함</p>
+<pre><code>PS C:\Windows\system32&gt; netstat -an | findstr &quot;59999.*LISTEN&quot;
+  TCP    0.0.0.0:59999          0.0.0.0:0              LISTENING
+</code></pre>
+<blockquote>
+<p><strong>%%% 만약 적용한다하면 어플리케이션에서 리스너 IP가 아닌! NLB DNS를 바라봐야 함. %%%</strong></p>
+</blockquote>
+<p>Failover
+<img width="1075" height="365" alt="Image" src="https://github.com/user-attachments/assets/f53d3ca3-f75f-4888-9325-44cba1ea6aa1" /></p>
+<p>Failback
+<img width="1058" height="360" alt="Image" src="https://github.com/user-attachments/assets/9d639047-3fce-48a1-adc6-760dee12a05d" /></p>
+<p>NLB 최적화
+<img width="1613" height="251" alt="Image" src="https://github.com/user-attachments/assets/bd10f912-5e11-4986-90ac-df7599c9e1f3" /></p>
+<p>감사합니다.</p>
 
         </div>
 
