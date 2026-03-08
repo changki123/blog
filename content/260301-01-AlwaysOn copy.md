@@ -366,12 +366,20 @@ Always On Availability Groups - Enable Always On Availability Groups 체크 - OK
 
 
 <img width="406" height="491" alt="Image" src="https://github.com/user-attachments/assets/0f244033-b50e-4fb7-a8cc-ddbc474e52f1" />
+Log On - Browse
+
 
 <img width="453" height="246" alt="Image" src="https://github.com/user-attachments/assets/c53ba045-a28a-4b3d-a9ba-4df936be5e5b" />
+sql_test 입력 후 Check Names 클릭 후 OK
+
 
 <img width="408" height="486" alt="Image" src="https://github.com/user-attachments/assets/0e6a90c2-175c-4c67-badb-4ed147340981" />
+OK
+
 
 <img width="324" height="275" alt="Image" src="https://github.com/user-attachments/assets/ccf76c07-82a9-4240-8325-1043ca2b7be2" />
+SQL Server (MSSQLSERVER) - Restart
+
 <img width="479" height="585" alt="Image" src="https://github.com/user-attachments/assets/0298513d-4b04-4423-8678-c705c2c22df1" />
 
 <img width="508" height="435" alt="Image" src="https://github.com/user-attachments/assets/23f6e2b4-f1da-4ffa-b557-18c0989eb70d" />
