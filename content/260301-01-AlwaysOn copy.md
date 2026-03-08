@@ -329,15 +329,41 @@ FACLU.test.com 생성확인
 ## Cluster Static IP 지정
 
 <img width="1040" height="861" alt="Image" src="https://github.com/user-attachments/assets/870ad327-eeec-435d-97dd-abd7743f6a7d" />
+Failover Cluster Manager - AlwaysOn.test.com - Cluster Core Resources - Name : AlwaysOn 우클릭 - Properties 
+
 <img width="394" height="485" alt="Image" src="https://github.com/user-attachments/assets/b1cdd01e-dc2b-4020-b61f-33ef53acd3f5" />
+IP 대역대 클릭 - Edit
+
 <img width="396" height="482" alt="Image" src="https://github.com/user-attachments/assets/ec35322f-d3ad-4ddb-a5f2-cdcf20b1c9d0" />
+YES
+
 <img width="396" height="484" alt="Image" src="https://github.com/user-attachments/assets/04b4e820-919a-45e4-afd1-3dec24a61d7d" />
+Cluster ip (AlwaysOn 이름 ip 지정) 172.31.30.100 으로 임의지정
+
 <img width="456" height="273" alt="Image" src="https://github.com/user-attachments/assets/6d545966-e02e-44a4-9ef3-0a287ae2090e" />
+Bring Online 으로 활성화 진행
+
 <img width="435" height="95" alt="Image" src="https://github.com/user-attachments/assets/7d79576c-5d22-4136-83dd-4593b86d703e" />
+Online 확인
+
 <img width="1038" height="802" alt="Image" src="https://github.com/user-attachments/assets/c50e3966-3ad8-4c2d-b953-6c5441744822" />
+DB02에서도 확인 
+
+## AlwaysOn 기본 설정하기(DB01, 02)
+
+실행창 (버전별 명령어)
+```
+SQL 2022 → SQLServerManager16.msc
+SQL 2019 → SQLServerManager15.msc
+SQL 2017 → SQLServerManager14.msc
+```
 <img width="942" height="435" alt="Image" src="https://github.com/user-attachments/assets/0cd3b41b-49f4-44bf-bb9d-30d57a1af8a6" />
+SQL Server Services - SQL Server (MSSQLSERVER) 우클릭 - Properties
+
 
 <img width="409" height="487" alt="Image" src="https://github.com/user-attachments/assets/b0654740-2976-4569-b81e-dc845d5e05db" />
+Always On Availability Groups - Enable Always On Availability Groups 체크 - OK
+
 
 <img width="406" height="491" alt="Image" src="https://github.com/user-attachments/assets/0f244033-b50e-4fb7-a8cc-ddbc474e52f1" />
 
