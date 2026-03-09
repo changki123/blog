@@ -100,8 +100,6 @@ VPC CIDR 전체를 허용하는 이 설정은 **테스트 환경 전용**입니�
 
 Server Manager - Manage - Add Roles and Features 클릭
 
-{{ figure(src="https://github.com/user-attachments/assets/5bfbe04d-4fa5-4bf5-87ab-6c8cc4a31e89", alt="Server Manager - Add Roles and Features", caption="terminimal 테마 이미지용 shortcode 테스트") }}
-
 <img width="780" height="555" alt="Image" src="https://github.com/user-attachments/assets/5bfbe04d-4fa5-4bf5-87ab-6c8cc4a31e89" />
 Next >  <br>
 
