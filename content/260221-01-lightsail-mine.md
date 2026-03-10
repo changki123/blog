@@ -160,9 +160,6 @@ mcrcon -H localhost -P 25575 -p PASSWORD123123 "seed"
 # Seed: [-23897777777787991]
 ```
 
-포트를 기본값(25565)에서 변경한 경우 도메인 뒤에 포트를 명시해야 한다.  
-예: `game.changki123.click:포트번호`
-
 ---
 
 # 8. Discord OOM 알림
@@ -212,3 +209,8 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now minecraft-oom-notify
 ```
+
+
+---
+도메인을 사용하는경우 포트를 기본값(25565)에서 변경한 경우 도메인 뒤에 포트를 명시해야 한다.
+예: minecraft.game.com:포트번호
