@@ -102,6 +102,7 @@
 <p><img width="330" height="308" alt="Image" src="https://github.com/user-attachments/assets/8a9b1671-ac55-47a1-bd9e-8ebdba81f952" /><br></p>
 <p>인스턴스 생성 완료 후 방화벽에서 TCP 25565 포트를 열어준다.</p>
 <hr />
+<br>
 <h1 id="2-gibon-hwangyeong-seolci">2. 기본 환경 설치</h1>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 시스템 업데이트
 sudo dnf update -y
@@ -117,6 +118,7 @@ java -version
 sudo dnf install wget screen -y
 </code></pre>
 <hr />
+<br>
 <h1 id="3-mainkeuraepeuteu-seobeo-seolci">3. 마인크래프트 서버 설치</h1>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 디렉토리 생성
 sudo mkdir -p &#x2F;opt&#x2F;minecraft
@@ -137,6 +139,7 @@ java -Xms512M -Xmx1536M -jar server.jar nogui
 sudo chown -R ec2-user:ec2-user &#x2F;opt&#x2F;minecraft
 </code></pre>
 <hr />
+<br>
 <h1 id="4-systemd-seobiseu-deungrog">4. systemd 서비스 등록</h1>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">sudo vi &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;minecraft.service
 </code></pre>
@@ -160,6 +163,7 @@ sudo systemctl enable --now minecraft
 sudo systemctl status minecraft
 </code></pre>
 <hr />
+<br>
 <h1 id="5-seuwab-memori-seoljeong">5. 스왑 메모리 설정</h1>
 <p>메모리 부족 방지를 위해 2G 스왑을 추가한다.</p>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">sudo fallocate -l 2G &#x2F;swapfile
@@ -173,11 +177,13 @@ echo &#x27;vm.swappiness=10&#x27; | sudo tee -a &#x2F;etc&#x2F;sysctl.conf
 sudo sysctl -p
 </code></pre>
 <hr />
+<br>
 <h1 id="6-s3-baegeob">6. S3 백업</h1>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">cd &#x2F;opt&#x2F;minecraft
 aws s3 sync world&#x2F; s3:&#x2F;&#x2F;버킷이름&#x2F;minecraft-backups&#x2F;world&#x2F;
 </code></pre>
 <hr />
+<br>
 <h1 id="7-seed-hwagin-mcrcon">7. Seed 확인 (mcrcon)</h1>
 <p><code>server.properties</code>에 RCON을 활성화한다.</p>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">vi &#x2F;opt&#x2F;minecraft&#x2F;server.properties
@@ -204,6 +210,7 @@ mcrcon -H localhost -P 25575 -p PASSWORD123123 &quot;seed&quot;
 # Seed: [-23897777777787991]
 </code></pre>
 <hr />
+<br>
 <h1 id="8-discord-oom-alrim">8. Discord OOM 알림</h1>
 <p>메모리 부족으로 서버가 강제 종료될 경우 Discord로 알림을 받는다.</p>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">cat &gt; &#x2F;opt&#x2F;minecraft&#x2F;discord-oom.sh &lt;&lt; &#x27;EOF&#x27;
@@ -246,6 +253,8 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now minecraft-oom-notify
 </code></pre>
+<br>
+<br>
 <hr />
 <p>도메인을 사용하는경우 포트를 기본값(25565)에서 변경한 경우 도메인 뒤에 포트를 명시해야 한다.
 예: minecraft.game.com:포트번호</p>
