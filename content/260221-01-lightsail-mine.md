@@ -1,5 +1,5 @@
 +++
-title = "마인크래프트 lightsail"
+title = "마인크래프트 lightsail Amazon Linux 2023"
 date = 2026-02-21
 [taxonomies]
 tags = ["minecraft", "lightsail", "AWS"]
