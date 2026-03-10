@@ -97,7 +97,7 @@
     
 
         <div class="post-content">
-            <h2 id="guseong-mogpyo">구성 목표</h2>
+            <h1 id="guseong-mogpyo">구성 목표</h1>
 <p>이 시리즈에서 구성할 최종 구조입니다.</p>
 <pre><code>[ AD 서버 (Bastion + DNS) ]
          |
@@ -131,6 +131,7 @@
 </tbody></table>
 <p>AD 서버는 외부에서 RDP로 직접 접근할 수 있도록 Public IP를 붙입니다.
 MSSQL 서버들은 이 AD 서버를 경유해서만 접근합니다.</p>
+<br>
 <h3 id="mssql01-mssql02">MSSQL01, MSSQL02</h3>
 <table><thead><tr><th>항목</th><th>값</th></tr></thead><tbody>
 <tr><td>OS</td><td>Windows Server 2022 + SQL Server 2022 Standard [English]</td></tr>
@@ -142,6 +143,7 @@ MSSQL 서버들은 이 AD 서버를 경유해서만 접근합니다.</p>
 <p>DB 서버는 Public IP 없이 AD 서버를 경유해 접근합니다.
 AlwaysOn은 동일 AZ 구성과 함께 서브넷 또한 통일합니다.</p>
 <hr />
+<br>
 <h2 id="ec2-saengseong">EC2 생성</h2>
 <p>AWS 콘솔에서 EC2 인스턴스 생성 시 AMI 선택에서 <strong>Windows</strong> 탭을 선택합니다.</p>
 <ul>
@@ -151,6 +153,7 @@ AlwaysOn은 동일 AZ 구성과 함께 서브넷 또한 통일합니다.</p>
 <blockquote>
 <p><strong>주의</strong>: SQL Server 포함 AMI는 라이선스 비용이 시간당 부과됩니다. 운영 환경에서는 BYOL 여부를 검토하세요.</p>
 </blockquote>
+<br>
 <h2 id="boan-geurub-seoljeong">보안 그룹 설정</h2>
 <p>세 서버 모두 동일 VPC 내 통신이 가능하도록 인바운드 규칙을 추가합니다.</p>
 <table><thead><tr><th>유형</th><th>포트 범위</th><th>소스</th></tr></thead><tbody>
@@ -170,6 +173,7 @@ AlwaysOn은 동일 AZ 구성과 함께 서브넷 또한 통일합니다.</p>
 <tr><td>135, 49152-65535</td><td>RPC Dynamic Ports</td></tr>
 </tbody></table>
 <hr />
+<br>
 <h2 id="ad-seolci">AD 설치</h2>
 <h3 id="active-directory-yeoghal-cuga">Active Directory 역할 추가</h3>
 <p>Server Manager - Manage - Add Roles and Features 클릭</p>
