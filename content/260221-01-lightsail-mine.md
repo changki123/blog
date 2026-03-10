@@ -9,9 +9,9 @@ AWS Lightsail에서 마인크래프트 1.21.11 서버를 구축하는 과정을 
 
 <!-- more -->
 
-# 1. Lightsail 인스턴스 생성
+# 1. Lightsail 인스턴스 생성  
 
-<img width="862" height="656" alt="Image" src="https://github.com/user-attachments/assets/e316b8a8-805c-439a-a152-f2359b13c155" />
+<img width="862" height="656" alt="Image" src="https://github.com/user-attachments/assets/e316b8a8-805c-439a-a152-f2359b13c155" /><br>
 
 <img width="862" height="656" alt="Image" src="https://github.com/user-attachments/assets/5f2c7633-73a9-40b8-ba3c-76d949c5700e" />
 
