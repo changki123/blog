@@ -43,7 +43,7 @@
         
     </entry>
     <entry xml:lang="en">
-        <title>마인크래프트 lightsail Amazon Linux 2023</title>
+        <title>마인크래프트 서버 구축 - Amazon Lightsail (AL2023)</title>
         <published>2026-02-21T00:00:00+00:00</published>
         <updated>2026-02-21T00:00:00+00:00</updated>
         
@@ -58,7 +58,7 @@
         <link rel="alternate" type="text/html" href="https://blog.changki123.click/260221-01-lightsail-mine/"/>
         <id>https://blog.changki123.click/260221-01-lightsail-mine/</id>
         
-        <summary type="html">&lt;h2 id=&quot;tl-dr&quot;&gt;TL;DR&lt;&#x2F;h2&gt;</summary>
+        <summary type="html">&lt;p&gt;AWS Lightsail에서 마인크래프트 1.21.11 서버를 구축하는 과정을 정리한다.&lt;&#x2F;p&gt;</summary>
         
     </entry>
     <entry xml:lang="en">

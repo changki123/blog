@@ -76,7 +76,7 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://blog.changki123.click/260221-01-lightsail-mine/">마인크래프트 lightsail Amazon Linux 2023</a></h1>
+    <h1 class="post-title"><a href="https://blog.changki123.click/260221-01-lightsail-mine/">마인크래프트 서버 구축 - Amazon Lightsail (AL2023)</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
@@ -94,8 +94,161 @@
     
 
         <div class="post-content">
-            <h2 id="tl-dr">TL;DR</h2>
-<span id="continue-reading"></span><h2 id="123">123</h2>
+            <p>AWS Lightsail에서 마인크래프트 1.21.11 서버를 구축하는 과정을 정리한다.</p>
+<span id="continue-reading"></span><h1 id="1-lightsail-inseuteonseu-saengseong">1. Lightsail 인스턴스 생성</h1>
+<img width="862" height="656" alt="Image" src="https://github.com/user-attachments/assets/e316b8a8-805c-439a-a152-f2359b13c155" />
+<img width="862" height="656" alt="Image" src="https://github.com/user-attachments/assets/5f2c7633-73a9-40b8-ba3c-76d949c5700e" />
+<img width="847" height="695" alt="Image" src="https://github.com/user-attachments/assets/40c1dfc4-2811-4be5-9c45-7249e40bc059" />
+<img width="330" height="308" alt="Image" src="https://github.com/user-attachments/assets/8a9b1671-ac55-47a1-bd9e-8ebdba81f952" />
+<p>인스턴스 생성 완료 후 방화벽에서 TCP 25565 포트를 열어준다.</p>
+<hr />
+<h1 id="2-gibon-hwangyeong-seolci">2. 기본 환경 설치</h1>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 시스템 업데이트
+sudo dnf update -y
+
+# Java 21 설치 (마인크래프트 1.21+)
+sudo dnf install java-21-amazon-corretto-headless -y
+
+# 설치 확인
+java -version
+# openjdk version &quot;21.0.x&quot; 나와야 함
+
+# 필수 도구
+sudo dnf install wget screen -y
+</code></pre>
+<hr />
+<h1 id="3-mainkeuraepeuteu-seobeo-seolci">3. 마인크래프트 서버 설치</h1>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash"># 디렉토리 생성
+sudo mkdir -p &#x2F;opt&#x2F;minecraft
+sudo chown -R ec2-user:ec2-user &#x2F;opt&#x2F;minecraft&#x2F;
+cd &#x2F;opt&#x2F;minecraft
+
+# 서버 파일 다운로드 (1.21.11)
+wget https:&#x2F;&#x2F;piston-data.mojang.com&#x2F;v1&#x2F;objects&#x2F;64bb6d763bed0a9f1d632ec347938594144943ed&#x2F;server.jar
+
+# EULA 동의
+echo &quot;eula=true&quot; &gt; eula.txt
+
+# 첫 실행 (설정 파일 생성)
+java -Xms512M -Xmx1536M -jar server.jar nogui
+# &quot;Done (xx.xxxs)! For help, type &quot;help&quot;&quot; 메시지 확인 후 Ctrl+C
+
+# 권한 재설정
+sudo chown -R ec2-user:ec2-user &#x2F;opt&#x2F;minecraft
+</code></pre>
+<hr />
+<h1 id="4-systemd-seobiseu-deungrog">4. systemd 서비스 등록</h1>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">sudo vi &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;minecraft.service
+</code></pre>
+<pre data-lang="ini" class="language-ini "><code class="language-ini" data-lang="ini">[Unit]
+Description=Minecraft Server 1.21.11
+After=network.target
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=&#x2F;opt&#x2F;minecraft
+ExecStart=&#x2F;usr&#x2F;bin&#x2F;java -Xmx1536M -Xms512M -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -jar server.jar nogui
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">sudo systemctl daemon-reload
+sudo systemctl enable --now minecraft
+sudo systemctl status minecraft
+</code></pre>
+<hr />
+<h1 id="5-seuwab-memori-seoljeong">5. 스왑 메모리 설정</h1>
+<p>메모리 부족 방지를 위해 2G 스왑을 추가한다.</p>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">sudo fallocate -l 2G &#x2F;swapfile
+sudo chmod 600 &#x2F;swapfile
+sudo mkswap &#x2F;swapfile
+sudo swapon &#x2F;swapfile
+echo &#x27;&#x2F;swapfile none swap sw 0 0&#x27; | sudo tee -a &#x2F;etc&#x2F;fstab
+
+# swappiness 조정
+echo &#x27;vm.swappiness=10&#x27; | sudo tee -a &#x2F;etc&#x2F;sysctl.conf
+sudo sysctl -p
+</code></pre>
+<hr />
+<h1 id="6-s3-baegeob">6. S3 백업</h1>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">cd &#x2F;opt&#x2F;minecraft
+aws s3 sync world&#x2F; s3:&#x2F;&#x2F;버킷이름&#x2F;minecraft-backups&#x2F;world&#x2F;
+</code></pre>
+<hr />
+<h1 id="7-seed-hwagin-mcrcon">7. Seed 확인 (mcrcon)</h1>
+<p><code>server.properties</code>에 RCON을 활성화한다.</p>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">vi &#x2F;opt&#x2F;minecraft&#x2F;server.properties
+</code></pre>
+<pre data-lang="properties" class="language-properties "><code class="language-properties" data-lang="properties">enable-rcon=true
+rcon.password=PASSWORD123123
+rcon.port=25575
+</code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">sudo systemctl restart minecraft
+</code></pre>
+<p>mcrcon을 빌드해서 명령어를 실행한다.</p>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">cd &#x2F;tmp
+sudo yum install -y git gcc
+git clone https:&#x2F;&#x2F;github.com&#x2F;Tiiffi&#x2F;mcrcon.git
+cd mcrcon
+gcc -std=gnu11 -pedantic -Wall -Wextra -O2 -s -o mcrcon mcrcon.c
+sudo mv mcrcon &#x2F;usr&#x2F;local&#x2F;bin&#x2F;
+
+# op 권한 부여
+mcrcon -H localhost -P 25575 -p PASSWORD123123 &quot;op 유저명&quot;
+
+# 시드 확인
+mcrcon -H localhost -P 25575 -p PASSWORD123123 &quot;seed&quot;
+# Seed: [-23897777777787991]
+</code></pre>
+<hr />
+<h1 id="8-discord-oom-alrim">8. Discord OOM 알림</h1>
+<p>메모리 부족으로 서버가 강제 종료될 경우 Discord로 알림을 받는다.</p>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">cat &gt; &#x2F;opt&#x2F;minecraft&#x2F;discord-oom.sh &lt;&lt; &#x27;EOF&#x27;
+#!&#x2F;bin&#x2F;bash
+WEBHOOK_URL=&quot;웹훅URL&quot;
+SERVER_NAME=&quot;마인크래프트&quot;
+
+journalctl -fu minecraft --output=cat | while read line; do
+    TIMESTAMP=$(date -u +&quot;%Y-%m-%dT%H:%M:%SZ&quot;)
+    if echo &quot;$line&quot; | grep -q &quot;oom-kill&quot;; then
+        curl -s -X POST &quot;$WEBHOOK_URL&quot; \
+            -H &quot;Content-Type: application&#x2F;json&quot; \
+            -d &quot;{\&quot;embeds\&quot;: [{
+                \&quot;title\&quot;: \&quot;💀 [${SERVER_NAME}] OOM Kill 발생\&quot;,
+                \&quot;color\&quot;: 15548997,
+                \&quot;timestamp\&quot;: \&quot;${TIMESTAMP}\&quot;,
+                \&quot;fields\&quot;: [
+                    {\&quot;name\&quot;: \&quot;원인\&quot;, \&quot;value\&quot;: \&quot;메모리 부족으로 서버가 강제 종료됨\&quot;, \&quot;inline\&quot;: false}
+                ]
+            }]}&quot;
+    fi
+done
+EOF
+
+chmod +x &#x2F;opt&#x2F;minecraft&#x2F;discord-oom.sh
+</code></pre>
+<pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">cat &gt; &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;minecraft-oom-notify.service &lt;&lt; &#x27;EOF&#x27;
+[Unit]
+Description=Minecraft OOM Discord Notifier
+After=minecraft.service
+
+[Service]
+ExecStart=&#x2F;opt&#x2F;minecraft&#x2F;discord-oom.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now minecraft-oom-notify
+</code></pre>
+<hr />
+<p>도메인을 사용하는경우 포트를 기본값(25565)에서 변경한 경우 도메인 뒤에 포트를 명시해야 한다.
+예: minecraft.game.com:포트번호</p>
 
         </div>
 
