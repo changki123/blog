@@ -21,10 +21,10 @@ AWS Lightsail에서 마인크래프트 1.21.11 서버를 구축하는 과정을 
 
 인스턴스 생성 완료 후 방화벽에서 TCP 25565 포트를 열어준다.
 
----
+
 
 <br>
-
+---
 # 2. 기본 환경 설치
 
 ```bash
@@ -42,10 +42,10 @@ java -version
 sudo dnf install wget screen -y
 ```
 
----
+
 
 <br>
-
+---
 # 3. 마인크래프트 서버 설치
 
 ```bash
@@ -68,10 +68,10 @@ java -Xms512M -Xmx1536M -jar server.jar nogui
 sudo chown -R ec2-user:ec2-user /opt/minecraft
 ```
 
----
+
 
 <br>
-
+---
 # 4. systemd 서비스 등록
 
 ```bash
@@ -101,10 +101,10 @@ sudo systemctl enable --now minecraft
 sudo systemctl status minecraft
 ```
 
----
+
 
 <br>
-
+---
 # 5. 스왑 메모리 설정
 
 메모리 부족 방지를 위해 2G 스왑을 추가한다.
@@ -121,10 +121,10 @@ echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
 
----
+
 
 <br>
-
+---
 # 6. S3 백업
 
 ```bash
@@ -132,10 +132,10 @@ cd /opt/minecraft
 aws s3 sync world/ s3://버킷이름/minecraft-backups/world/
 ```
 
----
+
 
 <br>
-
+---
 # 7. Seed 확인 (mcrcon)
 
 `server.properties`에 RCON을 활성화한다.
@@ -172,10 +172,10 @@ mcrcon -H localhost -P 25575 -p PASSWORD123123 "seed"
 # Seed: [-23897777777787991]
 ```
 
----
+
 
 <br>
-
+---
 # 8. Discord OOM 알림
 
 메모리 부족으로 서버가 강제 종료될 경우 Discord로 알림을 받는다.
