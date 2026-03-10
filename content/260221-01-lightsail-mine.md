@@ -13,11 +13,11 @@ AWS Lightsail에서 마인크래프트 1.21.11 서버를 구축하는 과정을 
 
 <img width="862" height="656" alt="Image" src="https://github.com/user-attachments/assets/e316b8a8-805c-439a-a152-f2359b13c155" /><br>
 
-<img width="862" height="656" alt="Image" src="https://github.com/user-attachments/assets/5f2c7633-73a9-40b8-ba3c-76d949c5700e" />
+<img width="862" height="656" alt="Image" src="https://github.com/user-attachments/assets/5f2c7633-73a9-40b8-ba3c-76d949c5700e" /><br>
 
-<img width="847" height="695" alt="Image" src="https://github.com/user-attachments/assets/40c1dfc4-2811-4be5-9c45-7249e40bc059" />
+<img width="847" height="695" alt="Image" src="https://github.com/user-attachments/assets/40c1dfc4-2811-4be5-9c45-7249e40bc059" /><br>
 
-<img width="330" height="308" alt="Image" src="https://github.com/user-attachments/assets/8a9b1671-ac55-47a1-bd9e-8ebdba81f952" />
+<img width="330" height="308" alt="Image" src="https://github.com/user-attachments/assets/8a9b1671-ac55-47a1-bd9e-8ebdba81f952" /><br>
 
 인스턴스 생성 완료 후 방화벽에서 TCP 25565 포트를 열어준다.
 
