@@ -23,6 +23,8 @@ AWS Lightsail에서 마인크래프트 1.21.11 서버를 구축하는 과정을 
 
 ---
 
+<br>
+
 # 2. 기본 환경 설치
 
 ```bash
@@ -41,6 +43,8 @@ sudo dnf install wget screen -y
 ```
 
 ---
+
+<br>
 
 # 3. 마인크래프트 서버 설치
 
@@ -65,6 +69,8 @@ sudo chown -R ec2-user:ec2-user /opt/minecraft
 ```
 
 ---
+
+<br>
 
 # 4. systemd 서비스 등록
 
@@ -97,6 +103,8 @@ sudo systemctl status minecraft
 
 ---
 
+<br>
+
 # 5. 스왑 메모리 설정
 
 메모리 부족 방지를 위해 2G 스왑을 추가한다.
@@ -115,6 +123,8 @@ sudo sysctl -p
 
 ---
 
+<br>
+
 # 6. S3 백업
 
 ```bash
@@ -123,6 +133,8 @@ aws s3 sync world/ s3://버킷이름/minecraft-backups/world/
 ```
 
 ---
+
+<br>
 
 # 7. Seed 확인 (mcrcon)
 
@@ -161,6 +173,8 @@ mcrcon -H localhost -P 25575 -p PASSWORD123123 "seed"
 ```
 
 ---
+
+<br>
 
 # 8. Discord OOM 알림
 
@@ -209,6 +223,10 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now minecraft-oom-notify
 ```
+
+<br>
+
+<br>
 
 
 ---
