@@ -149,7 +149,7 @@
 현재 DRS 에이전트 설치 및 1:1 복제 테스트까지 완료했습니다.&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
 &lt;h2 id=&quot;mogpyo&quot;&gt;목표&lt;&#x2F;h2&gt;
-&lt;p&gt;AWS DRS(Disaster Recovery Service)를 사용해 서울 리전의 Windows 서버를 홍콩 리전으로 재해복구 환경 구축&lt;&#x2F;p&gt;</summary>
+&lt;p&gt;AWS DRS(Disaster Recovery Service)를 사용해 서울 리전의 Windows 서버를 다른 리전으로 재해복구 환경 구축&lt;&#x2F;p&gt;</summary>
         
     </entry>
     <entry xml:lang="en">
