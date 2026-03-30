@@ -127,3 +127,21 @@ body.loading, .loading * {
         position: static;
     }
 }
+
+/* github setting */
+.github-grass {
+    padding: 0.4rem 1rem 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.github-grass img {
+    width: 100%;
+    max-width: 860px;
+    display: block;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+}
+
+.github-grass img:hover {
+    opacity: 1;
+}
