@@ -90,12 +90,51 @@
                 :: tags:&nbsp;
                 <a class="post-tag" href="https://blog.changki123.click/tags/ad/">#AD</a>&nbsp;
                 <a class="post-tag" href="https://blog.changki123.click/tags/aws/">#AWS</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/widnows/">#Widnows</a></span>
+                <a class="post-tag" href="https://blog.changki123.click/tags/windows/">#Windows</a></span>
     
 
         <div class="post-content">
             <h2 id="tl-dr">TL;DR</h2>
-<span id="continue-reading"></span><h2 id="123">123</h2>
+<p>Active Directory(AD)는 회사 네트워크에서 계정과 권한을 중앙에서 관리해주는 시스템입니다.
+쉽게 말하면 "회사 전체의 로그인을 책임지는 서버"예요.</p>
+<span id="continue-reading"></span><h2 id="active-directoryga-mweongayo">Active Directory가 뭔가요?</h2>
+<p>AD(Active Directory)는 Microsoft가 만든 <strong>중앙 집중식 인증/권한 관리 시스템</strong>입니다.</p>
+<p>회사에 직원이 100명 있으면 PC도 100대인데, 각 PC마다 계정을 따로 만들고 관리하면 어떻게 될까요?
+퇴사자 계정 하나 지우려고 PC 100대를 돌아다녀야 하는 상황이 생깁니다.</p>
+<p>AD를 쓰면 <strong>서버 한 곳에서 모든 계정과 권한을 일괄 관리</strong>할 수 있어요.
+직원이 어느 PC에서 로그인하든 동일한 계정으로 접속이 가능하고,
+퇴사자 처리도 AD에서 한 번이면 끝납니다.</p>
+<h2 id="haegsim-gaenyeomman-jipeobogi">핵심 개념만 짚어보기</h2>
+<p><strong>도메인 (Domain)</strong></p>
+<p>AD가 관리하는 네트워크 범위를 도메인이라고 합니다.
+<code>company.local</code> 같은 형태로 표현하며, 이 도메인 안에 있는 PC와 서버들을 AD가 관리해요.</p>
+<p><strong>DC (Domain Controller)</strong></p>
+<p>AD를 실제로 실행하는 서버입니다.
+직원이 로그인할 때 "이 계정 맞아요?" 하고 인증 요청을 처리하는 주체가 바로 DC예요.
+보통 이중화를 위해 Primary DC + Secondary DC 구성으로 운영합니다.</p>
+<p><strong>도메인 조인 (Domain Join)</strong></p>
+<p>PC나 서버를 AD 도메인에 등록하는 과정입니다.
+도메인에 조인된 서버는 AD 계정으로 로그인하고, AD에서 설정한 정책을 따르게 됩니다.</p>
+<h2 id="awseseo-adreul-sseuneun-iyu">AWS에서 AD를 쓰는 이유</h2>
+<p>클라우드 환경에서도 AD는 자주 등장합니다. 대표적인 케이스 두 가지예요.</p>
+<p><strong>Windows 서버 도메인 관리</strong></p>
+<p>EC2 Windows 인스턴스를 도메인에 조인시키면, 개별 서버마다 로컬 계정을 만들 필요 없이
+AD 계정 하나로 모든 서버에 RDP 접속이 가능해집니다.</p>
+<p><strong>SQL Server AlwaysOn AG</strong></p>
+<p>SQL Server 고가용성 구성인 AlwaysOn Availability Group을 만들려면 AD가 필수입니다.
+WSFC(Windows Server Failover Cluster) 자체가 AD 도메인 환경을 전제로 동작하거든요.</p>
+<h2 id="aws-managed-microsoft-ad">AWS Managed Microsoft AD</h2>
+<p>AD 서버를 직접 EC2에 올려서 관리하는 것도 가능하지만,
+AWS에서는 <strong>Managed Microsoft AD</strong>라는 완전관리형 서비스도 제공합니다.</p>
+<p>DC 이중화, 패치, 백업을 AWS가 대신 처리해주기 때문에 관리 부담이 크게 줄어들어요.
+단, 비용이 발생하므로 규모와 상황에 맞게 선택하면 됩니다.</p>
+<h2 id="mamuri">마무리</h2>
+<p>AD는 처음에는 낯설게 느껴지지만, 결국 핵심은 간단합니다.</p>
+<blockquote>
+<p><strong>"사람과 컴퓨터를 한 곳에서 관리한다"</strong></p>
+</blockquote>
+<p>온프레미스든 클라우드든 Windows 기반 인프라를 다루다 보면 반드시 마주치게 되는 개념이니,
+기본 흐름만 이해해 둬도 실무에서 많은 도움이 됩니다.</p>
 
         </div>
 

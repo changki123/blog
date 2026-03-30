@@ -77,7 +77,9 @@
         <link rel="alternate" type="text/html" href="https://blog.changki123.click/260216-01-ad-ing/"/>
         <id>https://blog.changki123.click/260216-01-ad-ing/</id>
         
-        <summary type="html">&lt;h2 id=&quot;tl-dr&quot;&gt;TL;DR&lt;&#x2F;h2&gt;</summary>
+        <summary type="html">&lt;h2 id=&quot;tl-dr&quot;&gt;TL;DR&lt;&#x2F;h2&gt;
+&lt;p&gt;Active Directory(AD)는 회사 네트워크에서 계정과 권한을 중앙에서 관리해주는 시스템입니다.
+쉽게 말하면 &quot;회사 전체의 로그인을 책임지는 서버&quot;예요.&lt;&#x2F;p&gt;</summary>
         
     </entry>
     <entry xml:lang="en">
@@ -105,7 +107,7 @@
         
     </entry>
     <entry xml:lang="en">
-        <title>AWS 온프레미스 마이그레이션 MGN (진행 중)</title>
+        <title>AWS 온프레미스 마이그레이션 MGN (간단히 함)</title>
         <published>2026-02-11T00:00:00+00:00</published>
         <updated>2026-02-11T00:00:00+00:00</updated>
         
@@ -129,7 +131,7 @@
         
     </entry>
     <entry xml:lang="en">
-        <title>AWS DRS 기반 재해복구 환경 구축 (진행 중)</title>
+        <title>AWS DRS 기반 재해복구 환경 구축 (간단히 함)</title>
         <published>2026-02-08T00:00:00+00:00</published>
         <updated>2026-02-08T00:00:00+00:00</updated>
         
