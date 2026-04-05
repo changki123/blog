@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>changki123&#x27;s blog - nce</title>
+    <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/nce/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-04-05T00:00:00+00:00</updated>
+    <id>https://blog.changki123.click/tags/nce/atom.xml</id>
+    <entry xml:lang="en">
+        <title>NCP Expert (NCE) 전과목 합격 후기</title>
+        <published>2026-04-05T00:00:00+00:00</published>
+        <updated>2026-04-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260405-01-ncp-expert/"/>
+        <id>https://blog.changki123.click/260405-01-ncp-expert/</id>
+        
+        <content type="html" xml:base="https://blog.changki123.click/260405-01-ncp-expert/">&lt;h2 id=&quot;nce-jeongwamog-habgyeoghaessseubnida&quot;&gt;NCE 전과목 합격했습니다&lt;&#x2F;h2&gt;
+&lt;p&gt;MSP에서 NCP 환경을 실무로 다루다 보니 자연스럽게 NCE(Naver Cloud Platform Expert) 시험을 준비하게 됐습니다. NCE는 과목이 여러 개로 나뉘어 있는데, 이번에 전과목을 한 번에 합격했습니다.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;합격 과목&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;과목&lt;&#x2F;th&gt;&lt;th&gt;영역&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;NCE 301&lt;&#x2F;td&gt;&lt;td&gt;Compute &#x2F; Storage&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;NCE 302&lt;&#x2F;td&gt;&lt;td&gt;Network &#x2F; Media&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;NCE 303&lt;&#x2F;td&gt;&lt;td&gt;Database &#x2F; Management &#x2F; Analytics &#x2F; Security&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;NCE 305&lt;&#x2F;td&gt;&lt;td&gt;Application &#x2F; AI&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;gongbu-bangbeob&quot;&gt;공부 방법&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;strong&gt;주요 학습 자료&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;네이버 비즈니스 스쿨 클라우드&lt;&#x2F;strong&gt;: &lt;a href=&quot;https:&#x2F;&#x2F;bizschool.naver.com&#x2F;online&#x2F;courses&#x2F;76&quot;&gt;NCE 공식 강의&lt;&#x2F;a&gt; — 과목별로 커리큘럼이 잘 나뉘어 있어서 기본기 잡는 데 충실했습니다.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;AI 질문&lt;&#x2F;strong&gt;: 애매한 개념은 바로바로 물어보면서 정리했습니다. 특히 NKS 내부 동작(ncp-auth ConfigMap, Cluster Autoscaler, drain vs cordon 차이 등)이나 서비스 간 차이점 비교할 때 유용했습니다.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;strong&gt;과목별 포인트&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;301 Compute &#x2F; Storage&lt;&#x2F;strong&gt;: NKS, 쿠버네티스, NCP CLI, 기본 컴퓨트 위주로 출제됩니다. 쿠버네티스는 필수로 알고 가셔야 합니다.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;302 Network &#x2F; Media&lt;&#x2F;strong&gt;: VPC 기본 네트워크 구성은 기본이고, VOD 등 평소에 접하기 어려운 미디어 서비스 관련 문제도 많이 나옵니다.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;303 Database &#x2F; Management &#x2F; Analytics &#x2F; Security&lt;&#x2F;strong&gt;: CDB, Cloud Insight 등 데이터베이스, 모니터링, 보안까지 범위가 넓어 어디서부터 공부해야 할지 감 잡기 어려웠습니다. 일단 범위 안에서 최대한 커버하시길 바랍니다.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;305 Application &#x2F; AI&lt;&#x2F;strong&gt;: CLOVA 서비스 관련 문제가 많이 나옵니다. CLOVA 서비스 종류를 정리해두는 게 핵심입니다. 서버리스 쪽은 개인적으로 관심이 있었는데 출제 비중은 높지 않았습니다.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;네이버 비즈니스 스쿨 강의 외에도, 네이버 교육장에서 진행하는 NCP&#x2F;NCE 오프라인 교육을 들을 수 있다면 강력히 추천합니다. 강사분들이 시험에 자주 나오는 포인트를 직접 짚어주고, 별도 교육 자료도 받을 수 있어서 훨씬 효율적입니다.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;nanido&quot;&gt;난이도&lt;&#x2F;h2&gt;
+&lt;p&gt;실무에서 NCP를 이미 쓰고 있다면 무난한 편입니다. 강의 한 번 보고 개념 정리 정도면 충분했습니다. 다만 303처럼 범위가 넓은 과목은 서비스 종류가 많아서 이름이랑 특성 매핑을 꼼꼼히 해두는 게 좋습니다.&lt;&#x2F;p&gt;
+&lt;p&gt;클래식 플랫폼이 종료되면서 현재는 VPC 플랫폼 기준으로만 출제됩니다. 덕분에 범위가 오히려 명확해진 편입니다.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;h2 id=&quot;congpyeong&quot;&gt;총평&lt;&#x2F;h2&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;항목&lt;&#x2F;th&gt;&lt;th&gt;내용&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;시험&lt;&#x2F;td&gt;&lt;td&gt;NCP Expert (NCE) 301 &#x2F; 302 &#x2F; 303 &#x2F; 305&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;결과&lt;&#x2F;td&gt;&lt;td&gt;&lt;strong&gt;전과목 합격&lt;&#x2F;strong&gt;&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;추천 자료&lt;&#x2F;td&gt;&lt;td&gt;네이버 비즈니스 스쿨 클라우드 강의 + AI 보조 학습&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;난이도&lt;&#x2F;td&gt;&lt;td&gt;실무 경험 있으면 무난&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;p&gt;AWS SAA&#x2F;DEA에 이어 NCE까지 챙겼으니 멀티클라우드 커버리지가 한층 탄탄해졌습니다. NCP를 실무에서 다루고 있다면 충분히 도전할 만한 시험입니다.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

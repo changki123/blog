@@ -20,8 +20,8 @@
           </name>
         </author>
         
-        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260330-01-bevy-start/"/>
-        <id>https://blog.changki123.click/260330-01-bevy-start/</id>
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260330-01-bevy-start-copy/"/>
+        <id>https://blog.changki123.click/260330-01-bevy-start-copy/</id>
         
         <summary type="html">&lt;p&gt;Rust로 게임을 만들어보고 싶어서 이것저것 찾아봤는데, 현재 Rust 게임 개발 생태계에서 가장 활발한 엔진은 단연 &lt;strong&gt;Bevy&lt;&#x2F;strong&gt;다. ECS(Entity Component System) 기반의 풀스택 게임 엔진으로, 커뮤니티도 크고 문서도 잘 되어있다.&lt;&#x2F;p&gt;
 &lt;p&gt;이 글에서는 Windows 환경에서 Rust + Bevy 개발 환경을 세팅하고 첫 번째 창을 띄우기까지의 과정을 기록한다.&lt;&#x2F;p&gt;</summary>
