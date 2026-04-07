@@ -58,3 +58,6 @@ MSP에서 NCP 환경을 실무로 다루다 보니 자연스럽게 NCE(Naver Clo
 | 난이도 | 실무 경험 있으면 무난 |
 
 NCP를 실무에서 다루고 있다면 충분히 도전할 만한 시험입니다.
+
+
+https://github.com/user-attachments/assets/190911c0-d9a3-4686-a6e4-6e10e562aab8
