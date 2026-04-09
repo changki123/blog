@@ -1,5 +1,5 @@
 +++
-title = "KT Cloud MSSQL 서버 마이그레이션 — DB 복원 및 로그인 재연결"
+title = "MSSQL 서버 — DB 복원 및 로그인 재연결"
 date = 2026-04-09
 [taxonomies]
 tags = ["mssql", "ktcloud", "migration", "ssms"]
