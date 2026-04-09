@@ -85,7 +85,7 @@
     </url>
     <url>
         <loc>https://blog.changki123.click/260409-01-mssql-restore/</loc>
-        <lastmod>2026-04-05</lastmod>
+        <lastmod>2026-04-09</lastmod>
     </url>
     <url>
         <loc>https://blog.changki123.click/page/1/</loc>
@@ -181,6 +181,9 @@
         <loc>https://blog.changki123.click/tags/jagyeogjeung/</loc>
     </url>
     <url>
+        <loc>https://blog.changki123.click/tags/ktcloud/</loc>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/tags/lambda/</loc>
     </url>
     <url>
@@ -242,6 +245,9 @@
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/ssl/</loc>
+    </url>
+    <url>
+        <loc>https://blog.changki123.click/tags/ssms/</loc>
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/systemd/</loc>

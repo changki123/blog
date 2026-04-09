@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-    <title>changki123&#x27;s blog - Migration</title>
+    <title>changki123&#x27;s blog - ktcloud</title>
     <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
-    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/migration/atom.xml"/>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/ktcloud/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
     <updated>2026-04-09T00:00:00+00:00</updated>
-    <id>https://blog.changki123.click/tags/migration/atom.xml</id>
+    <id>https://blog.changki123.click/tags/ktcloud/atom.xml</id>
     <entry xml:lang="en">
         <title>KT Cloud MSSQL 서버 마이그레이션 — DB 복원 및 로그인 재연결</title>
         <published>2026-04-09T00:00:00+00:00</published>
@@ -102,30 +102,6 @@ SELECT TOP 5 * FROM 테이블명;
 &lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
 &lt;p&gt;SID만 맞춰주면 &lt;code&gt;sp_change_users_login &#x27;Auto_Fix&#x27;&lt;&#x2F;code&gt; 없이도 자동 매핑된다는 점이 포인트.&lt;&#x2F;p&gt;
 </content>
-        
-    </entry>
-    <entry xml:lang="en">
-        <title>AWS 온프레미스 마이그레이션 MGN (간단히 함)</title>
-        <published>2026-02-11T00:00:00+00:00</published>
-        <updated>2026-02-11T00:00:00+00:00</updated>
-        
-        <author>
-          <name>
-            
-              Unknown
-            
-          </name>
-        </author>
-        
-        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260211-01-aws-mgn/"/>
-        <id>https://blog.changki123.click/260211-01-aws-mgn/</id>
-        
-        <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;진행 중인 프로젝트입니다.&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
-현재 MGN 에이전트 설치 및 1:1 복제 테스트까지 완료했습니다.&lt;&#x2F;p&gt;
-&lt;&#x2F;blockquote&gt;
-&lt;h2 id=&quot;mogpyo&quot;&gt;목표&lt;&#x2F;h2&gt;
-&lt;p&gt;AWS MGN(Application Migration Service)을 사용해 서울 리전의 Windows 서버를 홍콩 리전으로 마이그레이션&lt;&#x2F;p&gt;</summary>
         
     </entry>
 </feed>
