@@ -23,85 +23,8 @@
         <link rel="alternate" type="text/html" href="https://blog.changki123.click/260409-01-mssql-restore/"/>
         <id>https://blog.changki123.click/260409-01-mssql-restore/</id>
         
-        <content type="html" xml:base="https://blog.changki123.click/260409-01-mssql-restore/">&lt;p&gt;KT Cloud에서 NCP(Naver Cloud Platform)로 서버를 이전하면서 MSSQL DB를 새 인스턴스에 복원한 과정을 정리한다.&lt;br &#x2F;&gt;
-플랫폼은 달라졌지만 핵심은 MSSQL 자체의 작업이라 다른 환경에서도 동일하게 적용된다.&lt;&#x2F;p&gt;
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;hwangyeong&quot;&gt;환경&lt;&#x2F;h2&gt;
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;항목&lt;&#x2F;th&gt;&lt;th&gt;내용&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
-&lt;tr&gt;&lt;td&gt;서버 이미지&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;mssql(2017std)-win-2016-64-en&lt;&#x2F;code&gt;&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
-&lt;tr&gt;&lt;td&gt;SSMS&lt;&#x2F;td&gt;&lt;td&gt;18.0&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
-&lt;tr&gt;&lt;td&gt;.NET Framework&lt;&#x2F;td&gt;&lt;td&gt;4.6 (SSMS 18 설치 전제 조건)&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
-&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;1-sajeon-junbi&quot;&gt;1. 사전 준비&lt;&#x2F;h2&gt;
-&lt;img width=&quot;657&quot; height=&quot;561&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;0c8dc9e7-c731-4704-9681-2c7b1b7d10d7&quot; &#x2F;&gt;
-**.NET Framework 4.6** 설치 후 **SSMS 18.0** 설치.  
-설치 완료 후 서버 재기동.
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;2-db-bogweon&quot;&gt;2. DB 복원&lt;&#x2F;h2&gt;
-&lt;img width=&quot;554&quot; height=&quot;290&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;5ad5da64-7754-46c3-b2dc-9ba0b29bca0d&quot; &#x2F;&gt;
-SSMS 접속 → 
-&lt;img width=&quot;391&quot; height=&quot;455&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;db5d45eb-0ff8-45c5-880b-add6c2c3010f&quot; &#x2F;&gt;
-데이터베이스 우클릭 → **데이터베이스 복원** 선택.
-&lt;img width=&quot;861&quot; height=&quot;744&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;884106cb-e70d-4013-aebe-e5455d33ce6e&quot; &#x2F;&gt;
-디바이스 → ... 선택 → 
-&lt;img width=&quot;572&quot; height=&quot;337&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;86135586-cd5a-4a03-9423-0bb7bec456b1&quot; &#x2F;&gt;
-추가 → 
-&lt;img width=&quot;740&quot; height=&quot;433&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;bf23e77c-b39b-4b9f-8dff-b7facf59de2c&quot; &#x2F;&gt;
-`.bak` 파일 경로 지정 → 
-&lt;img width=&quot;576&quot; height=&quot;341&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;b0bd8f10-6933-4151-8294-e6199a19b65c&quot; &#x2F;&gt;
-`.bak` 파일 확인 → 
-&lt;img width=&quot;863&quot; height=&quot;743&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;5105d845-5327-4f1f-8404-a3cfe40bb35d&quot; &#x2F;&gt;
-복원 실행.
-&lt;img width=&quot;347&quot; height=&quot;165&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;55e00d87-e650-4d14-8588-33549afa7db2&quot; &#x2F;&gt;
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;3-rogeuin-jaeyeongyeol-orphaned-user-ceori&quot;&gt;3. 로그인 재연결 (Orphaned User 처리)&lt;&#x2F;h2&gt;
-&lt;p&gt;DB만 복원하면 &lt;strong&gt;DB 유저는 들어오지만 서버 로그인과의 매핑이 끊긴다.&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
-SID가 같아도 &quot;이 DB 유저 = 저 로그인&quot;이라는 연결 정보가 날아가기 때문이다.&lt;&#x2F;p&gt;
-&lt;h3 id=&quot;3-1-orphaned-yujeo-hwagin&quot;&gt;3-1. Orphaned 유저 확인&lt;&#x2F;h3&gt;
-&lt;pre data-lang=&quot;sql&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;USE [DB이름];
-EXEC sp_change_users_login &amp;#x27;Report&amp;#x27;;
-&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;결과에 유저가 나오면 Orphaned 상태.&lt;&#x2F;p&gt;
-&lt;h3 id=&quot;3-2-weonbon-seobeoeseo-bimilbeonho-haesi-sid-cucul&quot;&gt;3-2. 원본 서버에서 비밀번호 해시 + SID 추출&lt;&#x2F;h3&gt;
-&lt;p&gt;원본 서버에서 실행:&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;sql&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;USE master;
-SELECT name, password_hash, sid
-FROM sys.sql_logins
-WHERE name IN (&amp;#x27;유저1&amp;#x27;, &amp;#x27;유저2&amp;#x27;);
-&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h3 id=&quot;3-3-sae-seobeoeseo-dongil-sid-haesiro-rogeuin-saengseong&quot;&gt;3-3. 새 서버에서 동일 SID + 해시로 로그인 생성&lt;&#x2F;h3&gt;
-&lt;p&gt;SID가 일치하면 DB 유저와 자동 매핑된다.&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;sql&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;USE master;
-CREATE LOGIN 유저1
-WITH PASSWORD = 0x해시값 HASHED,
-     SID = 0xSID값;
-
-CREATE LOGIN 유저2
-WITH PASSWORD = 0x해시값 HASHED,
-     SID = 0xSID값;
-&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;h3 id=&quot;3-4-orphaned-0gae-hwagin&quot;&gt;3-4. Orphaned 0개 확인&lt;&#x2F;h3&gt;
-&lt;pre data-lang=&quot;sql&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;USE [DB이름];
-EXEC sp_change_users_login &amp;#x27;Report&amp;#x27;;
-&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;img width=&quot;226&quot; height=&quot;78&quot; alt=&quot;Image&quot; src=&quot;https:&#x2F;&#x2F;github.com&#x2F;user-attachments&#x2F;assets&#x2F;00ec3b83-ccee-4bc8-b580-6c0f477d779b&quot; &#x2F;&gt;
-&lt;p&gt;결과가 비어 있으면 완료.&lt;&#x2F;p&gt;
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;4-jeobsog-hwagin&quot;&gt;4. 접속 확인&lt;&#x2F;h2&gt;
-&lt;p&gt;SSMS → 새 연결 → 해당 로그인으로 접속 후 쿼리 확인.&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;sql&quot; class=&quot;language-sql &quot;&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;USE [DB이름];
-SELECT TOP 5 * FROM 테이블명;
-&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;jeongri&quot;&gt;정리&lt;&#x2F;h2&gt;
-&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;단계&lt;&#x2F;th&gt;&lt;th&gt;핵심&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
-&lt;tr&gt;&lt;td&gt;DB 복원&lt;&#x2F;td&gt;&lt;td&gt;.bak 파일로 복원, DB 유저는 따라옴&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
-&lt;tr&gt;&lt;td&gt;로그인 재생성&lt;&#x2F;td&gt;&lt;td&gt;SID + 비밀번호 해시를 원본에서 추출해 동일하게 생성&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
-&lt;tr&gt;&lt;td&gt;매핑 확인&lt;&#x2F;td&gt;&lt;td&gt;&lt;code&gt;sp_change_users_login &#x27;Report&#x27;&lt;&#x2F;code&gt; 결과 0건&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
-&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
-&lt;p&gt;SID만 맞춰주면 &lt;code&gt;sp_change_users_login &#x27;Auto_Fix&#x27;&lt;&#x2F;code&gt; 없이도 자동 매핑된다는 점이 포인트.&lt;&#x2F;p&gt;
-</content>
+        <summary type="html">&lt;p&gt;KT Cloud에서 NCP(Naver Cloud Platform)로 서버를 이전하면서 MSSQL DB를 새 인스턴스에 복원한 과정을 정리한다.&lt;br &#x2F;&gt;
+플랫폼은 달라졌지만 핵심은 MSSQL 자체의 작업이라 다른 환경에서도 동일하게 적용된다.&lt;&#x2F;p&gt;</summary>
         
     </entry>
     <entry xml:lang="en">
