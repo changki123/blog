@@ -2,11 +2,13 @@
 title = "MSSQL 서버 — DB 복원 및 로그인 재연결"
 date = 2026-04-09
 [taxonomies]
-tags = ["mssql", "ktcloud", "migration", "ssms"]
+tags = ["mssql", "ktcloud", "migration", "ssms", "NCP"]
 +++
 
 KT Cloud에서 NCP(Naver Cloud Platform)로 서버를 이전하면서 MSSQL DB를 새 인스턴스에 복원한 과정을 정리한다.  
 플랫폼은 달라졌지만 핵심은 MSSQL 자체의 작업이라 다른 환경에서도 동일하게 적용된다.
+
+<!-- more -->
 
 ---
 
