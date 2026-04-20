@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-    <title>changki123&#x27;s blog - rust</title>
+    <title>changki123&#x27;s blog - leetcode</title>
     <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
-    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/rust/atom.xml"/>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/leetcode/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
     <updated>2026-04-20T00:00:00+00:00</updated>
-    <id>https://blog.changki123.click/tags/rust/atom.xml</id>
+    <id>https://blog.changki123.click/tags/leetcode/atom.xml</id>
     <entry xml:lang="en">
         <title>[LeetCode] 1768. Merge Strings Alternately - Rust 풀이</title>
         <published>2026-04-20T00:00:00+00:00</published>
@@ -93,52 +93,6 @@ word1 = &amp;quot;abcd&amp;quot;, word2 = &amp;quot;pq&amp;quot;  → &amp;quot;
 &lt;p&gt;Easy 난이도답게 로직 자체는 단순한데, Rust 문법에 익숙하지 않다 보니 &quot;문자열을 어떻게 순회하지?&quot;부터 찾아봐야 했다.&lt;br &#x2F;&gt;
 Python에서 당연하게 쓰던 것들이 Rust에선 왜 이렇게 되는지 하나씩 이해해가는 중이다.&lt;&#x2F;p&gt;
 </content>
-        
-    </entry>
-    <entry xml:lang="en">
-        <title>Rust로 게임 만들기 — Bevy 엔진 Windows 환경 세팅부터 첫 실행까지</title>
-        <published>2026-03-30T00:00:00+00:00</published>
-        <updated>2026-03-30T00:00:00+00:00</updated>
-        
-        <author>
-          <name>
-            
-              Unknown
-            
-          </name>
-        </author>
-        
-        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260330-01-bevy-start-copy/"/>
-        <id>https://blog.changki123.click/260330-01-bevy-start-copy/</id>
-        
-        <summary type="html">&lt;p&gt;Rust로 게임을 만들어보고 싶어서 이것저것 찾아봤는데, 현재 Rust 게임 개발 생태계에서 가장 활발한 엔진은 단연 &lt;strong&gt;Bevy&lt;&#x2F;strong&gt;다. ECS(Entity Component System) 기반의 풀스택 게임 엔진으로, 커뮤니티도 크고 문서도 잘 되어있다.&lt;&#x2F;p&gt;
-&lt;p&gt;이 글에서는 Windows 환경에서 Rust + Bevy 개발 환경을 세팅하고 첫 번째 창을 띄우기까지의 과정을 기록한다.&lt;&#x2F;p&gt;</summary>
-        
-    </entry>
-    <entry xml:lang="en">
-        <title>Windows에서 Zola + GitHub Pages로 블로그 만들기</title>
-        <published>2026-01-02T00:00:00+00:00</published>
-        <updated>2026-01-02T00:00:00+00:00</updated>
-        
-        <author>
-          <name>
-            
-              Unknown
-            
-          </name>
-        </author>
-        
-        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260102-01-zola-blog-setup/"/>
-        <id>https://blog.changki123.click/260102-01-zola-blog-setup/</id>
-        
-        <summary type="html">&lt;p&gt;Rust로 만든 정적 사이트 생성기 Zola를 사용해서 GitHub Pages 블로그를 만들어봤다.&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;wae-zolainga&quot;&gt;왜 Zola인가?&lt;&#x2F;h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;빠름&lt;&#x2F;strong&gt;: Rust로 작성되어 빌드 속도가 매우 빠르다&lt;&#x2F;li&gt;
-&lt;li&gt;&lt;strong&gt;간단함&lt;&#x2F;strong&gt;: Hugo나 Jekyll보다 설정이 심플하다&lt;&#x2F;li&gt;
-&lt;li&gt;&lt;strong&gt;GitHub 언어 통계&lt;&#x2F;strong&gt;: Zola 테마를 사용하면 레포에 Rust 비율이 나온다&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;h2 id=&quot;seolci-gwajeong&quot;&gt;설치 과정&lt;&#x2F;h2&gt;</summary>
         
     </entry>
 </feed>

@@ -28,26 +28,6 @@
         
     </entry>
     <entry xml:lang="en">
-        <title>MSSQL 서버 — DB 복원 및 로그인 재연결</title>
-        <published>2026-04-09T00:00:00+00:00</published>
-        <updated>2026-04-09T00:00:00+00:00</updated>
-        
-        <author>
-          <name>
-            
-              Unknown
-            
-          </name>
-        </author>
-        
-        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260420-01-leetcode-1768/"/>
-        <id>https://blog.changki123.click/260420-01-leetcode-1768/</id>
-        
-        <summary type="html">&lt;p&gt;KT Cloud에서 NCP(Naver Cloud Platform)로 서버를 이전하면서 MSSQL DB를 새 인스턴스에 복원한 과정을 정리한다.&lt;br &#x2F;&gt;
-플랫폼은 달라졌지만 핵심은 MSSQL 자체의 작업이라 다른 환경에서도 동일하게 적용된다.&lt;&#x2F;p&gt;</summary>
-        
-    </entry>
-    <entry xml:lang="en">
         <title>AWS 온프레미스 마이그레이션 MGN (간단히 함)</title>
         <published>2026-02-11T00:00:00+00:00</published>
         <updated>2026-02-11T00:00:00+00:00</updated>

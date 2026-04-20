@@ -86,6 +86,102 @@
         <div class="posts">
                 <div class="post on-list">
                     
+    <h1 class="post-title"><a href="https://blog.changki123.click/260420-01-leetcode-1768/">[LeetCode] 1768. Merge Strings Alternately - Rust 풀이</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-04-20
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/easy/">#easy</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/leetcode/">#leetcode</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/rust/">#rust</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/string/">#string</a></span>
+    
+
+
+                    <div class="post-content">
+            <h2 id="munje">문제</h2>
+<p><a href="https://leetcode.com/problems/merge-strings-alternately/">1768. Merge Strings Alternately</a></p>
+<p>두 문자열 <code>word1</code>과 <code>word2</code>가 주어졌을 때, 두 문자열을 번갈아가며 합친 결과를 반환하는 문제다.<br />
+<code>word1</code>부터 시작해서 한 글자씩 번갈아 추가하고, 한쪽이 먼저 끝나면 나머지 문자열을 그냥 뒤에 붙이면 된다.</p>
+<p><strong>예시:</strong></p>
+<pre><code>word1 = &quot;abc&quot;, word2 = &quot;pqr&quot; → &quot;apbqcr&quot;
+word1 = &quot;ab&quot;,  word2 = &quot;pqrs&quot; → &quot;apbqrs&quot;
+word1 = &quot;abcd&quot;, word2 = &quot;pq&quot;  → &quot;apbqcd&quot;
+</code></pre>
+<hr />
+<h2 id="puli">풀이</h2>
+<p>Rust로 처음 풀어본 문제다. Python이었으면 인덱스로 접근했겠지만, Rust에서는 String을 직접 인덱싱할 수 없어서 <code>.chars()</code>로 이터레이터를 만들어 접근했다.</p>
+<p>핵심 아이디어는 간단하다:</p>
+<ol>
+<li>두 문자열 중 긴 쪽 길이 × 2만큼 루프를 돈다</li>
+<li>짝수 인덱스면 <code>word1</code>에서, 홀수 인덱스면 <code>word2</code>에서 문자를 가져온다</li>
+<li><code>if let Some(c)</code>로 이터레이터가 끝났는지 확인하고, 있을 때만 추가한다</li>
+</ol>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">impl Solution {
+    pub fn merge_alternately(word1: String, word2: String) -&gt; String {
+        let mut a1 = word1.chars();
+        let mut a2 = word2.chars();
+
+        let mut result = String::new();
+        let mut cnt = 0;
+
+        if word1.len() &gt; word2.len() {    
+            cnt = word1.len() * 2;
+        } else {
+            cnt = word2.len() * 2;
+        }
+
+        for i in 0..cnt {
+            if i % 2 == 0 {
+                if let Some(c) = a1.next() {
+                    result.push(c);
+                }
+            } else {
+                if let Some(c) = a2.next() {
+                    result.push(c);
+                }
+            }
+        }
+        
+        return result;
+    }
+}
+</code></pre>
+<hr />
+<h2 id="rusteseo-baeun-geos">Rust에서 배운 것</h2>
+<p><strong><code>chars()</code>와 이터레이터</strong></p>
+<p>Rust의 <code>String</code>은 UTF-8로 인코딩되어 있어서 바이트 인덱스로 직접 접근하면 문자가 깨질 수 있다.<br />
+그래서 문자 단위로 순회하려면 <code>.chars()</code>를 사용해야 한다.</p>
+<p><code>.chars()</code>는 <code>Iterator</code>를 반환하고, <code>.next()</code>를 호출하면 <code>Option&lt;char&gt;</code>가 나온다.</p>
+<p><strong><code>if let Some(c)</code></strong></p>
+<p>Rust에서 <code>Option</code>을 처리할 때 쓰는 패턴이다.<br />
+이터레이터가 아직 남아있으면 <code>Some(c)</code>로 문자를 꺼내고, 끝났으면 아무것도 안 한다.</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">if let Some(c) = a1.next() {
+    result.push(c);  &#x2F;&#x2F; 문자가 있을 때만 실행
+}
+</code></pre>
+<p><strong><code>String::new()</code>와 <code>.push()</code></strong></p>
+<p>빈 문자열을 만들고 문자를 하나씩 추가할 때 <code>push(char)</code>를 사용한다.<br />
+문자열을 붙이려면 <code>push_str(&amp;str)</code>를 쓴다.</p>
+<hr />
+<h2 id="gyeolgwa">결과</h2>
+<p>Runtime과 Memory 모두 무난하게 통과했다.</p>
+<p>Easy 난이도답게 로직 자체는 단순한데, Rust 문법에 익숙하지 않다 보니 "문자열을 어떻게 순회하지?"부터 찾아봐야 했다.<br />
+Python에서 당연하게 쓰던 것들이 Rust에선 왜 이렇게 되는지 하나씩 이해해가는 중이다.</p>
+
+        </div>
+
+                </div>
+            
+                <div class="post on-list">
+                    
     <h1 class="post-title"><a href="https://blog.changki123.click/260409-01-mssql-restore/">MSSQL 서버 — DB 복원 및 로그인 재연결</a></h1>
     <div class="post-meta-inline">
         
@@ -114,44 +210,6 @@
         <div>
             <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
             <a class="read-more button" href="https://blog.changki123.click/260409-01-mssql-restore/">
-                <span class="button__text">Read more</span>&nbsp;
-                <span class="button__icon">&#8617;&#xFE0E;</span>
-            </a>
-        </div>
-    
-
-                </div>
-            
-                <div class="post on-list">
-                    
-    <h1 class="post-title"><a href="https://blog.changki123.click/260420-01-leetcode-1768/">MSSQL 서버 — DB 복원 및 로그인 재연결</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-04-09
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ncp/">#NCP</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ktcloud/">#ktcloud</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/migration/">#migration</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/mssql/">#mssql</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ssms/">#ssms</a></span>
-    
-
-
-                    
-        <div class="post-content">
-            <p>KT Cloud에서 NCP(Naver Cloud Platform)로 서버를 이전하면서 MSSQL DB를 새 인스턴스에 복원한 과정을 정리한다.<br />
-플랫폼은 달라졌지만 핵심은 MSSQL 자체의 작업이라 다른 환경에서도 동일하게 적용된다.</p>
-        </div>
-        <div>
-            <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
-            <a class="read-more button" href="https://blog.changki123.click/260420-01-leetcode-1768/">
                 <span class="button__text">Read more</span>&nbsp;
                 <span class="button__icon">&#8617;&#xFE0E;</span>
             </a>

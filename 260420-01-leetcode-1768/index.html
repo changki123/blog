@@ -85,11 +85,11 @@
         
     <div class="post">
         
-    <h1 class="post-title"><a href="https://blog.changki123.click/260420-01-leetcode-1768/">MSSQL 서버 — DB 복원 및 로그인 재연결</a></h1>
+    <h1 class="post-title"><a href="https://blog.changki123.click/260420-01-leetcode-1768/">[LeetCode] 1768. Merge Strings Alternately - Rust 풀이</a></h1>
     <div class="post-meta-inline">
         
     <span class="post-date">
-            2026-04-09
+            2026-04-20
         </span>
 
     </div>
@@ -97,93 +97,82 @@
     
         <span class="post-tags-inline">
                 :: tags:&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ncp/">#NCP</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ktcloud/">#ktcloud</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/migration/">#migration</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/mssql/">#mssql</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ssms/">#ssms</a></span>
+                <a class="post-tag" href="https://blog.changki123.click/tags/easy/">#easy</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/leetcode/">#leetcode</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/rust/">#rust</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/string/">#string</a></span>
     
 
         <div class="post-content">
-            <p>KT Cloud에서 NCP(Naver Cloud Platform)로 서버를 이전하면서 MSSQL DB를 새 인스턴스에 복원한 과정을 정리한다.<br />
-플랫폼은 달라졌지만 핵심은 MSSQL 자체의 작업이라 다른 환경에서도 동일하게 적용된다.</p>
-<span id="continue-reading"></span>
-<hr />
-<h2 id="hwangyeong">환경</h2>
-<table><thead><tr><th>항목</th><th>내용</th></tr></thead><tbody>
-<tr><td>서버 이미지</td><td><code>mssql(2017std)-win-2016-64-en</code></td></tr>
-<tr><td>SSMS</td><td>18.0</td></tr>
-<tr><td>.NET Framework</td><td>4.6 (SSMS 18 설치 전제 조건)</td></tr>
-</tbody></table>
-<hr />
-<h2 id="1-sajeon-junbi">1. 사전 준비</h2>
-<img width="657" height="561" alt="Image" src="https://github.com/user-attachments/assets/0c8dc9e7-c731-4704-9681-2c7b1b7d10d7" />
-**.NET Framework 4.6** 설치 후 **SSMS 18.0** 설치.  
-설치 완료 후 서버 재기동.
-<hr />
-<h2 id="2-db-bogweon">2. DB 복원</h2>
-<img width="554" height="290" alt="Image" src="https://github.com/user-attachments/assets/5ad5da64-7754-46c3-b2dc-9ba0b29bca0d" />
-SSMS 접속 → 
-<img width="391" height="455" alt="Image" src="https://github.com/user-attachments/assets/db5d45eb-0ff8-45c5-880b-add6c2c3010f" />
-데이터베이스 우클릭 → **데이터베이스 복원** 선택.
-<img width="861" height="744" alt="Image" src="https://github.com/user-attachments/assets/884106cb-e70d-4013-aebe-e5455d33ce6e" />
-디바이스 → ... 선택 → 
-<img width="572" height="337" alt="Image" src="https://github.com/user-attachments/assets/86135586-cd5a-4a03-9423-0bb7bec456b1" />
-추가 → 
-<img width="740" height="433" alt="Image" src="https://github.com/user-attachments/assets/bf23e77c-b39b-4b9f-8dff-b7facf59de2c" />
-`.bak` 파일 경로 지정 → 
-<img width="576" height="341" alt="Image" src="https://github.com/user-attachments/assets/b0bd8f10-6933-4151-8294-e6199a19b65c" />
-`.bak` 파일 확인 → 
-<img width="863" height="743" alt="Image" src="https://github.com/user-attachments/assets/5105d845-5327-4f1f-8404-a3cfe40bb35d" />
-복원 실행.
-<img width="347" height="165" alt="Image" src="https://github.com/user-attachments/assets/55e00d87-e650-4d14-8588-33549afa7db2" />
-<hr />
-<h2 id="3-rogeuin-jaeyeongyeol-orphaned-user-ceori">3. 로그인 재연결 (Orphaned User 처리)</h2>
-<p>DB만 복원하면 <strong>DB 유저는 들어오지만 서버 로그인과의 매핑이 끊긴다.</strong><br />
-SID가 같아도 "이 DB 유저 = 저 로그인"이라는 연결 정보가 날아가기 때문이다.</p>
-<h3 id="3-1-orphaned-yujeo-hwagin">3-1. Orphaned 유저 확인</h3>
-<pre data-lang="sql" class="language-sql "><code class="language-sql" data-lang="sql">USE [DB이름];
-EXEC sp_change_users_login &#x27;Report&#x27;;
+            <h2 id="munje">문제</h2>
+<p><a href="https://leetcode.com/problems/merge-strings-alternately/">1768. Merge Strings Alternately</a></p>
+<p>두 문자열 <code>word1</code>과 <code>word2</code>가 주어졌을 때, 두 문자열을 번갈아가며 합친 결과를 반환하는 문제다.<br />
+<code>word1</code>부터 시작해서 한 글자씩 번갈아 추가하고, 한쪽이 먼저 끝나면 나머지 문자열을 그냥 뒤에 붙이면 된다.</p>
+<p><strong>예시:</strong></p>
+<pre><code>word1 = &quot;abc&quot;, word2 = &quot;pqr&quot; → &quot;apbqcr&quot;
+word1 = &quot;ab&quot;,  word2 = &quot;pqrs&quot; → &quot;apbqrs&quot;
+word1 = &quot;abcd&quot;, word2 = &quot;pq&quot;  → &quot;apbqcd&quot;
 </code></pre>
-<p>결과에 유저가 나오면 Orphaned 상태.</p>
-<h3 id="3-2-weonbon-seobeoeseo-bimilbeonho-haesi-sid-cucul">3-2. 원본 서버에서 비밀번호 해시 + SID 추출</h3>
-<p>원본 서버에서 실행:</p>
-<pre data-lang="sql" class="language-sql "><code class="language-sql" data-lang="sql">USE master;
-SELECT name, password_hash, sid
-FROM sys.sql_logins
-WHERE name IN (&#x27;유저1&#x27;, &#x27;유저2&#x27;);
-</code></pre>
-<h3 id="3-3-sae-seobeoeseo-dongil-sid-haesiro-rogeuin-saengseong">3-3. 새 서버에서 동일 SID + 해시로 로그인 생성</h3>
-<p>SID가 일치하면 DB 유저와 자동 매핑된다.</p>
-<pre data-lang="sql" class="language-sql "><code class="language-sql" data-lang="sql">USE master;
-CREATE LOGIN 유저1
-WITH PASSWORD = 0x해시값 HASHED,
-     SID = 0xSID값;
+<hr />
+<h2 id="puli">풀이</h2>
+<p>Rust로 처음 풀어본 문제다. Python이었으면 인덱스로 접근했겠지만, Rust에서는 String을 직접 인덱싱할 수 없어서 <code>.chars()</code>로 이터레이터를 만들어 접근했다.</p>
+<p>핵심 아이디어는 간단하다:</p>
+<ol>
+<li>두 문자열 중 긴 쪽 길이 × 2만큼 루프를 돈다</li>
+<li>짝수 인덱스면 <code>word1</code>에서, 홀수 인덱스면 <code>word2</code>에서 문자를 가져온다</li>
+<li><code>if let Some(c)</code>로 이터레이터가 끝났는지 확인하고, 있을 때만 추가한다</li>
+</ol>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">impl Solution {
+    pub fn merge_alternately(word1: String, word2: String) -&gt; String {
+        let mut a1 = word1.chars();
+        let mut a2 = word2.chars();
 
-CREATE LOGIN 유저2
-WITH PASSWORD = 0x해시값 HASHED,
-     SID = 0xSID값;
+        let mut result = String::new();
+        let mut cnt = 0;
+
+        if word1.len() &gt; word2.len() {    
+            cnt = word1.len() * 2;
+        } else {
+            cnt = word2.len() * 2;
+        }
+
+        for i in 0..cnt {
+            if i % 2 == 0 {
+                if let Some(c) = a1.next() {
+                    result.push(c);
+                }
+            } else {
+                if let Some(c) = a2.next() {
+                    result.push(c);
+                }
+            }
+        }
+        
+        return result;
+    }
+}
 </code></pre>
-<h3 id="3-4-orphaned-0gae-hwagin">3-4. Orphaned 0개 확인</h3>
-<pre data-lang="sql" class="language-sql "><code class="language-sql" data-lang="sql">USE [DB이름];
-EXEC sp_change_users_login &#x27;Report&#x27;;
-</code></pre>
-<img width="226" height="78" alt="Image" src="https://github.com/user-attachments/assets/00ec3b83-ccee-4bc8-b580-6c0f477d779b" />
-<p>결과가 비어 있으면 완료.</p>
 <hr />
-<h2 id="4-jeobsog-hwagin">4. 접속 확인</h2>
-<p>SSMS → 새 연결 → 해당 로그인으로 접속 후 쿼리 확인.</p>
-<pre data-lang="sql" class="language-sql "><code class="language-sql" data-lang="sql">USE [DB이름];
-SELECT TOP 5 * FROM 테이블명;
+<h2 id="rusteseo-baeun-geos">Rust에서 배운 것</h2>
+<p><strong><code>chars()</code>와 이터레이터</strong></p>
+<p>Rust의 <code>String</code>은 UTF-8로 인코딩되어 있어서 바이트 인덱스로 직접 접근하면 문자가 깨질 수 있다.<br />
+그래서 문자 단위로 순회하려면 <code>.chars()</code>를 사용해야 한다.</p>
+<p><code>.chars()</code>는 <code>Iterator</code>를 반환하고, <code>.next()</code>를 호출하면 <code>Option&lt;char&gt;</code>가 나온다.</p>
+<p><strong><code>if let Some(c)</code></strong></p>
+<p>Rust에서 <code>Option</code>을 처리할 때 쓰는 패턴이다.<br />
+이터레이터가 아직 남아있으면 <code>Some(c)</code>로 문자를 꺼내고, 끝났으면 아무것도 안 한다.</p>
+<pre data-lang="rust" class="language-rust "><code class="language-rust" data-lang="rust">if let Some(c) = a1.next() {
+    result.push(c);  &#x2F;&#x2F; 문자가 있을 때만 실행
+}
 </code></pre>
+<p><strong><code>String::new()</code>와 <code>.push()</code></strong></p>
+<p>빈 문자열을 만들고 문자를 하나씩 추가할 때 <code>push(char)</code>를 사용한다.<br />
+문자열을 붙이려면 <code>push_str(&amp;str)</code>를 쓴다.</p>
 <hr />
-<h2 id="jeongri">정리</h2>
-<table><thead><tr><th>단계</th><th>핵심</th></tr></thead><tbody>
-<tr><td>DB 복원</td><td>.bak 파일로 복원, DB 유저는 따라옴</td></tr>
-<tr><td>로그인 재생성</td><td>SID + 비밀번호 해시를 원본에서 추출해 동일하게 생성</td></tr>
-<tr><td>매핑 확인</td><td><code>sp_change_users_login 'Report'</code> 결과 0건</td></tr>
-</tbody></table>
-<p>SID만 맞춰주면 <code>sp_change_users_login 'Auto_Fix'</code> 없이도 자동 매핑된다는 점이 포인트.</p>
+<h2 id="gyeolgwa">결과</h2>
+<p>Runtime과 Memory 모두 무난하게 통과했다.</p>
+<p>Easy 난이도답게 로직 자체는 단순한데, Rust 문법에 익숙하지 않다 보니 "문자열을 어떻게 순회하지?"부터 찾아봐야 했다.<br />
+Python에서 당연하게 쓰던 것들이 Rust에선 왜 이렇게 되는지 하나씩 이해해가는 중이다.</p>
 
         </div>
 
@@ -195,19 +184,12 @@ SELECT TOP 5 * FROM 테이블명;
                 </div>
                 <div class="pagination__buttons">
                         <span class="button previous">
-                            <a href="https://blog.changki123.click/260405-01-ncp-expert/">
-                                <span class="button__icon">←</span>&nbsp;
-                                <span class="button__text">NCP Expert (NCE) 전과목 합격 후기</span>
-                            </a>
-                        </span>
-                    
-                    
-                        <span class="button next">
                             <a href="https://blog.changki123.click/260409-01-mssql-restore/">
-                                <span class="button__text">MSSQL 서버 — DB 복원 및 로그인 재연결</span>&nbsp;
-                                <span class="button__icon">→</span>
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">MSSQL 서버 — DB 복원 및 로그인 재연결</span>
                             </a>
                         </span>
+                    
                     </div>
             </div>
         
