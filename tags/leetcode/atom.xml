@@ -23,7 +23,7 @@
         <link rel="alternate" type="text/html" href="https://blog.changki123.click/260420-01-leetcode-1768/"/>
         <id>https://blog.changki123.click/260420-01-leetcode-1768/</id>
         
-        <content type="html" xml:base="https://blog.changki123.click/260420-01-leetcode-1768/">&lt;h2 id=&quot;munje&quot;&gt;문제&lt;&#x2F;h2&gt;
+        <summary type="html">&lt;h2 id=&quot;munje&quot;&gt;문제&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;leetcode.com&#x2F;problems&#x2F;merge-strings-alternately&#x2F;&quot;&gt;1768. Merge Strings Alternately&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;p&gt;두 문자열 &lt;code&gt;word1&lt;&#x2F;code&gt;과 &lt;code&gt;word2&lt;&#x2F;code&gt;가 주어졌을 때, 두 문자열을 번갈아가며 합친 결과를 반환하는 문제다.&lt;br &#x2F;&gt;
 &lt;code&gt;word1&lt;&#x2F;code&gt;부터 시작해서 한 글자씩 번갈아 추가하고, 한쪽이 먼저 끝나면 나머지 문자열을 그냥 뒤에 붙이면 된다.&lt;&#x2F;p&gt;
@@ -31,68 +31,7 @@
 &lt;pre&gt;&lt;code&gt;word1 = &amp;quot;abc&amp;quot;, word2 = &amp;quot;pqr&amp;quot; → &amp;quot;apbqcr&amp;quot;
 word1 = &amp;quot;ab&amp;quot;,  word2 = &amp;quot;pqrs&amp;quot; → &amp;quot;apbqrs&amp;quot;
 word1 = &amp;quot;abcd&amp;quot;, word2 = &amp;quot;pq&amp;quot;  → &amp;quot;apbqcd&amp;quot;
-&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;puli&quot;&gt;풀이&lt;&#x2F;h2&gt;
-&lt;p&gt;Rust로 처음 풀어본 문제다. Python이었으면 인덱스로 접근했겠지만, Rust에서는 String을 직접 인덱싱할 수 없어서 &lt;code&gt;.chars()&lt;&#x2F;code&gt;로 이터레이터를 만들어 접근했다.&lt;&#x2F;p&gt;
-&lt;p&gt;핵심 아이디어는 간단하다:&lt;&#x2F;p&gt;
-&lt;ol&gt;
-&lt;li&gt;두 문자열 중 긴 쪽 길이 × 2만큼 루프를 돈다&lt;&#x2F;li&gt;
-&lt;li&gt;짝수 인덱스면 &lt;code&gt;word1&lt;&#x2F;code&gt;에서, 홀수 인덱스면 &lt;code&gt;word2&lt;&#x2F;code&gt;에서 문자를 가져온다&lt;&#x2F;li&gt;
-&lt;li&gt;&lt;code&gt;if let Some(c)&lt;&#x2F;code&gt;로 이터레이터가 끝났는지 확인하고, 있을 때만 추가한다&lt;&#x2F;li&gt;
-&lt;&#x2F;ol&gt;
-&lt;pre data-lang=&quot;rust&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;impl Solution {
-    pub fn merge_alternately(word1: String, word2: String) -&amp;gt; String {
-        let mut a1 = word1.chars();
-        let mut a2 = word2.chars();
-
-        let mut result = String::new();
-        let mut cnt = 0;
-
-        if word1.len() &amp;gt; word2.len() {    
-            cnt = word1.len() * 2;
-        } else {
-            cnt = word2.len() * 2;
-        }
-
-        for i in 0..cnt {
-            if i % 2 == 0 {
-                if let Some(c) = a1.next() {
-                    result.push(c);
-                }
-            } else {
-                if let Some(c) = a2.next() {
-                    result.push(c);
-                }
-            }
-        }
-        
-        return result;
-    }
-}
-&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;rusteseo-baeun-geos&quot;&gt;Rust에서 배운 것&lt;&#x2F;h2&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;chars()&lt;&#x2F;code&gt;와 이터레이터&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;Rust의 &lt;code&gt;String&lt;&#x2F;code&gt;은 UTF-8로 인코딩되어 있어서 바이트 인덱스로 직접 접근하면 문자가 깨질 수 있다.&lt;br &#x2F;&gt;
-그래서 문자 단위로 순회하려면 &lt;code&gt;.chars()&lt;&#x2F;code&gt;를 사용해야 한다.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;code&gt;.chars()&lt;&#x2F;code&gt;는 &lt;code&gt;Iterator&lt;&#x2F;code&gt;를 반환하고, &lt;code&gt;.next()&lt;&#x2F;code&gt;를 호출하면 &lt;code&gt;Option&amp;lt;char&amp;gt;&lt;&#x2F;code&gt;가 나온다.&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;if let Some(c)&lt;&#x2F;code&gt;&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;Rust에서 &lt;code&gt;Option&lt;&#x2F;code&gt;을 처리할 때 쓰는 패턴이다.&lt;br &#x2F;&gt;
-이터레이터가 아직 남아있으면 &lt;code&gt;Some(c)&lt;&#x2F;code&gt;로 문자를 꺼내고, 끝났으면 아무것도 안 한다.&lt;&#x2F;p&gt;
-&lt;pre data-lang=&quot;rust&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;if let Some(c) = a1.next() {
-    result.push(c);  &amp;#x2F;&amp;#x2F; 문자가 있을 때만 실행
-}
-&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;String::new()&lt;&#x2F;code&gt;와 &lt;code&gt;.push()&lt;&#x2F;code&gt;&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;빈 문자열을 만들고 문자를 하나씩 추가할 때 &lt;code&gt;push(char)&lt;&#x2F;code&gt;를 사용한다.&lt;br &#x2F;&gt;
-문자열을 붙이려면 &lt;code&gt;push_str(&amp;amp;str)&lt;&#x2F;code&gt;를 쓴다.&lt;&#x2F;p&gt;
-&lt;hr &#x2F;&gt;
-&lt;h2 id=&quot;gyeolgwa&quot;&gt;결과&lt;&#x2F;h2&gt;
-&lt;p&gt;Runtime과 Memory 모두 무난하게 통과했다.&lt;&#x2F;p&gt;
-&lt;p&gt;Easy 난이도답게 로직 자체는 단순한데, Rust 문법에 익숙하지 않다 보니 &quot;문자열을 어떻게 순회하지?&quot;부터 찾아봐야 했다.&lt;br &#x2F;&gt;
-Python에서 당연하게 쓰던 것들이 Rust에선 왜 이렇게 되는지 하나씩 이해해가는 중이다.&lt;&#x2F;p&gt;
-</content>
+&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</summary>
         
     </entry>
 </feed>
