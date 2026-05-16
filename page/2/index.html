@@ -86,6 +86,47 @@
         <div class="posts">
                 <div class="post on-list">
                     
+    <h1 class="post-title"><a href="https://blog.changki123.click/260208-01-aws-drs/">AWS DRS 기반 재해복구 환경 구축 (간단히 함)</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-02-08
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/aws/">#AWS</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/drs/">#DRS</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/disaster-recovery/">#Disaster Recovery</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/windows/">#Windows</a></span>
+    
+
+
+                    
+        <div class="post-content">
+            <blockquote>
+<p><strong>진행 중인 프로젝트입니다.</strong><br />
+현재 DRS 에이전트 설치 및 1:1 복제 테스트까지 완료했습니다.</p>
+</blockquote>
+<h2 id="mogpyo">목표</h2>
+<p>AWS DRS(Disaster Recovery Service)를 사용해 서울 리전의 Windows 서버를 다른 리전으로 재해복구 환경 구축</p>
+        </div>
+        <div>
+            <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
+            <a class="read-more button" href="https://blog.changki123.click/260208-01-aws-drs/">
+                <span class="button__text">Read more</span>&nbsp;
+                <span class="button__icon">&#8617;&#xFE0E;</span>
+            </a>
+        </div>
+    
+
+                </div>
+            
+                <div class="post on-list">
+                    
     <h1 class="post-title"><a href="https://blog.changki123.click/260207-01-auto-lifecyclehook/">AWS Auto Scaling 인스턴스 종료 시 S3 자동 백업 시스템 구축</a></h1>
     <div class="post-meta-inline">
         
@@ -433,90 +474,6 @@ Zola 정적 사이트 생성기와 Terminimal 테마 환경에서 GA4를 설정�
             </a>
         </div>
     
-
-                </div>
-            
-                <div class="post on-list">
-                    
-    <h1 class="post-title"><a href="https://blog.changki123.click/260105-02-ascii/">ASCII 동영상</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-01-05
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/ascii/">#ascii</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/video/">#video</a></span>
-    
-
-
-                    <div class="post-content">
-            <style>
-  .video-wrapper {
-    background: #000;
-    text-align: center;
-    padding: 20px;
-  }
-  #ascii-output {
-    font-size: 5px;
-    line-height: 2.5px;
-    background: #000;
-    color: #0f0;
-    font-family: monospace;
-    white-space: pre;
-    overflow-x: auto;
-    letter-spacing: 0;
-    padding: 30px 50px;
-  }
-</style>
-<div class="video-wrapper">
-  <video id="sourceVideo" width="640" height="360" autoplay loop muted>
-    <source src="/video/sample.mp4" type="video/mp4">
-  </video>
-  <div id="ascii-output"></div>
-</div>
-<script>
-(function() {
-  const video = document.getElementById('sourceVideo');
-  const output = document.getElementById('ascii-output');
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  
-  canvas.width = 240;
-  canvas.height = 135;
-  
-  const chars = ' .:-=+*#%@';
-  
-  function convert() {
-    if (!video.paused && !video.ended) {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      let ascii = '';
-      
-      for (let i = 0; i < imgData.data.length; i += 4) {
-        const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
-        const charIdx = Math.floor(avg / 255 * (chars.length - 1));
-        ascii += chars[charIdx];
-        if ((i/4 + 1) % canvas.width === 0) ascii += '\n';
-      }
-      
-      output.textContent = ascii;
-      requestAnimationFrame(convert);
-    }
-  }
-  
-  video.addEventListener('playing', convert);
-})();
-</script>
-<hr />
-<p><strong>원본 영상:</strong> <a href="https://youtu.be/jy2aZHUI-6A?si=EdLWyIsgQw3kib5r">YouTube에서 보기</a></p>
-
-        </div>
 
                 </div>
             <div class="pagination">

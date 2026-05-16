@@ -92,6 +92,10 @@
         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
+        <loc>https://blog.changki123.click/260516-01-k3s-kubernetes-basics/</loc>
+        <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/page/1/</loc>
     </url>
     <url>
@@ -149,6 +153,9 @@
         <loc>https://blog.changki123.click/tags/cloudflare/</loc>
     </url>
     <url>
+        <loc>https://blog.changki123.click/tags/devops/</loc>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/tags/disaster-recovery/</loc>
     </url>
     <url>
@@ -179,6 +186,9 @@
         <loc>https://blog.changki123.click/tags/high-availability/</loc>
     </url>
     <url>
+        <loc>https://blog.changki123.click/tags/infra/</loc>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/tags/infrastructure/</loc>
     </url>
     <url>
@@ -188,7 +198,13 @@
         <loc>https://blog.changki123.click/tags/jagyeogjeung/</loc>
     </url>
     <url>
+        <loc>https://blog.changki123.click/tags/k3s/</loc>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/tags/ktcloud/</loc>
+    </url>
+    <url>
+        <loc>https://blog.changki123.click/tags/kubernetes/</loc>
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/lambda/</loc>
