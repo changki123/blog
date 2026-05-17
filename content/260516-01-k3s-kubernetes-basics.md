@@ -84,17 +84,25 @@ Deployment를 쓰면 Pod가 죽어도 자동으로 다시 살아난다.
 ```bash
 kubectl create deployment web --image=nginx --replicas=3
 
+<img width="435" height="125" alt="Image" src="https://github.com/user-attachments/assets/6196aa3f-eeca-42e5-8e54-fc08f2ba3986" />
+
 kubectl get all
 # NAME                       READY   STATUS
 # pod/web-5d87b8d4f5-4xkzp   1/1     Running
 # pod/web-5d87b8d4f5-9v2rp   1/1     Running
 # pod/web-5d87b8d4f5-n8qmx   1/1     Running
 
+<img width="592" height="222" alt="Image" src="https://github.com/user-attachments/assets/70e708b7-e1ec-4661-89a7-941751bb07a5" />
+
 # 전체 네임스페이스 확인
 kubectl get all -A
 
+<img width="1014" height="624" alt="Image" src="https://github.com/user-attachments/assets/09355656-6c5e-4b5d-8d90-3c7fac45b007" />
+
 # Pod IP 확인
 kubectl get pods -o wide
+
+<img width="1034" height="80" alt="Image" src="https://github.com/user-attachments/assets/3df54514-113c-4e1a-90ca-f6cd63e72946" />
 
 # 정리 — RS, Pod 전부 같이 삭제됨
 kubectl delete deployment web
@@ -116,8 +124,14 @@ kubectl create deployment web --image=nginx --replicas=3
 
 # ClusterIP — 클러스터 내부 전용
 kubectl expose deployment web --port=80 --type=ClusterIP
-kubectl describe svc web
+kubectl describe svc
 # Endpoints: 10.42.0.12:80,10.42.0.13:80,10.42.0.14:80
+
+<img width="627" height="97" alt="Image" src="https://github.com/user-attachments/assets/dc351159-c634-4305-b713-b81b2c5460c9" />
+
+kubectl describe svc web
+
+<img width="486" height="255" alt="Image" src="https://github.com/user-attachments/assets/6a2af0ef-9636-411b-abb5-88fdb006881a" />
 
 # NodePort — 외부 접근 가능
 kubectl expose deployment web --type=NodePort --port=80 --name=web-node
@@ -126,9 +140,15 @@ kubectl get svc
 # web        ClusterIP  80/TCP
 # web-node   NodePort   80:30808/TCP
 
+<img width="593" height="81" alt="Image" src="https://github.com/user-attachments/assets/a853cdc4-1563-4751-9b05-0bc1851b1974" />
+
 # 노드 IP 확인 후 curl
 hostname -I
+<img width="271" height="34" alt="Image" src="https://github.com/user-attachments/assets/c7d15b87-a74f-4cfe-bf09-ce3614d16a6f" />
+
 curl http://119.192.20.14:30808
+<img width="564" height="447" alt="Image" src="https://github.com/user-attachments/assets/65a20fe7-b405-4e52-b5ac-c560f17e8873" />
+
 ```
 
 > NodePort 범위는 기본 30000~32767. 포트 지정 안 하면 랜덤 할당된다.  
