@@ -167,4 +167,3 @@ curl http://119.192.20.14:30808
 ---
 
 Pod → Deployment → Service 흐름을 직접 손으로 다 쳐봤다.  
-다음엔 Ingress로 도메인 기반 라우팅이랑 ConfigMap/Secret으로 환경변수 주입하는 부분을 다뤄볼 예정이다.
