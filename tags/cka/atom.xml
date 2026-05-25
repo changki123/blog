@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-    <title>changki123&#x27;s blog - DevOps</title>
+    <title>changki123&#x27;s blog - CKA</title>
     <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
-    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/devops/atom.xml"/>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/cka/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
     <updated>2026-05-25T00:00:00+00:00</updated>
-    <id>https://blog.changki123.click/tags/devops/atom.xml</id>
+    <id>https://blog.changki123.click/tags/cka/atom.xml</id>
     <entry xml:lang="en">
         <title>CKA 연습 - kubectl 기본 명령어 (Deployment, Service, Rolling Update)</title>
         <published>2026-05-25T00:00:00+00:00</published>
@@ -24,26 +24,6 @@
         <id>https://blog.changki123.click/260525-01-kubectl-basic/</id>
         
         <summary type="html">&lt;p&gt;VirtualBox에서 CKA 시험 대비 kubectl 기본 명령어를 연습했다.&lt;&#x2F;p&gt;</summary>
-        
-    </entry>
-    <entry xml:lang="en">
-        <title>k3s로 시작하는 쿠버네티스 기본 실습</title>
-        <published>2026-05-16T00:00:00+00:00</published>
-        <updated>2026-05-16T00:00:00+00:00</updated>
-        
-        <author>
-          <name>
-            
-              Unknown
-            
-          </name>
-        </author>
-        
-        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260516-01-k3s-kubernetes-basics/"/>
-        <id>https://blog.changki123.click/260516-01-k3s-kubernetes-basics/</id>
-        
-        <summary type="html">&lt;p&gt;VirtualBox 위에 k3s를 올리고 Pod, Deployment, Service를 직접 띄워보며 쿠버네티스 기본 흐름을 체감한 기록이다.&lt;br &#x2F;&gt;
-마지막엔 NodePort로 외부에서 nginx에 curl까지 해봤다.&lt;&#x2F;p&gt;</summary>
         
     </entry>
 </feed>

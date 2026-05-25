@@ -26,23 +26,4 @@
         <summary type="html">&lt;p&gt;운영하던 VirtualBox VM에 root로 로그인하려는데 &lt;code&gt;Login incorrect&lt;&#x2F;code&gt;가 떴다. 비밀번호를 바꾼 기억이 없는데... 당황하지 말고 GRUB emergency mode로 재설정하면 된다.&lt;&#x2F;p&gt;</summary>
         
     </entry>
-    <entry xml:lang="en">
-        <title>Rocky Linux root 비밀번호 까먹었을 때 - GRUB으로 재설정하기</title>
-        <published>2026-05-19T00:00:00+00:00</published>
-        <updated>2026-05-19T00:00:00+00:00</updated>
-        
-        <author>
-          <name>
-            
-              Unknown
-            
-          </name>
-        </author>
-        
-        <link rel="alternate" type="text/html" href="https://blog.changki123.click/260525-01-kubectl-basic/"/>
-        <id>https://blog.changki123.click/260525-01-kubectl-basic/</id>
-        
-        <summary type="html">&lt;p&gt;운영하던 VirtualBox VM에 root로 로그인하려는데 &lt;code&gt;Login incorrect&lt;&#x2F;code&gt;가 떴다. 비밀번호를 바꾼 기억이 없는데... 당황하지 말고 GRUB emergency mode로 재설정하면 된다.&lt;&#x2F;p&gt;</summary>
-        
-    </entry>
 </feed>

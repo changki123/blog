@@ -101,7 +101,7 @@
     </url>
     <url>
         <loc>https://blog.changki123.click/260525-01-kubectl-basic/</loc>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-25</lastmod>
     </url>
     <url>
         <loc>https://blog.changki123.click/page/1/</loc>
@@ -153,6 +153,9 @@
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/boan/</loc>
+    </url>
+    <url>
+        <loc>https://blog.changki123.click/tags/cka/</loc>
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/cloud/</loc>
@@ -213,6 +216,9 @@
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/ktcloud/</loc>
+    </url>
+    <url>
+        <loc>https://blog.changki123.click/tags/kubectl/</loc>
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/kubernetes/</loc>
