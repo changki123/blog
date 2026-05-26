@@ -104,6 +104,10 @@
         <lastmod>2026-05-25</lastmod>
     </url>
     <url>
+        <loc>https://blog.changki123.click/260526-01-kubectl-configmap/</loc>
+        <lastmod>2026-05-26</lastmod>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/page/1/</loc>
     </url>
     <url>
@@ -164,6 +168,9 @@
         <loc>https://blog.changki123.click/tags/cloudflare/</loc>
     </url>
     <url>
+        <loc>https://blog.changki123.click/tags/configmap/</loc>
+    </url>
+    <url>
         <loc>https://blog.changki123.click/tags/devops/</loc>
     </url>
     <url>
@@ -213,6 +220,9 @@
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/k3s/</loc>
+    </url>
+    <url>
+        <loc>https://blog.changki123.click/tags/k8s/</loc>
     </url>
     <url>
         <loc>https://blog.changki123.click/tags/ktcloud/</loc>
