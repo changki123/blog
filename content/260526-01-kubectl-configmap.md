@@ -85,6 +85,8 @@ kubectl apply -f myapp.yaml
 
 kubectl exec -it myapp -- env | grep MY_KEY
 # MY_KEY=VALUE 출력되면 성공
+# execPod 안에서 명령어 실행
+# -it터미널 연결 (interactive + tty)
 ```
 
 ---
