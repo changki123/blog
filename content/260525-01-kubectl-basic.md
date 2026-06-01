@@ -54,6 +54,7 @@ kubectl get pods -w
 kubectl set image deployment/web nginx=nginx:1.25
 kubectl rollout status deployment/web
 ```
+<img width="460" height="34" alt="Image" src="https://github.com/user-attachments/assets/19e13a9b-a48f-4ef2-9f85-961ed2d99e74" />
 
 > **주의:** `set image` 명령어에서 컨테이너 이름을 정확히 입력해야 한다.
 > Deployment 이름(`web`)과 컨테이너 이름(`nginx`)은 다르다.
@@ -76,6 +77,7 @@ Containers:
 kubectl describe deployment web | grep Image
 # Image: nginx:1.25
 ```
+<img width="516" height="31" alt="Image" src="https://github.com/user-attachments/assets/2b3e10a6-912a-48e7-b966-3625de568d58" />
 
 ## 5. Rollback
 
@@ -84,6 +86,7 @@ kubectl rollout undo deployment/web
 kubectl describe deployment web | grep Image
 # Image: nginx
 ```
+<img width="520" height="35" alt="Image" src="https://github.com/user-attachments/assets/a235104e-79aa-49d1-aa46-3be2ea6bac99" />
 
 이전 버전으로 정상 롤백되었다.
 

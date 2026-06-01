@@ -35,6 +35,7 @@ kubectl describe secret my-secret
 # base64 디코딩 확인
 kubectl get secret my-secret -o jsonpath='{.data.username}' | base64 -d
 ```
+<img width="427" height="191" alt="Image" src="https://github.com/user-attachments/assets/13c18ca7-d063-44cd-bcc0-cc77110ecf83" />
 
 ### Pod에 환경변수로 주입
 
@@ -65,6 +66,7 @@ spec:
 kubectl apply -f secret-pod.yaml
 kubectl exec -it secret-pod -- env | grep DB
 ```
+<img width="532" height="49" alt="Image" src="https://github.com/user-attachments/assets/3d099e54-5b47-4f10-80bf-0e05501a8d8c" />
 
 ---
 
@@ -99,6 +101,7 @@ spec:
 kubectl apply -f resource-pod.yaml
 kubectl describe pod resource-pod | grep -A 5 Limits
 ```
+<img width="595" height="114" alt="Image" src="https://github.com/user-attachments/assets/9abb35d9-fc1a-40d9-acaf-49d917958ffd" />
 
 ---
 
@@ -144,6 +147,7 @@ kubectl describe pod probe-pod | grep -A 10 Liveness
 # 상태 변화 관찰 (0/1 → 1/1 되는 과정)
 kubectl get pod probe-pod -w
 ```
+<img width="750" height="194" alt="Image" src="https://github.com/user-attachments/assets/2c670e65-eede-485c-9e7e-61063fb6a552" />
 
 `-w` 로 보면 readinessProbe 통과하면서 `0/1 → 1/1` 로 Ready 되는 걸 확인할 수 있다.
 

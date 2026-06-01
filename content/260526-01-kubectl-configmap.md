@@ -31,12 +31,14 @@ Pod에 주입하는 방법은 두 가지다.
 ```bash
 kubectl create configmap myconfig --from-literal=KEY=VALUE
 ```
+<img width="646" height="35" alt="Image" src="https://github.com/user-attachments/assets/f0da96ee-8a9c-4695-b7df-501ab45ffec0" />
 
 ### 2. 확인
 
 ```bash
 kubectl get configmap myconfig -o yaml
 ```
+<img width="499" height="180" alt="Image" src="https://github.com/user-attachments/assets/424dcb62-7d5a-4da4-aabf-509e160e7dda" />
 
 `data:` 아래에 `KEY: VALUE`가 들어있으면 성공.
 
