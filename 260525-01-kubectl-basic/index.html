@@ -133,6 +133,7 @@ kubectl get pods -w
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">kubectl set image deployment&#x2F;web nginx=nginx:1.25
 kubectl rollout status deployment&#x2F;web
 </code></pre>
+<img width="460" height="34" alt="Image" src="https://github.com/user-attachments/assets/19e13a9b-a48f-4ef2-9f85-961ed2d99e74" />
 <blockquote>
 <p><strong>주의:</strong> <code>set image</code> 명령어에서 컨테이너 이름을 정확히 입력해야 한다.
 Deployment 이름(<code>web</code>)과 컨테이너 이름(<code>nginx</code>)은 다르다.</p>
@@ -148,11 +149,13 @@ Deployment 이름(<code>web</code>)과 컨테이너 이름(<code>nginx</code>)�
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">kubectl describe deployment web | grep Image
 # Image: nginx:1.25
 </code></pre>
+<img width="516" height="31" alt="Image" src="https://github.com/user-attachments/assets/2b3e10a6-912a-48e7-b966-3625de568d58" />
 <h2 id="5-rollback">5. Rollback</h2>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">kubectl rollout undo deployment&#x2F;web
 kubectl describe deployment web | grep Image
 # Image: nginx
 </code></pre>
+<img width="520" height="35" alt="Image" src="https://github.com/user-attachments/assets/a235104e-79aa-49d1-aa46-3be2ea6bac99" />
 <p>이전 버전으로 정상 롤백되었다.</p>
 <h2 id="haegsim-jeongri">핵심 정리</h2>
 <table><thead><tr><th>명령어</th><th>설명</th></tr></thead><tbody>

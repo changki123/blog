@@ -118,9 +118,11 @@
 <h3 id="1-configmap-saengseong">1. ConfigMap 생성</h3>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">kubectl create configmap myconfig --from-literal=KEY=VALUE
 </code></pre>
+<img width="646" height="35" alt="Image" src="https://github.com/user-attachments/assets/f0da96ee-8a9c-4695-b7df-501ab45ffec0" />
 <h3 id="2-hwagin">2. 확인</h3>
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">kubectl get configmap myconfig -o yaml
 </code></pre>
+<img width="499" height="180" alt="Image" src="https://github.com/user-attachments/assets/424dcb62-7d5a-4da4-aabf-509e160e7dda" />
 <p><code>data:</code> 아래에 <code>KEY: VALUE</code>가 들어있으면 성공.</p>
 <pre data-lang="yaml" class="language-yaml "><code class="language-yaml" data-lang="yaml">apiVersion: v1
 data:

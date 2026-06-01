@@ -124,6 +124,7 @@ kubectl describe secret my-secret
 # base64 디코딩 확인
 kubectl get secret my-secret -o jsonpath=&#x27;{.data.username}&#x27; | base64 -d
 </code></pre>
+<img width="427" height="191" alt="Image" src="https://github.com/user-attachments/assets/13c18ca7-d063-44cd-bcc0-cc77110ecf83" />
 <h3 id="pode-hwangyeongbyeonsuro-juib">Pod에 환경변수로 주입</h3>
 <pre data-lang="yaml" class="language-yaml "><code class="language-yaml" data-lang="yaml"># secret-pod.yaml
 apiVersion: v1
@@ -149,6 +150,7 @@ spec:
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">kubectl apply -f secret-pod.yaml
 kubectl exec -it secret-pod -- env | grep DB
 </code></pre>
+<img width="532" height="49" alt="Image" src="https://github.com/user-attachments/assets/3d099e54-5b47-4f10-80bf-0e05501a8d8c" />
 <hr />
 <h2 id="resource-jehan">Resource 제한</h2>
 <p>Pod이 노드 자원을 과도하게 사용하는 것을 방지한다.</p>
@@ -177,6 +179,7 @@ spec:
 <pre data-lang="bash" class="language-bash "><code class="language-bash" data-lang="bash">kubectl apply -f resource-pod.yaml
 kubectl describe pod resource-pod | grep -A 5 Limits
 </code></pre>
+<img width="595" height="114" alt="Image" src="https://github.com/user-attachments/assets/9abb35d9-fc1a-40d9-acaf-49d917958ffd" />
 <hr />
 <h2 id="probe">Probe</h2>
 <p>컨테이너 상태를 주기적으로 체크한다.</p>
@@ -216,6 +219,7 @@ kubectl describe pod probe-pod | grep -A 10 Liveness
 # 상태 변화 관찰 (0&#x2F;1 → 1&#x2F;1 되는 과정)
 kubectl get pod probe-pod -w
 </code></pre>
+<img width="750" height="194" alt="Image" src="https://github.com/user-attachments/assets/2c670e65-eede-485c-9e7e-61063fb6a552" />
 <p><code>-w</code> 로 보면 readinessProbe 통과하면서 <code>0/1 → 1/1</code> 로 Ready 되는 걸 확인할 수 있다.</p>
 <hr />
 <h2 id="jeongri">정리</h2>
