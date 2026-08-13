@@ -86,6 +86,48 @@
         <div class="posts">
                 <div class="post on-list">
                     
+    <h1 class="post-title"><a href="https://blog.changki123.click/260813-01-cyberduck/">Cloudflare R2에 300MB 넘는 파일 올리기 - Cyberduck으로 해결하기</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-08-13
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/cloudflare/">#Cloudflare</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/cyberduck/">#Cyberduck</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/r2/">#R2</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/s3/">#S3</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/obeujegteuseutoriji/">#오브젝트스토리지</a></span>
+    
+
+
+                    
+        <div class="post-content">
+            <h1 id="cloudflare-r2e-300mb-neomneun-pail-olrigi-cyberduckeuro-haegyeolhagi">Cloudflare R2에 300MB 넘는 파일 올리기 — Cyberduck으로 해결하기</h1>
+<p>개인 프로젝트로 여행 영상 사이트를 만들면서 영상 파일을 Cloudflare R2에 저장하기로 했다. 그런데 R2 웹 콘솔에서 드래그앤드롭으로 파일을 올리려니 이런 에러가 떴다.</p>
+<pre><code>1개의 파일이 300 MB 제한을 초과하여 업로드할 수 없습니다.
+더 큰 파일을 업로드하려면 S3 호환성 API 또는 Workers를 사용하십시오.
+</code></pre>
+<p>여행 영상은 대부분 300MB를 훌쩍 넘기 때문에, 웹 콘솔만으로는 업로드가 불가능했다. 이 글에서는 무료 GUI 클라이언트인 <strong>Cyberduck</strong>으로 이 문제를 해결한 과정을 정리한다.</p>
+        </div>
+        <div>
+            <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
+            <a class="read-more button" href="https://blog.changki123.click/260813-01-cyberduck/">
+                <span class="button__text">Read more</span>&nbsp;
+                <span class="button__icon">&#8617;&#xFE0E;</span>
+            </a>
+        </div>
+    
+
+                </div>
+            
+                <div class="post on-list">
+                    
     <h1 class="post-title"><a href="https://blog.changki123.click/260531-01-cka-secret-resource-probe/">CKA 실습 - Secret &#x2F; Resource 제한 &#x2F; Probe</a></h1>
     <div class="post-meta-inline">
         
@@ -414,60 +456,6 @@ word1 = &quot;abcd&quot;, word2 = &quot;pq&quot;  → &quot;apbqcd&quot;
         <div>
             <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
             <a class="read-more button" href="https://blog.changki123.click/260330-01-bevy-start-copy/">
-                <span class="button__text">Read more</span>&nbsp;
-                <span class="button__icon">&#8617;&#xFE0E;</span>
-            </a>
-        </div>
-    
-
-                </div>
-            
-                <div class="post on-list">
-                    
-    <h1 class="post-title"><a href="https://blog.changki123.click/260301-01-alwayson/">Active Directory Always On Failover</a></h1>
-    <div class="post-meta-inline">
-        
-    <span class="post-date">
-            2026-03-01
-        </span>
-
-    </div>
-
-    
-        <span class="post-tags-inline">
-                :: tags:&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/active-directory/">#active-directory</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/alwayson/">#alwayson</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/aws/">#aws</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/high-availability/">#high-availability</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/mssql/">#mssql</a>&nbsp;
-                <a class="post-tag" href="https://blog.changki123.click/tags/windows/">#windows</a></span>
-    
-
-
-                    
-        <div class="post-content">
-            <h1 id="guseong-mogpyo">구성 목표</h1>
-<p>이 시리즈에서 구성할 최종 구조입니다.</p>
-<pre><code>[ AD 서버 (Bastion + DNS) ]
-         |
-    VPC Subnet (ap-northeast-2c)
-    172.31.0.0&#x2F;16
-         |
-   +-----------+
-   |           |
-[MSSQL01]  [MSSQL02]
- Primary   Secondary
-</code></pre>
-<ul>
-<li>AD 서버가 DNS 및 도메인 컨트롤러 역할을 겸함</li>
-<li>MSSQL01, MSSQL02는 동일 서브넷에 배치</li>
-<li>외부 접근은 AD(Bastion) 경유</li>
-</ul>
-        </div>
-        <div>
-            <!-- &#xFE0E; -- force text style - some devices render this as emoji -->
-            <a class="read-more button" href="https://blog.changki123.click/260301-01-alwayson/">
                 <span class="button__text">Read more</span>&nbsp;
                 <span class="button__icon">&#8617;&#xFE0E;</span>
             </a>
