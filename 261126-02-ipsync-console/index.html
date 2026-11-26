@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>changki123&#x27;s blog</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="robots" content="noodp"/>
+
+    <link rel="stylesheet" href="https://blog.changki123.click/style.css">
+    <link rel="stylesheet" href="https://blog.changki123.click/color/orange.css">
+
+        <link rel="stylesheet" href="https://blog.changki123.click/color/background_blue.css">
+    
+    <link rel="stylesheet" href="https://blog.changki123.click/font-hack-subset.css">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XCEVWK26M4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XCEVWK26M4');
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8843211354454320"
+         crossorigin="anonymous"></script>
+
+    <meta name="description" content="">
+
+    <meta property="og:description" content="">
+    <meta property="og:title" content="changki123's blog">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://blog.changki123.click/261126-02-ipsync-console/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:title" content="changki123's blog">
+    <meta property="twitter:domain" content="blog.changki123.click">
+    <meta property="twitter:url" content="https://blog.changki123.click/261126-02-ipsync-console/">
+
+    </head>
+
+<body class="">
+<div class="container">
+    
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__logo">
+                    
+                <a href="https://blog.changki123.click" style="text-decoration: none;">
+                    <div class="logo">
+                      
+                            changki123
+                        
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        
+        <nav class="menu">
+            <ul class="menu__inner">
+                <li><a href="/tags/">Tags</a></li>
+            </ul>
+        </nav>
+    
+    
+        
+
+        <div class="github-grass">
+            <a href="https://github.com/changki123" target="_blank" rel="noopener">
+                <img
+                    src="https://ghchart.rshah.org/e8831a/changki123"
+                    alt="GitHub contributions"
+                />
+            </a>
+        </div>
+    </header>
+    
+
+    <div class="content">
+        
+    <div class="post">
+        
+    <h1 class="post-title"><a href="https://blog.changki123.click/261126-02-ipsync-console/">허용 IP 목록을 웹에서 관리하기 — ipsync 콘솔 사용법</a></h1>
+    <div class="post-meta-inline">
+        
+    <span class="post-date">
+            2026-11-26
+        </span>
+
+    </div>
+
+    
+        <span class="post-tags-inline">
+                :: tags:&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/ansible/">#ansible</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/aws/">#aws</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/security/">#security</a>&nbsp;
+                <a class="post-tag" href="https://blog.changki123.click/tags/waf/">#waf</a></span>
+    
+
+        <div class="post-content">
+            <p>서버 방화벽과 AWS WAF에 들어가는 허용·차단 IP를 웹 화면 하나에서 고치고, 검증한 뒤, 버튼 한 번으로 모두 반영하는 도구(ipsync 콘솔)의 사용법을 정리합니다.</p>
+<ul>
+<li>목록은 <strong>S3에 있는 텍스트 파일 3개</strong>(kisa / manual / deny)뿐입니다.</li>
+<li>콘솔은 <strong>bastion 서버</strong>에서 돌고, 실제 반영은 bastion의 <strong>Ansible</strong>이 합니다.</li>
+<li>사용하는 사람은 목록을 고치고 → 검증 결과를 보고 → 적용 버튼만 누르면 됩니다.</li>
+</ul>
+<blockquote>
+<p>이 글의 화면은 설명용으로 다시 만든 것입니다. IP는 문서용 예약 대역(192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24), 서버 이름은 예시입니다.</p>
+</blockquote>
+<span id="continue-reading"></span><h2 id="wae-mandeuleossna">왜 만들었나</h2>
+<p>허용 IP 요청이 오면 Windows 서버 2대, Linux 서버 2대, AWS WAF에 같은 IP를 각각 넣어야 했습니다. 손으로 다섯 군데를 고치다 보니 한 곳이 빠지거나, 지운 IP가 어딘가 남는 일이 생겼습니다.</p>
+<p>그래서 기준 목록을 S3 한 곳에만 두고, 모든 대상이 그 목록에서 만들어진 <strong>같은 합본</strong>을 받도록 바꿨습니다. 국내 IP 대역(KISA 공개 데이터)은 Lambda가 매달 자동으로 갱신합니다.</p>
+<h2 id="dongjag-weonri">동작 원리</h2>
+<p>허용 목록은 항상 <strong>kisa + manual − deny</strong> 하나로 만들어져 WAF와 서버에 똑같이 들어갑니다.</p>
+<p><img src="/images/ipsync-console/00-flow.png" alt="ipsync 동작 흐름 — 목록 3개를 bastion에서 합쳐 WAF와 서버에 적용" /></p>
+<table><thead><tr><th>파일</th><th>내용</th><th>누가 고치나</th></tr></thead><tbody>
+<tr><td>kisa.txt</td><td>국내 IP 대역</td><td>Lambda가 매달 자동 갱신 (손대지 않음)</td></tr>
+<tr><td>manual.txt</td><td>따로 허용할 IP (협력사, 모니터링, 원격 지원 등)</td><td>콘솔에서 편집</td></tr>
+<tr><td>deny.txt</td><td>차단할 IP</td><td>콘솔에서 편집, <strong>허용보다 우선</strong></td></tr>
+</tbody></table>
+<p>WAF는 AWS API로 IP 세트를 갱신하고, 서버는 Ansible이 한 대씩 OS 방화벽(Windows 방화벽, iptables)을 바꿉니다.</p>
+<h2 id="menyu-guseong">메뉴 구성</h2>
+<p><img src="/images/ipsync-console/01-menu.png" alt="ipsync 콘솔 상단 메뉴" /></p>
+<table><thead><tr><th>메뉴</th><th>하는 일</th></tr></thead><tbody>
+<tr><td>대시보드</td><td>목록 개수와 최근 적용 상태</td></tr>
+<tr><td>manual.txt</td><td>수기 허용 IP 편집</td></tr>
+<tr><td>deny.txt</td><td>차단 IP 편집</td></tr>
+<tr><td>확인·적용</td><td>합본 검증, WAF 변경 미리보기, 적용, 서버 점검(plan)</td></tr>
+<tr><td>이력</td><td>누가 언제 무엇을 바꾸고 적용했는지, 적용 로그</td></tr>
+<tr><td>IP 조회</td><td>IP 하나가 어느 목록에 있고 최종적으로 허용인지</td></tr>
+</tbody></table>
+<p>IP를 고치는 화면은 manual.txt와 deny.txt 두 개뿐이고, 실제 반영은 <strong>확인·적용</strong>에서만 일어납니다.</p>
+<h2 id="jaju-haneun-jageob">자주 하는 작업</h2>
+<h3 id="heoyong-ip-cuga">허용 IP 추가</h3>
+<ol>
+<li><strong>manual.txt</strong>에서 맨 아래에 IP를 한 줄 추가합니다. 예: <code>203.0.113.205/32  # 원격 지원, 12월 말 삭제</code></li>
+<li><strong>검증 및 변경 내용 보기</strong>를 눌러 추가·삭제될 IP가 맞는지 확인하고 저장합니다.</li>
+<li><strong>확인·적용</strong>에서 ① 합본이 <strong>검증 통과</strong>인지, ② WAF 추가 건수가 예상과 같은지 봅니다.</li>
+<li>작업자 이름과 vault 비밀번호를 넣고 <strong>전체 적용</strong>을 누릅니다.</li>
+<li><strong>이력</strong>에서 결과가 <strong>성공</strong>인지 확인합니다.</li>
+</ol>
+<h3 id="cadan-ip-cuga">차단 IP 추가</h3>
+<ol>
+<li><strong>deny.txt</strong>에 IP를 추가하고 <strong>검증 및 변경 내용 보기</strong>로 저장합니다.</li>
+<li><strong>확인·적용</strong>에서 ①의 "deny 적용: 허용 범위에서 IP n개 제외"와 ②의 차단 IP 세트 추가 건수를 확인합니다.</li>
+<li><strong>전체 적용</strong>을 누릅니다. 웹만 막으면 되는 경우 <strong>AWS WAF 적용</strong>만 눌러도 됩니다.</li>
+</ol>
+<h3 id="teugjeong-ipga-heoyongdwae-issneunji-hwagin">특정 IP가 허용돼 있는지 확인</h3>
+<p><strong>IP 조회</strong>에 IP를 넣고 <strong>조회</strong>를 누르면, 세 목록 중 어디에 걸리는지와 최종 결과(허용/차단)가 나옵니다.</p>
+<h2 id="hwamyeonbyeol-sayongbeob">화면별 사용법</h2>
+<h3 id="manual-txt-deny-txt">manual.txt / deny.txt</h3>
+<p>한 줄에 IP 또는 CIDR 하나씩 쓰고, <code>#</code> 뒤는 주석입니다. 요청자와 날짜를 주석으로 남겨 두면 나중에 정리하기 쉽습니다. 텍스트 파일을 올려 통째로 바꿀 수도 있습니다.</p>
+<p><img src="/images/ipsync-console/02-manual.png" alt="manual.txt 편집 화면" /></p>
+<p>deny.txt도 쓰는 법은 같습니다. 여기 들어간 IP는 허용 목록에 있어도 차단됩니다.</p>
+<p><img src="/images/ipsync-console/03-deny.png" alt="deny.txt 편집 화면" /></p>
+<p><strong>검증 및 변경 내용 보기</strong>는 형식을 검사하고 추가·삭제될 IP를 보여준 뒤 S3에 저장합니다. 이 단계에서는 서버와 WAF가 바뀌지 않습니다.</p>
+<h3 id="hwagin-jeogyong">확인·적용</h3>
+<p>화면 위에서부터 ① → ② → ③ 순서로 봅니다.</p>
+<p><img src="/images/ipsync-console/04-apply.png" alt="확인·적용 화면 — ① 합본 검증, ② WAF 미리보기, ③ 적용" /></p>
+<table><thead><tr><th>영역</th><th>보는 것</th></tr></thead><tbody>
+<tr><td>① 서버용 합본</td><td>목록별 건수, 최종 허용 개수, 직전 적용본 대비 추가/삭제, <strong>검증 통과</strong> 여부</td></tr>
+<tr><td>② AWS WAF 미리보기</td><td>허용·차단 IP 세트의 현재/적용 후 개수, 추가·삭제 건수 (보기만 함)</td></tr>
+<tr><td>③ 적용</td><td>작업자·vault 비밀번호 입력 후 대상별 버튼 또는 전체 적용</td></tr>
+</tbody></table>
+<table><thead><tr><th>버튼</th><th>하는 일</th></tr></thead><tbody>
+<tr><td>AWS WAF 적용</td><td>WAF IP 세트만 갱신 (vault 비밀번호 불필요)</td></tr>
+<tr><td>서버별 적용</td><td>해당 서버 한 대만 갱신</td></tr>
+<tr><td>전체 적용</td><td>WAF + 서버 4대 (보통 이 버튼)</td></tr>
+<tr><td>서버 점검(plan)</td><td>실제로 바꾸지 않고, 적용하면 서버별로 무엇이 바뀔지만 확인</td></tr>
+</tbody></table>
+<p>작업자 이름은 이력에 그대로 남으니 본인 이름이나 계정을 넣습니다.</p>
+<h3 id="iryeog">이력</h3>
+<p>upload(목록 저장), apply(적용), plan(점검)이 최신순으로 나오고, apply·plan은 <strong>보기</strong>로 실행 로그를 열 수 있습니다.</p>
+<p><img src="/images/ipsync-console/05-history.png" alt="변경 이력 화면" /></p>
+<h3 id="ip-johoe">IP 조회</h3>
+<p>세 목록에서 그 IP를 포함하는 항목과, 마지막 줄에 최종 결과를 보여줍니다. 아래 예시는 kisa 대역과 manual 양쪽에 걸려 <strong>허용</strong>입니다. "최근 확인 기준"은 마지막으로 확인·적용 화면을 열었을 때 만든 합본이라는 뜻입니다.</p>
+<p><img src="/images/ipsync-console/06-lookup.png" alt="IP 조회 화면" /></p>
+<h2 id="juyisahang">주의사항</h2>
+<ul>
+<li><strong>deny가 허용보다 우선합니다.</strong> 허용했는데 안 된다는 문의가 오면 IP 조회부터 확인합니다.</li>
+<li><strong>검증 통과가 아니면 적용하지 않습니다.</strong> 오류가 난 줄의 형식(IP/CIDR)을 고친 뒤 다시 저장합니다.</li>
+<li><strong>건수가 크게 바뀌면 멈춥니다.</strong> 한두 줄 고쳤는데 삭제가 수십 건이면 목록이 잘못 올라간 것입니다.</li>
+<li><strong>서버는 한 대씩 적용되고, 실패하면 그 자리에서 멈춥니다.</strong> 앞서 성공한 서버만 새 목록이 되니, 이력의 로그에서 실패 서버와 이유를 확인합니다.</li>
+<li><strong>자동 롤백:</strong> 적용 직후 bastion에서 서버로 다시 접속되지 않으면 5분 뒤 그 서버 방화벽이 이전 상태로 돌아갑니다. 잘못 적용해도 관리 접속이 끊긴 채로 남지 않습니다.</li>
+<li><strong>처음이거나 큰 변경이면</strong> 서버 점검(plan)으로 변경 내용을 먼저 봅니다.</li>
+<li><strong>kisa.txt는 손대지 않습니다.</strong> 매달 덮어써지므로 필요한 IP는 항상 manual.txt에 넣습니다.</li>
+</ul>
+
+        </div>
+
+        
+            <div class="pagination">
+                <div class="pagination__title">
+                    <span class="pagination__title-h">Thanks for reading! Read other posts?</span>
+                    <hr />
+                </div>
+                <div class="pagination__buttons">
+                        <span class="button previous">
+                            <a href="https://blog.changki123.click/260813-01-cyberduck/">
+                                <span class="button__icon">←</span>&nbsp;
+                                <span class="button__text">Cloudflare R2에 300MB 넘는 파일 올리기 - Cyberduck으로 해결하기</span>
+                            </a>
+                        </span>
+                    
+                    
+                        <span class="button next">
+                            <a href="https://blog.changki123.click/261126-01-aws-ami-ec2/">
+                                <span class="button__text">AMI로 기존 서버를 복제해 새 EC2 만들기</span>&nbsp;
+                                <span class="button__icon">→</span>
+                            </a>
+                        </span>
+                    </div>
+            </div>
+        
+    </div>
+
+    </div>
+
+    
+    <footer class="footer">
+        <div class="footer__inner">
+                <div class="copyright">
+                        <span>© 
+    2026
+ Powered by <a href="https://www.getzola.org/">Zola</a></span>
+                    <span class="copyright-theme">
+                        <span class="copyright-theme-sep">:: </span>
+                        Theme: <a href="https://github.com/pawroman/zola-theme-terminimal/">Terminimal</a> by pawroman
+                    </span>
+                </div>
+            </div>
+    </footer>
+    
+
+</div>
+</body>
+
+</html>

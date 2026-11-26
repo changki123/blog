@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>changki123&#x27;s blog - ansible</title>
+    <subtitle>Infrastructure Engineer&#x27;s Tech Blog</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/ansible/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-11-26T00:00:00+00:00</updated>
+    <id>https://blog.changki123.click/tags/ansible/atom.xml</id>
+    <entry xml:lang="en">
+        <title>허용 IP 목록을 웹에서 관리하기 — ipsync 콘솔 사용법</title>
+        <published>2026-11-26T00:00:00+00:00</published>
+        <updated>2026-11-26T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/261126-02-ipsync-console/"/>
+        <id>https://blog.changki123.click/261126-02-ipsync-console/</id>
+        
+        <summary type="html">&lt;p&gt;서버 방화벽과 AWS WAF에 들어가는 허용·차단 IP를 웹 화면 하나에서 고치고, 검증한 뒤, 버튼 한 번으로 모두 반영하는 도구(ipsync 콘솔)의 사용법을 정리합니다.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;목록은 &lt;strong&gt;S3에 있는 텍스트 파일 3개&lt;&#x2F;strong&gt;(kisa &#x2F; manual &#x2F; deny)뿐입니다.&lt;&#x2F;li&gt;
+&lt;li&gt;콘솔은 &lt;strong&gt;bastion 서버&lt;&#x2F;strong&gt;에서 돌고, 실제 반영은 bastion의 &lt;strong&gt;Ansible&lt;&#x2F;strong&gt;이 합니다.&lt;&#x2F;li&gt;
+&lt;li&gt;사용하는 사람은 목록을 고치고 → 검증 결과를 보고 → 적용 버튼만 누르면 됩니다.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;이 글의 화면은 설명용으로 다시 만든 것입니다. IP는 문서용 예약 대역(192.0.2.0&#x2F;24, 198.51.100.0&#x2F;24, 203.0.113.0&#x2F;24), 서버 이름은 예시입니다.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;</summary>
+        
+    </entry>
+</feed>
