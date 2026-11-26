@@ -5,8 +5,39 @@
     <link rel="self" type="application/atom+xml" href="https://blog.changki123.click/tags/aws/atom.xml"/>
     <link rel="alternate" type="text/html" href="https://blog.changki123.click"/>
     <generator uri="https://www.getzola.org/">Zola</generator>
-    <updated>2026-03-01T00:00:00+00:00</updated>
+    <updated>2026-11-26T00:00:00+00:00</updated>
     <id>https://blog.changki123.click/tags/aws/atom.xml</id>
+    <entry xml:lang="en">
+        <title>AMI로 기존 서버를 복제해 새 EC2 만들기</title>
+        <published>2026-11-26T00:00:00+00:00</published>
+        <updated>2026-11-26T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://blog.changki123.click/261126-01-aws-ami-ec2/"/>
+        <id>https://blog.changki123.click/261126-01-aws-ami-ec2/</id>
+        
+        <summary type="html">&lt;p&gt;이 글은 기존 서버를 예시로, 아래 순서로 똑같은 서버를 하나 더 만드는 방법을 정리합니다.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;기존 서버에서 AMI(서버 이미지) 만들기&lt;&#x2F;li&gt;
+&lt;li&gt;그 AMI로 새 EC2 서버 만들기&lt;&#x2F;li&gt;
+&lt;li&gt;접속 확인&lt;&#x2F;li&gt;
+&lt;li&gt;서비스 동작 확인&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;AMI란?&lt;&#x2F;strong&gt; 서버 전체(OS·설치된 프로그램·설정)를 통째로 떠놓은 &#x27;서버 사진&#x27;입니다. 이 사진으로 똑같은 서버를 몇 개든 복제할 수 있습니다.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;모든 작업 전에, 화면 오른쪽 위 리전이 **서울(ap-northeast-2)**로 되어 있는지 확인하세요.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;</summary>
+        
+    </entry>
     <entry xml:lang="en">
         <title>Active Directory Always On Failover</title>
         <published>2026-03-01T00:00:00+00:00</published>
